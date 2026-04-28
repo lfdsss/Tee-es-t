@@ -4,21 +4,31 @@
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --color-primary: #2563eb;
   --color-primary-dark: #1d4ed8;
-  --color-sidebar: #0f172a;
-  --color-sidebar-hover: #1e293b;
   --color-accent: #7c3aed;
-  --color-success: #22c55e;
+  --color-success: #10b981;
   --color-warning: #f59e0b;
   --color-danger: #ef4444;
 }
 
 body {
   font-family: var(--font-sans);
-  background: #f1f5f9;
-  color: #111827;
+  background: #f8fafc;
+  color: #0f172a;
   margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-::-webkit-scrollbar { width: 6px; }
+::selection {
+  background: #2563eb;
+  color: white;
+}
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 100px; }
+::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+input:focus, select:focus {
+  outline: none;
+}
