@@ -72,7 +72,7 @@ export default function MissionDetailPage() {
         <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-slate-500">
           <span>{cleanText(mission.company) || 'Non précisé'}</span>
           <span className="text-slate-300">·</span>
-          <span>{mission.source}</span>
+          <span>{cleanText(mission.source)}</span>
           {mission.type && <>
             <span className="text-slate-300">·</span>
             <span className="capitalize">{cleanText(mission.type)}</span>
