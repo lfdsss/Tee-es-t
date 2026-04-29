@@ -105,11 +105,19 @@ export async function fetchDebug() {
 }
 
 export async function sendChatMessage(message, history = []) {
-  const res = await fetch(`${RAILWAY_URL}/chat`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message, history }),
-  });
+  let res;
+  try {
+    res = await fetch(`${RAILWAY_URL}/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, history }),
+    });
+  } catch {
+    throw new Error('Impossible de joindre le serveur Railway. Vérifie que le service est en ligne.');
+  }
+  if (!res.ok) {
+    throw new Error(`Serveur a répondu ${res.status} ${res.statusText}`);
+  }
   const data = await res.json();
   if (data.error) throw new Error(data.error);
   return data;
