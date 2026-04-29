@@ -35,6 +35,7 @@ from scrapers.workingnomads import WorkingNomadsScraper
 from scrapers.codeur import CodeurScraper
 from scrapers.talentfr import TalentFRScraper
 from scrapers.freework import FreeWorkScraper
+from scrapers.malt import MaltScraper
 from scrapers.guru import GuruScraper
 from scrapers.landingjobs import LandingJobsScraper
 from scrapers.freelancercom import FreelancerComScraper
@@ -55,7 +56,7 @@ SCRAPERS_TIER1 = [
     RemoteOKScraper(), RemotiveScraper(), JobicyScraper(),
     WeWorkRemotelyScraper(), HimalayasScraper(), ArbeitnowScraper(),
     LinkedInScraper(), WorkingNomadsScraper(), CodeurScraper(),
-    TalentFRScraper(), FreeWorkScraper(),
+    TalentFRScraper(), FreeWorkScraper(), MaltScraper(),
 ]
 
 SCRAPERS_TIER2 = [
