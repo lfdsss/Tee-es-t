@@ -427,18 +427,25 @@ Reponds en francais par defaut, sauf si le message est en anglais."""
                 messages.append({"role": role, "content": content})
         messages.append({"role": "user", "content": user_message})
 
-        response = _anthropic_client.messages.create(
-            model="claude-opus-4-7",
-            max_tokens=2000,
-            system=system_prompt,
-            messages=messages,
-        )
+        last_err = None
+        for model in ["claude-sonnet-4-6-20250514", "claude-sonnet-4-5-20241022", "claude-haiku-4-5-20251001"]:
+            try:
+                response = _anthropic_client.messages.create(
+                    model=model,
+                    max_tokens=2000,
+                    system=system_prompt,
+                    messages=messages,
+                )
+                reply = response.content[0].text.strip()
+                reply = reply.replace("S&B Consulting", "").replace("S&B", "")
+                return {"response": reply}
+            except Exception as model_err:
+                last_err = model_err
+                logger.warning(f"Chat model {model} failed: {model_err}")
+                continue
 
-        reply = response.content[0].text.strip()
-        reply = reply.replace("S&B Consulting", "").replace("S&B", "")
-
-        return {"response": reply}
+        return {"error": f"Tous les modèles ont échoué. Dernière erreur : {last_err}"}
 
     except Exception as e:
         logger.error(f"Chat error: {e}")
-        return {"error": str(e)}
+        return {"error": f"Erreur serveur : {str(e)}"}
