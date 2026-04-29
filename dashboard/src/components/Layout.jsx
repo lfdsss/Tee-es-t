@@ -101,7 +101,7 @@ export default function Layout({ session, onLogout }) {
             onClick={handleLogout}
             className="text-[13px] text-slate-600 hover:text-slate-300 transition-colors"
           >
-            Deconnexion
+            Déconnexion
           </button>
         </div>
       </aside>

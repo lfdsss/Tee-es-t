@@ -41,13 +41,13 @@ export default function ChatWidget() {
         .map(m => ({ role: m.role, content: m.content }))
 
       const res = await sendChatMessage(text, history)
-      const reply = res.reply || res.response || res.message || res.answer || 'Desole, je n\'ai pas pu traiter votre demande.'
+      const reply = res.reply || res.response || res.message || res.answer || 'Désolé, je n\'ai pas pu traiter votre demande.'
       setMessages(prev => [...prev, { role: 'assistant', content: reply }])
     } catch (err) {
       console.error('Chat error:', err)
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: 'Desole, une erreur est survenue. Verifiez votre connexion et reessayez.',
+        content: 'Désolé, une erreur est survenue. Vérifiez votre connexion et réessayez.',
         isError: true,
       }])
     }
@@ -162,7 +162,7 @@ export default function ChatWidget() {
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Ecrivez votre message..."
+                placeholder="Écrivez votre message..."
                 rows={1}
                 className="flex-1 resize-none text-[13px] py-2.5 px-3.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all placeholder:text-slate-400 max-h-24 overflow-y-auto"
                 style={{ minHeight: '40px' }}

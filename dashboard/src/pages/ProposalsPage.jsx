@@ -30,7 +30,7 @@ function ProposalPreview({ pkg, proposal }) {
             <span className="text-sm font-bold font-mono text-red-600">PDF</span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-slate-950">Proposition complete</p>
+            <p className="text-sm font-semibold text-slate-950">Proposition complète</p>
             <p className="text-xs text-slate-400 mt-0.5">Document formel avec devis</p>
           </div>
           <Download className="w-4 h-4 text-slate-300 group-hover:text-slate-950 transition-colors shrink-0" />
@@ -41,7 +41,7 @@ function ProposalPreview({ pkg, proposal }) {
             <span className="text-sm font-bold font-mono text-orange-600">PPTX</span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-slate-950">Presentation 10 pages</p>
+            <p className="text-sm font-semibold text-slate-950">Présentation 10 pages</p>
             <p className="text-xs text-slate-400 mt-0.5">PowerPoint client</p>
           </div>
           <Download className="w-4 h-4 text-slate-300 group-hover:text-slate-950 transition-colors shrink-0" />
@@ -54,7 +54,7 @@ function ProposalPreview({ pkg, proposal }) {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-slate-950">Voir la mission</p>
-              <p className="text-xs text-slate-400 mt-0.5">Details et pipeline</p>
+              <p className="text-xs text-slate-400 mt-0.5">Détails et pipeline</p>
             </div>
             <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-slate-950 transition-colors shrink-0" />
           </Link>
@@ -74,7 +74,7 @@ function ProposalPreview({ pkg, proposal }) {
       {/* Executive summary */}
       {(pkg.executive_summary || pkg.intro) && (
         <div>
-          <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-3">Resume</p>
+          <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-3">Résumé</p>
           <p className="text-base leading-relaxed text-slate-700">{pkg.executive_summary || pkg.intro}</p>
         </div>
       )}
@@ -192,7 +192,7 @@ function ProposalPreview({ pkg, proposal }) {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {pkg.timeline && (
           <div className="p-4 border border-slate-200 rounded-lg">
-            <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">Duree</p>
+            <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">Durée</p>
             <p className="text-lg font-bold font-mono text-slate-950 mt-1">{pkg.timeline}</p>
           </div>
         )}
@@ -261,7 +261,7 @@ function ProposalPreview({ pkg, proposal }) {
       {/* Expected outcome */}
       {pkg.expected_outcome && (
         <div className="border-l-2 border-slate-950 pl-5 py-1">
-          <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">Resultat attendu</p>
+          <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">Résultat attendu</p>
           <p className="text-sm leading-relaxed text-slate-700">{pkg.expected_outcome}</p>
         </div>
       )}
@@ -269,7 +269,7 @@ function ProposalPreview({ pkg, proposal }) {
       {/* Next step */}
       {pkg.next_step && (
         <div className="bg-slate-50 border border-slate-200 rounded-lg p-5">
-          <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">Prochaine etape</p>
+          <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">Prochaine étape</p>
           <p className="text-sm text-slate-700">{pkg.next_step}</p>
         </div>
       )}
@@ -324,7 +324,7 @@ export default function ProposalsPage() {
       <div className="flex items-baseline justify-between flex-wrap gap-4">
         <div>
           <h2 className="text-2xl font-bold text-slate-950 tracking-tight">Propositions</h2>
-          <p className="text-sm text-slate-400 mt-1 font-mono">{proposals.length} generees</p>
+          <p className="text-sm text-slate-400 mt-1 font-mono">{proposals.length} générées</p>
         </div>
         <div className="relative w-full sm:w-64">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
@@ -362,7 +362,7 @@ export default function ProposalsPage() {
                     <span className={`w-1.5 h-1.5 rounded-full ${
                       p.status === 'ready' ? 'bg-emerald-500' : p.status === 'sent' ? 'bg-blue-500' : 'bg-slate-300'
                     }`} />
-                    {p.status === 'ready' ? 'Prete' : p.status === 'sent' ? 'Envoyee' : 'Brouillon'}
+                    {p.status === 'ready' ? 'Prête' : p.status === 'sent' ? 'Envoyée' : 'Brouillon'}
                   </span>
                   {isOpen
                     ? <ChevronDown className="w-4 h-4 text-slate-300" />
@@ -384,7 +384,7 @@ export default function ProposalsPage() {
                   <div className="mt-8 pt-6 border-t border-slate-200">
                     <button onClick={(e) => { e.stopPropagation(); copyText(p.text, p.id) }}
                       className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-500 hover:text-slate-950 transition-colors">
-                      {copiedId === p.id ? <><Check className="w-4 h-4 text-emerald-600" /> Copie dans le presse-papier</> : <><Copy className="w-4 h-4" /> Copier le texte brut</>}
+                      {copiedId === p.id ? <><Check className="w-4 h-4 text-emerald-600" /> Copié dans le presse-papier</> : <><Copy className="w-4 h-4" /> Copier le texte brut</>}
                     </button>
                   </div>
                 </div>
@@ -397,7 +397,7 @@ export default function ProposalsPage() {
       {!loading && filtered.length === 0 && (
         <div className="py-20 text-center">
           <p className="text-sm text-slate-400">Aucune proposition</p>
-          <p className="text-xs text-slate-300 mt-1">L'agent genere des propositions pour les missions a fort score</p>
+          <p className="text-xs text-slate-300 mt-1">L'agent génère des propositions pour les missions à fort score</p>
         </div>
       )}
     </div>

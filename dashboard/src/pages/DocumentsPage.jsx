@@ -27,7 +27,7 @@ export default function DocumentsPage() {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-slate-950 tracking-tight">Documents</h2>
-        <p className="text-sm text-slate-500 mt-1">Devis, profil et documents legaux</p>
+        <p className="text-sm text-slate-500 mt-1">Devis, profil et documents légaux</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -38,19 +38,19 @@ export default function DocumentsPage() {
             <ExternalLink className="w-4 h-4 text-slate-300 group-hover:text-blue-600 transition-colors" />
           </div>
           <p className="text-sm font-semibold text-slate-950">Profil Malt</p>
-          <p className="text-[13px] text-slate-500 mt-1 leading-relaxed">CV en ligne, references et avis clients</p>
+          <p className="text-[13px] text-slate-500 mt-1 leading-relaxed">CV en ligne, références et avis clients</p>
         </a>
 
         <div className="bg-white border border-slate-200 rounded-lg p-6">
           <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-4">Tarifs</p>
           <p className="text-sm font-semibold text-slate-950">Devis types</p>
           <p className="text-[13px] text-slate-500 mt-1">TJM 450 EUR/jour HT · Forfait 9 000 EUR/mois</p>
-          <p className="text-[13px] text-slate-400 mt-2">Generes automatiquement par mission</p>
+          <p className="text-[13px] text-slate-400 mt-2">Générés automatiquement par mission</p>
         </div>
 
         <div className="bg-white border border-slate-200 rounded-lg p-6">
           <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-4">Legal</p>
-          <p className="text-sm font-semibold text-slate-950">Mentions legales</p>
+          <p className="text-sm font-semibold text-slate-950">Mentions légales</p>
           <div className="text-[13px] text-slate-500 space-y-0.5 mt-2 leading-relaxed">
             <p>Baptiste Thevenot</p>
             <p>SIRET 849 022 058</p>
@@ -81,7 +81,7 @@ export default function DocumentsPage() {
           <div key={m.id} className={`flex items-center justify-between px-6 py-4 border-b border-slate-100 last:border-0 ${i % 2 === 1 ? 'bg-slate-50' : ''}`}>
             <div className="min-w-0">
               <p className="text-sm font-medium text-slate-950 truncate">{m.title}</p>
-              <p className="text-[13px] text-slate-500 mt-0.5">{m.company || 'Non precise'} · Score {m.score}/100</p>
+              <p className="text-[13px] text-slate-500 mt-0.5">{m.company || 'Non précisé'} · Score {m.score}/100</p>
             </div>
             <a href={getDevisUrl(m.id)} target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-200 text-sm text-slate-700 hover:border-slate-300 transition-colors shrink-0 ml-4">

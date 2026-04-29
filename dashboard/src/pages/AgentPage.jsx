@@ -84,12 +84,12 @@ export default function AgentPage() {
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
           <h2 className="text-2xl font-bold text-slate-950 tracking-tight">Agent</h2>
-          <p className="text-sm text-slate-500 mt-1">Performance, apprentissage et activite</p>
+          <p className="text-sm text-slate-500 mt-1">Performance, apprentissage et activité</p>
         </div>
         <div className="flex items-center gap-3">
           <span className="flex items-center gap-2 text-sm text-slate-600">
             <span className={`w-1.5 h-1.5 rounded-full ${stats?.status === 'running' ? 'bg-emerald-500' : 'bg-slate-400'}`} />
-            {stats?.status === 'running' ? 'En activite' : 'Inactif'}
+            {stats?.status === 'running' ? 'En activité' : 'Inactif'}
           </span>
           {stats?.uptime && <span className="text-[13px] text-slate-400">{stats.uptime}</span>}
         </div>
@@ -97,10 +97,10 @@ export default function AgentPage() {
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Missions analysees', value: missions.length, sub: 'Total en base' },
+          { label: 'Missions analysées', value: missions.length, sub: 'Total en base' },
           { label: 'Score moyen', value: metrics.avg, sub: `${metrics.relevance}% pertinentes` },
           { label: 'Taux de proposition', value: `${metrics.proposal}%`, sub: `${stats?.proposals_today ?? 0} aujourd'hui` },
-          { label: 'Conversion', value: `${metrics.conversion}%`, sub: 'Propositions gagnees' },
+          { label: 'Conversion', value: `${metrics.conversion}%`, sub: 'Propositions gagnées' },
         ].map(card => (
           <div key={card.label} className="bg-white border border-slate-200 rounded-lg p-6">
             <p className="text-3xl font-bold text-slate-950 tabular-nums tracking-tight">{card.value}</p>
@@ -111,7 +111,7 @@ export default function AgentPage() {
       </div>
 
       <div className="bg-white border border-slate-200 rounded-lg p-6">
-        <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Activite quotidienne</p>
+        <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Activité quotidienne</p>
         <p className="text-[13px] text-slate-500 mb-6">14 derniers jours</p>
         <div className="h-64">
           {dailyActivity.length > 0 ? (
@@ -125,14 +125,14 @@ export default function AgentPage() {
                 <Line type="monotone" dataKey="proposals" stroke="#94a3b8" strokeWidth={1.5} dot={{ r: 2.5, fill: '#94a3b8' }} name="Propositions" />
               </LineChart>
             </ResponsiveContainer>
-          ) : <div className="h-full flex items-center justify-center text-sm text-slate-400">Pas encore de donnees</div>}
+          ) : <div className="h-full flex items-center justify-center text-sm text-slate-400">Pas encore de données</div>}
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="bg-white border border-slate-200 rounded-lg p-6">
           <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Distribution des scores</p>
-          <p className="text-[13px] text-slate-500 mb-6">Qualite du pipeline</p>
+          <p className="text-[13px] text-slate-500 mb-6">Qualité du pipeline</p>
           <div className="h-56">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={scoreDistribution}>
@@ -148,7 +148,7 @@ export default function AgentPage() {
 
         <div className="bg-white border border-slate-200 rounded-lg p-6">
           <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Types de missions</p>
-          <p className="text-[13px] text-slate-500 mb-6">Repartition par categorie</p>
+          <p className="text-[13px] text-slate-500 mb-6">Répartition par catégorie</p>
           <div className="h-56">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -166,9 +166,9 @@ export default function AgentPage() {
       <div className="bg-white border border-slate-200 rounded-lg">
         <div className="px-6 py-5 border-b border-slate-200">
           <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Performance par source</p>
-          <p className="text-[13px] text-slate-500">L'agent privilegie les sources les plus fiables</p>
+          <p className="text-[13px] text-slate-500">L'agent privilégie les sources les plus fiables</p>
         </div>
-        {sourceStats.length === 0 && <p className="px-6 py-12 text-center text-sm text-slate-400">Pas encore de donnees</p>}
+        {sourceStats.length === 0 && <p className="px-6 py-12 text-center text-sm text-slate-400">Pas encore de données</p>}
         {sourceStats.map((s, i) => (
           <div key={s.source} className={`px-6 py-4 grid grid-cols-12 items-center gap-4 ${i % 2 === 1 ? 'bg-slate-50' : ''}`}>
             <div className="col-span-3">
@@ -199,12 +199,12 @@ export default function AgentPage() {
 
       <div className="bg-white border border-slate-200 rounded-lg p-6">
         <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Apprentissage</p>
-        <p className="text-[13px] text-slate-500 mb-6">L'agent affine son modele a chaque cycle</p>
+        <p className="text-[13px] text-slate-500 mb-6">L'agent affine son modèle à chaque cycle</p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
             { label: 'Pertinence', value: `${metrics.relevance}%`, desc: 'des missions matchent le profil' },
             { label: 'Activation', value: `${metrics.proposal}%`, desc: 'declenchent une proposition' },
-            { label: 'Conversion', value: `${metrics.conversion}%`, desc: 'des propositions gagnees' },
+            { label: 'Conversion', value: `${metrics.conversion}%`, desc: 'des propositions gagnées' },
           ].map(({ label, value, desc }) => (
             <div key={label} className="p-5 border border-slate-200 rounded-lg">
               <p className="text-[13px] text-slate-500 mb-2">{label}</p>
