@@ -62,3 +62,20 @@ export async function fetchScanLogs(limit = 20) {
 export function getDevisUrl(missionId) {
   return `${RAILWAY_URL}/devis/${missionId}`;
 }
+
+export function getProposalPdfUrl(proposalId) {
+  return `${RAILWAY_URL}/proposal/${proposalId}/pdf`;
+}
+
+export function getProposalPptxUrl(proposalId) {
+  return `${RAILWAY_URL}/proposal/${proposalId}/pptx`;
+}
+
+export async function sendChatMessage(message, history = []) {
+  const res = await fetch(`${RAILWAY_URL}/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message, history }),
+  });
+  return res.json();
+}

@@ -33,22 +33,41 @@ Type detecte : {mission_type}
 Description : {description}
 
 INSTRUCTIONS :
-Genere un PACKAGING complet de proposition au format JSON strict, structure pour faciliter la decision du client. Le packaging doit montrer une comprehension precise du besoin, une approche professionnelle, et un cadre clair (phases, livrables, prix, resultat).
+Genere un PACKAGING complet de proposition au format JSON strict, structure pour faciliter la decision du client et generer un PowerPoint de 10 pages. Le packaging doit montrer une comprehension precise du besoin, une approche professionnelle, et un cadre clair (phases, livrables, prix, resultat).
 
 Retourne UNIQUEMENT un objet JSON valide avec cette structure exacte :
 {{
   "intro": "1-2 phrases d'accroche montrant que tu as compris le besoin reel du client",
+  "executive_summary": "Resume executif de 2-3 phrases donnant une vue d'ensemble de la proposition, la valeur ajoutee et le resultat attendu",
   "comprehension": "Reformulation du besoin client en 2-3 phrases (ce que tu as compris de leur enjeu)",
   "approach": "Approche methodologique en 2-3 phrases (comment tu vas y aller)",
+  "methodology": "Explication detaillee de la methodologie utilisee (agile, lean, iterative, etc.) en 3-4 phrases",
+  "architecture": "Description de l'architecture technique ou organisationnelle proposee en 2-3 phrases",
+  "tools_used": ["Outil/technologie 1", "Outil/technologie 2", "Outil/technologie 3"],
   "phases": [
-    {{"name": "Phase 1 - Cadrage & analyse", "duration": "1 semaine", "tasks": ["tache 1", "tache 2"], "deliverable": "Livrable de cette phase"}},
-    {{"name": "Phase 2 - Developpement", "duration": "X semaines", "tasks": ["..."], "deliverable": "..."}},
-    {{"name": "Phase 3 - Livraison & accompagnement", "duration": "...", "tasks": ["..."], "deliverable": "..."}}
+    {{"name": "Phase 1 - Cadrage & analyse", "objective": "Objectif court de cette phase", "duration": "1 semaine", "tasks": ["tache 1", "tache 2"], "deliverable": "Livrable de cette phase", "tools": ["Outil 1", "Outil 2"]}},
+    {{"name": "Phase 2 - Developpement", "objective": "Objectif court", "duration": "X semaines", "tasks": ["..."], "deliverable": "...", "tools": ["..."]}},
+    {{"name": "Phase 3 - Livraison & accompagnement", "objective": "Objectif court", "duration": "...", "tasks": ["..."], "deliverable": "...", "tools": ["..."]}}
   ],
   "timeline": "Duree totale estimee",
-  "deliverables": ["Livrable final 1", "Livrable final 2", "Livrable final 3"],
+  "deliverables": [
+    {{"name": "Nom du livrable 1", "description": "Description detaillee", "format": "PDF"}},
+    {{"name": "Nom du livrable 2", "description": "Description detaillee", "format": "Code"}},
+    {{"name": "Nom du livrable 3", "description": "Description detaillee", "format": "Documentation"}}
+  ],
   "expected_outcome": "Resultat optimal attendu pour le client en 1-2 phrases concretes",
-  "pricing": {{"model": "forfait OU regie OU mixte", "amount": "Montant ou fourchette en EUR HT", "payment": "30% commande / 70% livraison ou autre"}},
+  "kpis": ["KPI mesurable 1", "KPI mesurable 2", "KPI mesurable 3"],
+  "guarantees": ["Garantie 1", "Garantie 2"],
+  "pricing": {{
+    "model": "forfait OU regie OU mixte",
+    "amount": "Montant ou fourchette en EUR HT",
+    "payment": "30% commande / 70% livraison ou autre",
+    "detail": [
+      {{"item": "Phase 1 - Cadrage", "days": 2, "amount": "900 EUR HT"}},
+      {{"item": "Phase 2 - Developpement", "days": 10, "amount": "4500 EUR HT"}},
+      {{"item": "Phase 3 - Livraison", "days": 3, "amount": "1350 EUR HT"}}
+    ]
+  }},
   "next_step": "Proposition concrete pour la suite (RDV de cadrage 30 min, demo, etc.)",
   "signature": "Baptiste Thevenot, Consultant Web & IA"
 }}
@@ -57,8 +76,10 @@ REGLES STRICTES :
 - JAMAIS mentionner "S&B Consulting" ni "S&B"
 - Adapter le contenu au type de mission ({mission_type})
 - Etre concret, pas de bla-bla, pas de jargon inutile
-- Phases adaptees a la complexite reelle (pas forcement 3 phases — peut etre 2 ou 4)
+- Phases adaptees a la complexite reelle (pas forcement 3 phases — peut etre 2, 4 ou 5)
 - Tarification realiste basee sur TJM 450 EUR/jour
+- KPIs mesurables et concrets
+- Garanties professionnelles realistes
 - JSON strict valide, pas de texte avant/apres"""
 
 
@@ -79,22 +100,41 @@ Detected type: {mission_type}
 Description: {description}
 
 INSTRUCTIONS:
-Generate a complete PROPOSAL PACKAGE in strict JSON format, structured to help the client make their decision. The package must show precise understanding of the need, a professional approach, and a clear framework (phases, deliverables, pricing, outcome).
+Generate a complete PROPOSAL PACKAGE in strict JSON format, structured to help the client make their decision and generate a 10-page PowerPoint. The package must show precise understanding of the need, a professional approach, and a clear framework (phases, deliverables, pricing, outcome).
 
 Return ONLY a valid JSON object with this exact structure:
 {{
   "intro": "1-2 hook sentences showing you understood the client's real need",
+  "executive_summary": "2-3 sentence executive summary giving an overview of the proposal, value added and expected outcome",
   "comprehension": "Reformulation of the client's need in 2-3 sentences",
   "approach": "Methodological approach in 2-3 sentences",
+  "methodology": "Detailed methodology explanation (agile, lean, iterative, etc.) in 3-4 sentences",
+  "architecture": "Description of the proposed technical or organizational architecture in 2-3 sentences",
+  "tools_used": ["Tool/technology 1", "Tool/technology 2", "Tool/technology 3"],
   "phases": [
-    {{"name": "Phase 1 - Discovery & analysis", "duration": "1 week", "tasks": ["task 1", "task 2"], "deliverable": "Phase deliverable"}},
-    {{"name": "Phase 2 - Development", "duration": "X weeks", "tasks": ["..."], "deliverable": "..."}},
-    {{"name": "Phase 3 - Delivery & support", "duration": "...", "tasks": ["..."], "deliverable": "..."}}
+    {{"name": "Phase 1 - Discovery & analysis", "objective": "Short objective for this phase", "duration": "1 week", "tasks": ["task 1", "task 2"], "deliverable": "Phase deliverable", "tools": ["Tool 1", "Tool 2"]}},
+    {{"name": "Phase 2 - Development", "objective": "Short objective", "duration": "X weeks", "tasks": ["..."], "deliverable": "...", "tools": ["..."]}},
+    {{"name": "Phase 3 - Delivery & support", "objective": "Short objective", "duration": "...", "tasks": ["..."], "deliverable": "...", "tools": ["..."]}}
   ],
   "timeline": "Total estimated duration",
-  "deliverables": ["Final deliverable 1", "Final deliverable 2", "Final deliverable 3"],
+  "deliverables": [
+    {{"name": "Deliverable name 1", "description": "Detailed description", "format": "PDF"}},
+    {{"name": "Deliverable name 2", "description": "Detailed description", "format": "Code"}},
+    {{"name": "Deliverable name 3", "description": "Detailed description", "format": "Documentation"}}
+  ],
   "expected_outcome": "Optimal outcome for the client in 1-2 concrete sentences",
-  "pricing": {{"model": "fixed-price OR daily-rate OR mixed", "amount": "Amount or range in EUR", "payment": "30% upfront / 70% on delivery or other"}},
+  "kpis": ["Measurable KPI 1", "Measurable KPI 2", "Measurable KPI 3"],
+  "guarantees": ["Guarantee 1", "Guarantee 2"],
+  "pricing": {{
+    "model": "fixed-price OR daily-rate OR mixed",
+    "amount": "Amount or range in EUR",
+    "payment": "30% upfront / 70% on delivery or other",
+    "detail": [
+      {{"item": "Phase 1 - Discovery", "days": 2, "amount": "900 EUR"}},
+      {{"item": "Phase 2 - Development", "days": 10, "amount": "4500 EUR"}},
+      {{"item": "Phase 3 - Delivery", "days": 3, "amount": "1350 EUR"}}
+    ]
+  }},
   "next_step": "Concrete next step proposal (30 min discovery call, demo, etc.)",
   "signature": "Baptiste Thevenot, Web & AI Consultant"
 }}
@@ -103,8 +143,10 @@ STRICT RULES:
 - NEVER mention "S&B Consulting" or "S&B"
 - Adapt content to mission type ({mission_type})
 - Be concrete, no fluff, no useless jargon
-- Phases adapted to actual complexity (not necessarily 3 — could be 2 or 4)
+- Phases adapted to actual complexity (not necessarily 3 — could be 2, 4 or 5)
 - Realistic pricing based on EUR 450/day rate
+- KPIs must be measurable and concrete
+- Professional and realistic guarantees
 - Valid strict JSON, no text before/after"""
 
 
@@ -131,14 +173,13 @@ class Proposer:
 
         try:
             response = self.client.messages.create(
-                model="claude-sonnet-4-20250514",
-                max_tokens=2000,
+                model="claude-opus-4-7",
+                max_tokens=4000,
                 messages=[{"role": "user", "content": prompt}],
             )
             raw_text = response.content[0].text.strip()
             raw_text = raw_text.replace("S&B Consulting", "").replace("S&B", "")
 
-            # Extract JSON (sometimes Claude wraps in ```json ... ```)
             json_match = re.search(r'\{.*\}', raw_text, re.DOTALL)
             if not json_match:
                 logger.error(f"No JSON found in response for {mission.title[:40]}")
@@ -150,7 +191,6 @@ class Proposer:
                 logger.error(f"JSON parse error for {mission.title[:40]}: {e}")
                 return None
 
-            # Generate human-readable text version too
             text = self._render_text(package, lang)
 
             return Proposal(
@@ -170,34 +210,82 @@ class Proposer:
         lines = []
         lines.append(pkg.get("intro", ""))
         lines.append("")
+
+        if pkg.get("executive_summary"):
+            lines.append("RESUME EXECUTIF" if lang == "fr" else "EXECUTIVE SUMMARY")
+            lines.append(pkg["executive_summary"])
+            lines.append("")
+
         if pkg.get("comprehension"):
             lines.append("VOTRE BESOIN" if lang == "fr" else "YOUR NEED")
             lines.append(pkg["comprehension"])
             lines.append("")
+
         if pkg.get("approach"):
             lines.append("MON APPROCHE" if lang == "fr" else "MY APPROACH")
             lines.append(pkg["approach"])
             lines.append("")
+
+        if pkg.get("methodology"):
+            lines.append("METHODOLOGIE" if lang == "fr" else "METHODOLOGY")
+            lines.append(pkg["methodology"])
+            lines.append("")
+
+        if pkg.get("architecture"):
+            lines.append("ARCHITECTURE" if lang == "fr" else "ARCHITECTURE")
+            lines.append(pkg["architecture"])
+            lines.append("")
+
+        if pkg.get("tools_used"):
+            lines.append("OUTILS & TECHNOLOGIES" if lang == "fr" else "TOOLS & TECHNOLOGIES")
+            for tool in pkg["tools_used"]:
+                lines.append(f"  - {tool}")
+            lines.append("")
+
         if pkg.get("phases"):
             lines.append("PHASES" if lang == "fr" else "PHASES")
             for i, p in enumerate(pkg["phases"], 1):
                 lines.append(f"{p.get('name', f'Phase {i}')} — {p.get('duration', '')}")
+                if p.get("objective"):
+                    lines.append(f"  Objectif: {p['objective']}" if lang == "fr" else f"  Objective: {p['objective']}")
                 for t in p.get("tasks", []):
                     lines.append(f"  - {t}")
                 if p.get("deliverable"):
                     lines.append(f"  Livrable: {p['deliverable']}" if lang == "fr" else f"  Deliverable: {p['deliverable']}")
+                if p.get("tools"):
+                    tools_str = ", ".join(p["tools"])
+                    lines.append(f"  Outils: {tools_str}" if lang == "fr" else f"  Tools: {tools_str}")
                 lines.append("")
+
         if pkg.get("timeline"):
             lines.append(("DUREE TOTALE: " if lang == "fr" else "TOTAL DURATION: ") + pkg["timeline"])
+
         if pkg.get("deliverables"):
             lines.append("")
             lines.append("LIVRABLES FINAUX" if lang == "fr" else "FINAL DELIVERABLES")
             for d in pkg["deliverables"]:
-                lines.append(f"  - {d}")
+                if isinstance(d, dict):
+                    lines.append(f"  - {d.get('name', '')} ({d.get('format', '')}) : {d.get('description', '')}")
+                else:
+                    lines.append(f"  - {d}")
+
         if pkg.get("expected_outcome"):
             lines.append("")
             lines.append("RESULTAT ATTENDU" if lang == "fr" else "EXPECTED OUTCOME")
             lines.append(pkg["expected_outcome"])
+
+        if pkg.get("kpis"):
+            lines.append("")
+            lines.append("INDICATEURS DE PERFORMANCE (KPIs)" if lang == "fr" else "KEY PERFORMANCE INDICATORS (KPIs)")
+            for kpi in pkg["kpis"]:
+                lines.append(f"  - {kpi}")
+
+        if pkg.get("guarantees"):
+            lines.append("")
+            lines.append("GARANTIES" if lang == "fr" else "GUARANTEES")
+            for g in pkg["guarantees"]:
+                lines.append(f"  - {g}")
+
         if pkg.get("pricing"):
             lines.append("")
             lines.append("TARIFICATION" if lang == "fr" else "PRICING")
@@ -205,15 +293,21 @@ class Proposer:
             lines.append(f"  Modele: {pr.get('model', '')}")
             lines.append(f"  Montant: {pr.get('amount', '')}")
             lines.append(f"  Paiement: {pr.get('payment', '')}")
+            if pr.get("detail"):
+                lines.append("")
+                lines.append("  Detail:" if lang == "fr" else "  Breakdown:")
+                for item in pr["detail"]:
+                    lines.append(f"    - {item.get('item', '')}: {item.get('days', '')} jours — {item.get('amount', '')}")
+
         if pkg.get("next_step"):
             lines.append("")
             lines.append("PROCHAINE ETAPE" if lang == "fr" else "NEXT STEP")
             lines.append(pkg["next_step"])
+
         if pkg.get("signature"):
             lines.append("")
             lines.append(pkg["signature"])
 
-        # Store JSON in a special marker for the dashboard to parse
         text = "\n".join(lines)
         text += f"\n\n<!--PACKAGE_JSON:{json.dumps(pkg, ensure_ascii=False)}-->"
         return text

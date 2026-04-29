@@ -6,6 +6,7 @@ import {
   Settings, LogOut, Menu, Activity, ChevronRight, X,
 } from 'lucide-react'
 import { fetchStats } from '../lib/supabase'
+import ChatWidget from './ChatWidget'
 
 const NAV = [
   { to: '/', icon: LayoutDashboard, label: 'Vue d\'ensemble' },
@@ -128,6 +129,7 @@ export default function Layout({ session, onLogout }) {
           </div>
         </main>
       </div>
+      <ChatWidget />
     </div>
   )
 }

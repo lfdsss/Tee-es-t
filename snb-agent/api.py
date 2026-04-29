@@ -2,12 +2,18 @@
 P0 FIX: Health reads from Supabase agent_status table (shared between processes).
 """
 
+import io
+import json
+import re
 import time
 import logging
 from datetime import datetime, timezone
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, StreamingResponse
+
+from profile import PROFILE
+from document_generator import PDFGenerator, PPTXGenerator
 
 logger = logging.getLogger("snb.api")
 
@@ -16,12 +22,13 @@ app = FastAPI(title="SNB Mission Hunter", version="2.0.0")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_methods=["GET"],
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 
 _started_at = time.time()
 _db = None
+_anthropic_client = None
 
 
 def set_db(db):
@@ -31,16 +38,32 @@ def set_db(db):
 
 @app.on_event("startup")
 async def startup():
-    global _db
+    global _db, _anthropic_client
     if _db is None:
         try:
             from config import Config
             from db import Database
             config = Config.from_env()
             _db = Database(config.supabase_url, config.supabase_service_key)
+            if config.anthropic_api_key:
+                import anthropic
+                _anthropic_client = anthropic.Anthropic(api_key=config.anthropic_api_key)
             logger.info("API DB initialized")
         except Exception as e:
             logger.warning(f"API DB init failed: {e}")
+
+
+def _extract_package_json(proposal_text: str) -> dict:
+    match = re.search(r'<!--PACKAGE_JSON:(.*?)-->', proposal_text, re.DOTALL)
+    if match:
+        return json.loads(match.group(1))
+    json_match = re.search(r'\{.*\}', proposal_text, re.DOTALL)
+    if json_match:
+        try:
+            return json.loads(json_match.group(0))
+        except json.JSONDecodeError:
+            pass
+    return {}
 
 
 @app.get("/health")
@@ -65,13 +88,11 @@ async def health():
     try:
         today = datetime.now(timezone.utc).date().isoformat()
 
-        # Read agent status from shared Supabase table (P0 fix)
         agent_status = _db.get_agent_status()
         if agent_status:
             result["last_scan"] = agent_status.get("last_scan_at")
             result["scans_total"] = agent_status.get("scans_total", 0)
 
-        # Scan logs from today
         logs = _db.client.table("scan_logs") \
             .select("source,status,started_at,missions_found,missions_new") \
             .gte("started_at", today) \
@@ -85,7 +106,6 @@ async def health():
             if scan_data:
                 result["last_scan"] = scan_data[0].get("started_at")
 
-        # Sources status
         sources = {}
         for s in scan_data:
             src = s.get("source", "?")
@@ -97,14 +117,12 @@ async def health():
                 }
         result["sources"] = sources
 
-        # Missions today
         missions_today = _db.client.table("missions") \
             .select("id", count="exact") \
             .gte("found_at", today) \
             .execute()
         result["missions_today"] = missions_today.count or 0
 
-        # Proposals today
         proposals_today = _db.client.table("proposals") \
             .select("id", count="exact") \
             .gte("created_at", today) \
@@ -177,4 +195,156 @@ table{{width:100%;border-collapse:collapse;margin:10px 0}}td,th{{padding:8px 10p
 </body></html>"""
         return HTMLResponse(content=html)
     except Exception as e:
+        return {"error": str(e)}
+
+
+@app.get("/proposal/{proposal_id}/pdf")
+async def download_pdf(proposal_id: str):
+    """Generate and return PDF for a proposal."""
+    if not _db:
+        return {"error": "DB not init"}
+    try:
+        proposal = _db.client.table("proposals").select("*").eq("id", proposal_id).single().execute()
+        if not proposal.data:
+            return {"error": "Proposal not found"}
+
+        proposal_data = proposal.data
+        package_json = _extract_package_json(proposal_data.get("text", ""))
+        if not package_json:
+            return {"error": "No package data found in proposal"}
+
+        mission_id = proposal_data.get("mission_id", "")
+        mission_data = {}
+        if mission_id:
+            mission = _db.client.table("missions").select("*").eq("id", mission_id).single().execute()
+            if mission.data:
+                mission_data = mission.data
+
+        generator = PDFGenerator()
+        pdf_bytes = generator.generate(package_json, mission_data)
+
+        safe_title = re.sub(r'[^\w\s-]', '', mission_data.get("title", "proposition"))[:50].strip()
+        filename = f"Proposition_{safe_title}.pdf"
+
+        return StreamingResponse(
+            io.BytesIO(pdf_bytes),
+            media_type="application/pdf",
+            headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+        )
+    except Exception as e:
+        logger.error(f"PDF generation error: {e}")
+        return {"error": str(e)}
+
+
+@app.get("/proposal/{proposal_id}/pptx")
+async def download_pptx(proposal_id: str):
+    """Generate and return PPTX for a proposal."""
+    if not _db:
+        return {"error": "DB not init"}
+    try:
+        proposal = _db.client.table("proposals").select("*").eq("id", proposal_id).single().execute()
+        if not proposal.data:
+            return {"error": "Proposal not found"}
+
+        proposal_data = proposal.data
+        package_json = _extract_package_json(proposal_data.get("text", ""))
+        if not package_json:
+            return {"error": "No package data found in proposal"}
+
+        mission_id = proposal_data.get("mission_id", "")
+        mission_data = {}
+        if mission_id:
+            mission = _db.client.table("missions").select("*").eq("id", mission_id).single().execute()
+            if mission.data:
+                mission_data = mission.data
+
+        generator = PPTXGenerator()
+        pptx_bytes = generator.generate(package_json, mission_data)
+
+        safe_title = re.sub(r'[^\w\s-]', '', mission_data.get("title", "proposition"))[:50].strip()
+        filename = f"Proposition_{safe_title}.pptx"
+
+        return StreamingResponse(
+            io.BytesIO(pptx_bytes),
+            media_type="application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+        )
+    except Exception as e:
+        logger.error(f"PPTX generation error: {e}")
+        return {"error": str(e)}
+
+
+@app.post("/chat")
+async def chat(request: Request):
+    """AI chatbot endpoint using Claude Opus 4.7."""
+    if not _anthropic_client:
+        return {"error": "Anthropic client not initialized"}
+
+    try:
+        body = await request.json()
+        user_message = body.get("message", "")
+        history = body.get("history", [])
+
+        if not user_message:
+            return {"error": "Empty message"}
+
+        p = PROFILE
+        skills_primary = ", ".join(p.get("skills_primary", []))
+        skills_secondary = ", ".join(p.get("skills_secondary", []))
+
+        system_prompt = f"""Tu es {p['name']}, consultant freelance independant {p['title']} base a {p['location']}.
+
+PROFIL COMPLET :
+{p['bio_full']}
+
+FORMATION : {p.get('education', '')}
+EXPERIENCE : {p.get('experience_years', 5)} ans d'experience
+
+COMPETENCES PRINCIPALES : {skills_primary}
+COMPETENCES SECONDAIRES : {skills_secondary}
+
+TARIFS : TJM {p['tjm']} EUR/jour HT | Taux horaire 60 EUR/h HT
+LANGUES : {', '.join(p.get('languages', []))}
+DISPONIBILITE : Immediate, 100% remote ou hybride
+
+PORTFOLIO :
+- La Francaise des Sauces — marque alimentaire premium, site Shopify complet, branding A-Z
+- Chef IA — configurateur recettes interactif 3D avec IA
+- Systeme multi-agents IA — 6 agents specialises, Claude API + Shopify MCP
+- Audit cybersecurite — audit 936 comptes, migration Bitwarden
+
+CONTACT :
+- Email : {p.get('email', '')}
+- Telephone : {p.get('phone', '')}
+- Malt : {p.get('malt_url', '')}
+
+INSTRUCTIONS :
+Tu reponds aux questions de maniere professionnelle, directe et chaleureuse.
+Tu peux discuter de tes competences, ta disponibilite, tes tarifs (TJM {p['tjm']} EUR/jour), tes projets passes.
+Tu es enthousiaste pour les nouvelles missions et tu proposes toujours une prochaine etape concrete.
+JAMAIS mentionner "S&B Consulting" ni "S&B".
+Reponds en francais par defaut, sauf si le message est en anglais."""
+
+        messages = []
+        for msg in history:
+            role = msg.get("role", "user")
+            content = msg.get("content", "")
+            if role in ("user", "assistant") and content:
+                messages.append({"role": role, "content": content})
+        messages.append({"role": "user", "content": user_message})
+
+        response = _anthropic_client.messages.create(
+            model="claude-opus-4-7",
+            max_tokens=2000,
+            system=system_prompt,
+            messages=messages,
+        )
+
+        reply = response.content[0].text.strip()
+        reply = reply.replace("S&B Consulting", "").replace("S&B", "")
+
+        return {"response": reply}
+
+    except Exception as e:
+        logger.error(f"Chat error: {e}")
         return {"error": str(e)}
