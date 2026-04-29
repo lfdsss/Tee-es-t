@@ -8,7 +8,7 @@ const TYPE_LABELS = {
   consulting: 'Conseil', design: 'Design', other: 'Autre',
 }
 
-const STATUS_LABELS = { new: 'Nouveau', proposal_ready: 'Proposition', sent: 'Envoye', won: 'Gagne', lost: 'Perdu' }
+const STATUS_LABELS = { new: 'Nouveau', proposal_ready: 'Proposition', sent: 'Envoyé', won: 'Gagné', lost: 'Perdu' }
 const STATUS_DOT = {
   new: 'bg-slate-400',
   proposal_ready: 'bg-emerald-500',
@@ -68,7 +68,7 @@ export default function MissionsPage() {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-slate-950 tracking-tight">Missions</h2>
-        <p className="text-sm text-slate-500 mt-1">{total} missions analysees par l'agent</p>
+        <p className="text-sm text-slate-500 mt-1">{total} missions analysées par l'agent</p>
       </div>
 
       <div className="flex flex-wrap gap-3 items-center">
@@ -81,7 +81,7 @@ export default function MissionsPage() {
         <select value={status} onChange={e => { setStatus(e.target.value); setPage(0) }} className={sel}>
           <option value="all">Tous statuts</option>
           <option value="new">Nouveau</option><option value="proposal_ready">Proposition</option>
-          <option value="sent">Envoye</option><option value="won">Gagne</option><option value="lost">Perdu</option>
+          <option value="sent">Envoyé</option><option value="won">Gagné</option><option value="lost">Perdu</option>
         </select>
         <select value={type} onChange={e => { setType(e.target.value); setPage(0) }} className={sel}>
           <option value="all">Tous types</option>
@@ -104,7 +104,7 @@ export default function MissionsPage() {
           <span className="text-right">Age</span>
         </div>
         {loading && <div className="px-6 py-16 text-center text-sm text-slate-400">Chargement...</div>}
-        {!loading && missions.length === 0 && <div className="px-6 py-16 text-center text-sm text-slate-400">Aucune mission trouvee avec ces filtres</div>}
+        {!loading && missions.length === 0 && <div className="px-6 py-16 text-center text-sm text-slate-400">Aucune mission trouvée avec ces filtres</div>}
         {missions.map(m => {
           const t = TYPE_LABELS[m.type] || TYPE_LABELS.other
           return (
@@ -112,7 +112,7 @@ export default function MissionsPage() {
               <span className={`text-sm font-bold tabular-nums ${scoreColor(m.score || 0)}`}>{m.score || 0}</span>
               <div className="min-w-0 pr-4">
                 <p className="text-sm font-semibold text-slate-950 truncate group-hover:text-blue-600 transition-colors">{m.title}</p>
-                <p className="text-[13px] text-slate-500 mt-0.5 truncate">{m.company || 'Non precise'} · {m.source}</p>
+                <p className="text-[13px] text-slate-500 mt-0.5 truncate">{m.company || 'Non précisé'} · {m.source}</p>
               </div>
               <span className="text-sm text-slate-600">{t}</span>
               <span className="flex items-center gap-2 text-sm text-slate-600">
@@ -132,7 +132,7 @@ export default function MissionsPage() {
           <div className="flex gap-2">
             <button disabled={page === 0} onClick={() => setPage(p => p - 1)}
               className="text-sm text-slate-600 hover:text-slate-950 disabled:text-slate-300 disabled:cursor-not-allowed transition-colors">
-              <ChevronLeft className="w-4 h-4 inline -mt-px" /> Precedent
+              <ChevronLeft className="w-4 h-4 inline -mt-px" /> Précédent
             </button>
             <button disabled={page >= totalPages - 1} onClick={() => setPage(p => p + 1)}
               className="text-sm text-slate-600 hover:text-slate-950 disabled:text-slate-300 disabled:cursor-not-allowed transition-colors">

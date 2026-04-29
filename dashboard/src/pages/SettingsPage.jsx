@@ -30,8 +30,8 @@ export default function SettingsPage({ session }) {
     <div className="space-y-6 max-w-3xl">
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-slate-950 tracking-tight">Parametres</h2>
-          <p className="text-sm text-slate-500 mt-1">Configuration de l'agent et services connectes</p>
+          <h2 className="text-2xl font-bold text-slate-950 tracking-tight">Paramètres</h2>
+          <p className="text-sm text-slate-500 mt-1">Configuration de l'agent et services connectés</p>
         </div>
         <button onClick={refresh} disabled={loading}
           className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-slate-200 text-sm text-slate-700 hover:border-slate-300 transition-colors disabled:opacity-50">
@@ -51,7 +51,7 @@ export default function SettingsPage({ session }) {
         <div className="grid grid-cols-2 gap-x-8">
           <Field label="Statut agent" value={isOnline ? 'En ligne' : 'Hors ligne'} />
           <Field label="Uptime" value={health?.uptime || '—'} />
-          <Field label="Scans realises" value={health?.scans_total ?? '—'} />
+          <Field label="Scans réalisés" value={health?.scans_total ?? '—'} />
           <Field label="Dernier scan" value={health?.last_scan ? new Date(health.last_scan).toLocaleString('fr-FR') : '—'} />
         </div>
       </div>
@@ -85,10 +85,10 @@ export default function SettingsPage({ session }) {
         <Field label="Score minimum proposition" value="70 / 100" />
         <Field label="Intervalle scan rapide (Tier 1)" value="5 minutes" />
         <Field label="Intervalle scan lent (Tier 2)" value="30 minutes" />
-        <Field label="Sources surveillees" value="14 scrapers" />
-        <Field label="Modele de generation" value="Claude Sonnet 4" />
+        <Field label="Sources surveillées" value="14 scrapers" />
+        <Field label="Modèle de génération" value="Claude Sonnet 4" />
         <Field label="TJM consultant" value="450 EUR/jour HT" />
-        <Field label="Penalite CDI" value="-15 points" />
+        <Field label="Pénalité CDI" value="-15 points" />
       </div>
     </div>
   )

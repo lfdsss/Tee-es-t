@@ -3,6 +3,18 @@ import { useParams, Link } from 'react-router-dom'
 import { fetchMission, fetchProposals, updateMission, getDevisUrl } from '../lib/supabase'
 import { ArrowLeft, ExternalLink, Download } from 'lucide-react'
 
+function cleanText(text) {
+  if (!text) return ''
+  return text
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, ' ')
+    .replace(/<[^>]*>/g, '')
+}
+
 function parsePackage(text) {
   if (!text) return null
   const match = text.match(/<!--PACKAGE_JSON:(.+?)-->/s)
@@ -13,8 +25,8 @@ function parsePackage(text) {
 const STATUS_FLOW = [
   { key: 'new', label: 'Nouveau' },
   { key: 'proposal_ready', label: 'Proposition' },
-  { key: 'sent', label: 'Envoye' },
-  { key: 'won', label: 'Gagne' },
+  { key: 'sent', label: 'Envoyé' },
+  { key: 'won', label: 'Gagné' },
 ]
 
 function scoreColor(score) {
@@ -68,7 +80,7 @@ export default function MissionDetailPage() {
       <div>
         <h2 className="text-2xl font-bold text-slate-950 tracking-tight">{mission.title}</h2>
         <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-slate-500">
-          <span>{mission.company || 'Non precise'}</span>
+          <span>{mission.company || 'Non précisé'}</span>
           <span className="text-slate-300">·</span>
           <span>{mission.source}</span>
           {mission.type && <>
@@ -147,7 +159,7 @@ export default function MissionDetailPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-y-5 gap-x-8">
           <div>
             <p className="text-[13px] text-slate-500">Entreprise</p>
-            <p className="text-sm font-medium text-slate-950 mt-0.5">{mission.company || 'Non precise'}</p>
+            <p className="text-sm font-medium text-slate-950 mt-0.5">{mission.company || 'Non précisé'}</p>
           </div>
           <div>
             <p className="text-[13px] text-slate-500">Source</p>
@@ -168,7 +180,7 @@ export default function MissionDetailPage() {
       <div className="bg-white border border-slate-200 rounded-lg p-6">
         <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-4">Description</p>
         <div className="text-sm text-slate-600 leading-relaxed whitespace-pre-wrap max-h-[400px] overflow-y-auto">
-          {mission.description || 'Pas de description disponible.'}
+          {cleanText(mission.description) || 'Pas de description disponible.'}
         </div>
         {mission.tags && mission.tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-5 pt-5 border-t border-slate-100">
@@ -203,7 +215,7 @@ export default function MissionDetailPage() {
               )}
               {pkg.expected_outcome && (
                 <div className="border-l-2 border-slate-300 pl-4 py-1">
-                  <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Resultat attendu</p>
+                  <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Résultat attendu</p>
                   <p className="text-sm text-slate-600 leading-relaxed">{pkg.expected_outcome}</p>
                 </div>
               )}

@@ -23,8 +23,8 @@ function ScoreValue({ score }) {
 function StatusDot({ status }) {
   const map = {
     proposal_ready: { label: 'Proposition', color: 'bg-emerald-500' },
-    sent: { label: 'Envoye', color: 'bg-blue-500' },
-    won: { label: 'Gagne', color: 'bg-emerald-500' },
+    sent: { label: 'Envoyé', color: 'bg-blue-500' },
+    won: { label: 'Gagné', color: 'bg-emerald-500' },
     lost: { label: 'Perdu', color: 'bg-red-400' },
   }
   const s = map[status] || { label: 'Nouveau', color: 'bg-slate-300' }
@@ -66,7 +66,7 @@ export default function DashboardPage() {
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
           <h2 className="text-2xl font-semibold text-slate-950 tracking-tight">Vue d'ensemble</h2>
-          <p className="text-sm text-slate-500 mt-1">Activite de l'agent et missions prioritaires</p>
+          <p className="text-sm text-slate-500 mt-1">Activité de l'agent et missions prioritaires</p>
         </div>
         <button
           onClick={loadData}
@@ -81,8 +81,8 @@ export default function DashboardPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard label="Statut agent" value={stats?.status === 'running' ? 'Actif' : '—'} sub={stats?.uptime || null} />
         <StatCard label="Missions du jour" value={stats?.missions_today ?? '—'} sub={`${Object.keys(stats?.sources || {}).length} sources actives`} />
-        <StatCard label="Propositions" value={stats?.proposals_today ?? '—'} sub="Generees aujourd'hui" />
-        <StatCard label="Scans realises" value={stats?.scans_total ?? '—'} sub={stats?.last_scan ? `Dernier ${new Date(stats.last_scan).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}` : null} />
+        <StatCard label="Propositions" value={stats?.proposals_today ?? '—'} sub="Générées aujourd'hui" />
+        <StatCard label="Scans réalisés" value={stats?.scans_total ?? '—'} sub={stats?.last_scan ? `Dernier ${new Date(stats.last_scan).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}` : null} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -102,7 +102,7 @@ export default function DashboardPage() {
                 <ScoreValue score={m.score || 0} />
                 <div className="flex-1 min-w-0">
                   <p className="text-[14px] font-medium text-slate-950 truncate group-hover:text-blue-600 transition-colors">{m.title}</p>
-                  <p className="text-[13px] text-slate-400 mt-0.5">{m.company || 'Entreprise non precisee'} &middot; {m.source}</p>
+                  <p className="text-[13px] text-slate-400 mt-0.5">{m.company || 'Entreprise non précisée'} &middot; {m.source}</p>
                 </div>
                 <StatusDot status={m.status} />
               </Link>
@@ -111,7 +111,7 @@ export default function DashboardPage() {
         </div>
 
         <div>
-          <h3 className="text-sm font-medium text-slate-500 uppercase tracking-wider mb-4">Activite des scans</h3>
+          <h3 className="text-sm font-medium text-slate-500 uppercase tracking-wider mb-4">Activité des scans</h3>
           <div className="border border-slate-200 rounded-lg divide-y divide-slate-100 max-h-[480px] overflow-y-auto">
             {!loading && logs.length === 0 && (
               <p className="px-6 py-12 text-center text-sm text-slate-400">Aucun scan recent</p>
@@ -121,7 +121,7 @@ export default function DashboardPage() {
                 <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${l.status === 'success' ? 'bg-emerald-500' : l.status === 'running' ? 'bg-amber-400 animate-pulse' : 'bg-red-400'}`} />
                 <div className="flex-1 min-w-0">
                   <p className="text-[14px] text-slate-800 truncate">{l.source}</p>
-                  <p className="text-[13px] text-slate-400">{l.missions_found ?? 0} trouvees &middot; {l.missions_new ?? 0} nouvelles</p>
+                  <p className="text-[13px] text-slate-400">{l.missions_found ?? 0} trouvées &middot; {l.missions_new ?? 0} nouvelles</p>
                 </div>
                 <span className="text-[13px] text-slate-400 shrink-0 tabular-nums">
                   {l.started_at ? new Date(l.started_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : ''}
