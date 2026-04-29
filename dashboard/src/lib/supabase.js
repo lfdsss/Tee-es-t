@@ -9,20 +9,34 @@ const headers = {
 
 const RAILWAY_URL = 'https://web-production-610b0.up.railway.app';
 
+function dedup(missions) {
+  const seen = new Map();
+  for (const m of missions) {
+    const key = (m.title || '').trim().toLowerCase();
+    if (!key) { seen.set(m.id, m); continue; }
+    const existing = seen.get(key);
+    if (!existing || (m.score || 0) > (existing.score || 0)) {
+      seen.set(key, m);
+    }
+  }
+  return [...seen.values()];
+}
+
 export async function fetchMissions({ limit = 50, offset = 0, status, minScore, search, type } = {}) {
-  let url = `${SUPABASE_URL}/rest/v1/missions?select=*&order=found_at.desc&limit=${limit}&offset=${offset}`;
+  const fetchLimit = limit + 50;
+  let url = `${SUPABASE_URL}/rest/v1/missions?select=*&order=found_at.desc&limit=${fetchLimit}&offset=${offset}`;
   if (status && status !== 'all') url += `&status=eq.${status}`;
   if (minScore) url += `&score=gte.${minScore}`;
   if (type && type !== 'all') url += `&type=eq.${type}`;
   const res = await fetch(url, { headers: { ...headers, 'Prefer': 'count=exact' } });
   const total = parseInt(res.headers.get('content-range')?.split('/')[1] || '0');
-  const data = await res.json();
-  // Client-side search filter
+  let data = await res.json();
+  data = dedup(data);
   if (search) {
     const q = search.toLowerCase();
-    return { data: data.filter(m => m.title?.toLowerCase().includes(q) || m.company?.toLowerCase().includes(q) || m.description?.toLowerCase().includes(q)), total };
+    data = data.filter(m => m.title?.toLowerCase().includes(q) || m.company?.toLowerCase().includes(q) || m.description?.toLowerCase().includes(q));
   }
-  return { data, total };
+  return { data: data.slice(0, limit), total };
 }
 
 export async function fetchMission(id) {
@@ -77,5 +91,7 @@ export async function sendChatMessage(message, history = []) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ message, history }),
   });
-  return res.json();
+  const data = await res.json();
+  if (data.error) throw new Error(data.error);
+  return data;
 }

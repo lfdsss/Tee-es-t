@@ -31,17 +31,30 @@ export default function DocumentsPage() {
         <p className="text-sm text-slate-500 mt-1">Devis, profil et documents légaux</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <a href="https://www.malt.fr/profile/baptistethevenot1" target="_blank" rel="noopener noreferrer"
-          className="block bg-white border border-slate-200 rounded-lg p-6 hover:border-slate-300 transition-colors group">
-          <div className="flex items-start justify-between mb-4">
-            <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">Profil</p>
-            <ExternalLink className="w-4 h-4 text-slate-300 group-hover:text-blue-600 transition-colors" />
-          </div>
-          <p className="text-sm font-semibold text-slate-950">Profil Malt</p>
-          <p className="text-[13px] text-slate-500 mt-1 leading-relaxed">CV en ligne, références et avis clients</p>
-        </a>
+      {/* Profils & Plateformes */}
+      <div>
+        <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-3">Mes profils</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {[
+            { name: 'Malt', url: 'https://www.malt.fr/profile/baptistethevenot1', desc: 'Profil, avis clients, références' },
+            { name: 'Codeur.com', url: 'https://www.codeur.com/-baptistethevenot', desc: 'Missions freelance, devis' },
+            { name: 'LinkedIn', url: 'https://www.linkedin.com/in/baptiste-thevenot/', desc: 'Réseau professionnel' },
+            { name: 'Crème de la Crème', url: 'https://www.cremedelacreme.io', desc: 'Missions premium tech' },
+          ].map(p => (
+            <a key={p.name} href={p.url} target="_blank" rel="noopener noreferrer"
+              className="group flex items-start gap-3 p-4 bg-white border border-slate-200 rounded-lg hover:border-slate-950 transition-colors">
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-slate-950 group-hover:text-blue-600 transition-colors">{p.name}</p>
+                <p className="text-[12px] text-slate-400 mt-0.5">{p.desc}</p>
+              </div>
+              <ExternalLink className="w-3.5 h-3.5 text-slate-300 group-hover:text-slate-950 transition-colors shrink-0 mt-0.5" />
+            </a>
+          ))}
+        </div>
+      </div>
 
+      {/* Info cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="bg-white border border-slate-200 rounded-lg p-6">
           <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-4">Tarifs</p>
           <p className="text-sm font-semibold text-slate-950">Devis types</p>
