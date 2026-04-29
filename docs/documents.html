@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documents | SNB Consulting</title>
+    <meta name="description" content="Devis, factures et plans projet generes automatiquement pour chaque mission.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect rx='18' width='100' height='100' fill='%230f172a'/><text x='50' y='66' text-anchor='middle' fill='%2338bdf8' font-size='48' font-family='system-ui' font-weight='800'>S</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/style.css">
+    <style>
+        .doc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .doc-card {
+            background: white;
+            border: 1px solid var(--slate-200);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .doc-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        .doc-card-head {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .doc-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .doc-icon.devis { background: #dbeafe; color: #1d4ed8; }
+        .doc-icon.plan { background: #fef3c7; color: #92400e; }
+        .doc-icon.facture { background: #dcfce7; color: #166534; }
+        .doc-type {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+        .doc-type.devis { background: #dbeafe; color: #1d4ed8; }
+        .doc-type.plan { background: #fef3c7; color: #92400e; }
+        .doc-type.facture { background: #dcfce7; color: #166534; }
+        .doc-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--slate-900);
+            line-height: 1.4;
+        }
+        .doc-meta {
+            font-size: 11px;
+            color: var(--slate-400);
+            margin-top: 4px;
+        }
+        .doc-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .doc-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.15s;
+        }
+        .doc-btn.primary {
+            background: var(--blue-500);
+            color: white;
+        }
+        .doc-btn.primary:hover { background: var(--blue-600); text-decoration: none; }
+        .doc-btn.secondary {
+            background: var(--slate-100);
+            color: var(--slate-700);
+        }
+        .doc-btn.secondary:hover { background: var(--slate-200); text-decoration: none; }
+        .stat-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: -24px;
+            position: relative;
+            z-index: 2;
+        }
+        .stat-box {
+            background: white;
+            border: 1px solid var(--slate-200);
+            border-radius: var(--radius);
+            padding: 18px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+        }
+        .stat-num {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--slate-900);
+        }
+        .stat-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--slate-500);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-top: 2px;
+        }
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid var(--slate-200);
+            background: white;
+            color: var(--slate-600);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--blue-500);
+            color: white;
+            border-color: var(--blue-500);
+        }
+        @media (max-width: 640px) {
+            .stat-row { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a class="nav-brand" href="/">
+        <div class="nav-logo">S</div>
+        <div class="nav-title">SNB Consulting <span>| Agent IA</span></div>
+    </a>
+    <div class="nav-menu">
+        <a href="/" class="nav-link">Dashboard</a>
+        <a href="/pipeline.html" class="nav-link">Pipeline</a>
+        <a href="/livrables.html" class="nav-link">Livrables</a>
+        <a href="/missions.html" class="nav-link">Missions</a>
+        <a href="/documents.html" class="nav-link active">Documents</a>
+        <a href="/portfolio.html" class="nav-link">Portfolio</a>
+        <a href="/routines.html" class="nav-link">Routines</a>
+        <a href="/architecture.html" class="nav-link">Architecture</a>
+        <a href="/contact.html" class="nav-link">Contact</a>
+    </div>
+    <div class="nav-right">
+        <div class="nav-badge"><span class="dot"></span><span>Actif</span></div>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-badge">Documents professionnels</div>
+        <h1>Devis, factures et plans</h1>
+        <p>Chaque mission genere automatiquement un devis detaille, un plan de projet et un modele de facture. Tous imprimables en PDF.</p>
+    </div>
+</section>
+
+<div class="container" style="padding-bottom: 48px;">
+    <div class="stat-row" id="stats">
+        <div class="stat-box"><div class="stat-num" id="stat-total">-</div><div class="stat-label">Documents</div></div>
+        <div class="stat-box"><div class="stat-num" id="stat-devis">-</div><div class="stat-label">Devis</div></div>
+        <div class="stat-box"><div class="stat-num" id="stat-plans">-</div><div class="stat-label">Plans projet</div></div>
+        <div class="stat-box"><div class="stat-num" id="stat-factures">-</div><div class="stat-label">Factures</div></div>
+    </div>
+
+    <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">Tous</button>
+        <button class="filter-btn" data-filter="devis">Devis</button>
+        <button class="filter-btn" data-filter="plan">Plans</button>
+        <button class="filter-btn" data-filter="facture">Factures</button>
+    </div>
+
+    <div class="doc-grid" id="doc-list"></div>
+</div>
+
+<footer>
+    <div class="foot-line"><strong>SNB Consulting</strong> &mdash; Agent Commercial Autonome propulse par Claude AI</div>
+    <div class="foot-line">Contact : <a href="mailto:bp.thevenot@gmail.com">bp.thevenot@gmail.com</a></div>
+    <div class="foot-nav">
+        <a href="/">Dashboard</a>
+        <a href="/pipeline.html">Pipeline</a>
+        <a href="/livrables.html">Livrables</a>
+        <a href="/missions.html">Missions</a>
+        <a href="/documents.html">Documents</a>
+        <a href="/portfolio.html">Portfolio</a>
+        <a href="/routines.html">Routines</a>
+        <a href="/architecture.html">Architecture</a>
+        <a href="/contact.html">Contact</a>
+    </div>
+</footer>
+
+<script>
+const ICONS = { devis: '📋', plan: '📊', facture: '🧾' };
+const LABELS = { devis: 'Devis', plan: 'Plan projet', facture: 'Facture' };
+
+let allDocs = [];
+let activeFilter = 'all';
+
+async function loadDocuments() {
+    try {
+        const resp = await fetch('/documents/index.json');
+        if (!resp.ok) return;
+        allDocs = await resp.json();
+        updateStats();
+        renderDocs();
+    } catch (e) {
+        document.getElementById('doc-list').innerHTML = '<p style="color:var(--slate-500);text-align:center;padding:40px">Aucun document disponible.</p>';
+    }
+}
+
+function updateStats() {
+    document.getElementById('stat-total').textContent = allDocs.length;
+    document.getElementById('stat-devis').textContent = allDocs.filter(d => d.type === 'devis').length;
+    document.getElementById('stat-plans').textContent = allDocs.filter(d => d.type === 'plan').length;
+    document.getElementById('stat-factures').textContent = allDocs.filter(d => d.type === 'facture').length;
+}
+
+function renderDocs() {
+    const filtered = activeFilter === 'all' ? allDocs : allDocs.filter(d => d.type === activeFilter);
+    const grid = document.getElementById('doc-list');
+
+    if (filtered.length === 0) {
+        grid.innerHTML = '<p style="color:var(--slate-500);text-align:center;padding:40px">Aucun document pour ce filtre.</p>';
+        return;
+    }
+
+    grid.innerHTML = filtered.map(doc => {
+        const icon = ICONS[doc.type] || '📄';
+        const label = LABELS[doc.type] || doc.type;
+        const date = doc.generated_at ? new Date(doc.generated_at).toLocaleDateString('fr-FR') : '';
+        return `
+        <div class="doc-card">
+            <div class="doc-card-head">
+                <div class="doc-icon ${doc.type}">${icon}</div>
+                <div>
+                    <span class="doc-type ${doc.type}">${label}</span>
+                    <div class="doc-title">${doc.title || 'Document'}</div>
+                    <div class="doc-meta">${doc.platform || ''} &middot; ${date}</div>
+                </div>
+            </div>
+            <div class="doc-actions">
+                <a class="doc-btn primary" href="/${doc.file}" target="_blank">Ouvrir</a>
+                <a class="doc-btn secondary" href="/${doc.file}" target="_blank" onclick="event.preventDefault();window.open('/${doc.file}','_blank').print()">Imprimer</a>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeFilter = btn.dataset.filter;
+        renderDocs();
+    });
+});
+
+loadDocuments();
+</script>
+
+</body>
+</html>

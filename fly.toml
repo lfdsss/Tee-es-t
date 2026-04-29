@@ -1,0 +1,40 @@
+# ─────────────────────────────────────────────────────────
+# Fly.io configuration — LFDS Quiz
+# Deploy with: fly launch --copy-config --no-deploy  (first time)
+#              fly deploy
+# ─────────────────────────────────────────────────────────
+
+app = "lfds-quiz"
+primary_region = "cdg"  # Paris — closest to French users
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  NODE_ENV = "production"
+  PORT = "3001"
+
+# Persistent volume for quiz data (JSON files)
+[mounts]
+  source = "quiz_data"
+  destination = "/app/server/data"
+
+[http_service]
+  internal_port = 3001
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+  [[http_service.checks]]
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "10s"
+    method = "GET"
+    path = "/api/health"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"
+  cpus = 1

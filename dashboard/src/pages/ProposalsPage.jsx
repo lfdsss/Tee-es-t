@@ -303,8 +303,8 @@ export default function ProposalsPage() {
   }, [])
 
   function copyText(text, id) {
-    const cleanText = text.replace(/<!--PACKAGE_JSON:.+?-->/s, '').trim()
-    navigator.clipboard.writeText(cleanText)
+    const stripped = text.replace(/<!--PACKAGE_JSON:.+?-->/s, '').trim()
+    navigator.clipboard.writeText(stripped)
     setCopiedId(id)
     setTimeout(() => setCopiedId(null), 2000)
   }

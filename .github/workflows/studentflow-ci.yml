@@ -1,0 +1,42 @@
+name: StudentFlow CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "studentflow/**"
+      - ".github/workflows/studentflow-ci.yml"
+  pull_request:
+    paths:
+      - "studentflow/**"
+      - ".github/workflows/studentflow-ci.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: studentflow
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: studentflow/pyproject.toml
+
+      - name: Install
+        run: pip install -e ".[dev]"
+
+      - name: Lint
+        run: ruff check src tests
+
+      - name: Format check
+        run: ruff format --check src tests
+
+      - name: Test
+        run: pytest -q

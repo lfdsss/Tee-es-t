@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Routines Automatiques | SNB Consulting</title>
+    <meta name="description" content="Les 3 routines automatiques de l'agent commercial IA : prospection matinale, suivi, audit hebdomadaire.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect rx='18' width='100' height='100' fill='%230f172a'/><text x='50' y='66' text-anchor='middle' fill='%2338bdf8' font-size='48' font-family='system-ui' font-weight='800'>S</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/style.css">
+    <style>
+        .routine-detail {
+            background: white;
+            border: 1px solid var(--slate-200);
+            border-radius: var(--radius);
+            padding: 28px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+        .routine-head {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+        .routine-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        .routine-icon.morning { background: rgba(251,191,36,0.15); color: #d97706; }
+        .routine-icon.followup { background: rgba(14,165,233,0.12); color: var(--blue-600); }
+        .routine-icon.audit { background: rgba(168,85,247,0.12); color: var(--purple-500); }
+        .routine-meta {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            background: var(--slate-100);
+            color: var(--slate-600);
+            margin-right: 6px;
+        }
+        .routine-name {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--slate-900);
+            margin-top: 4px;
+        }
+        .routine-steps {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .step {
+            background: var(--slate-50);
+            border-radius: 8px;
+            padding: 12px 14px;
+            border-left: 3px solid var(--blue-500);
+        }
+        .step-num {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--blue-600);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .step-text { font-size: 13px; color: var(--slate-700); margin-top: 2px; }
+        @media (max-width: 640px) {
+            .routine-steps { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a class="nav-brand" href="/">
+        <div class="nav-logo">S</div>
+        <div class="nav-title">SNB Consulting <span>| Agent IA</span></div>
+    </a>
+    <div class="nav-menu">
+        <a href="/" class="nav-link">Dashboard</a>
+        <a href="/pipeline.html" class="nav-link">Pipeline</a>
+        <a href="/livrables.html" class="nav-link">Livrables</a>
+        <a href="/missions.html" class="nav-link">Missions</a>
+        <a href="/documents.html" class="nav-link">Documents</a>
+        <a href="/portfolio.html" class="nav-link">Portfolio</a>
+        <a href="/routines.html" class="nav-link active">Routines</a>
+        <a href="/architecture.html" class="nav-link">Architecture</a>
+        <a href="/contact.html" class="nav-link">Contact</a>
+    </div>
+    <div class="nav-right">
+        <div class="nav-badge"><span class="dot"></span><span>Actif</span></div>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-badge">&#9889; 3 routines, 24h/24</div>
+        <h1>Routines automatiques</h1>
+        <p>L'agent IA execute 3 routines programmees tout au long de la semaine. Chaque routine enchaine une sequence d'actions coordonnees sur HubSpot, Gmail et Notion.</p>
+    </div>
+</section>
+
+<div class="container narrow" style="margin-top: -32px; position: relative; z-index: 2;">
+
+    <div class="routine-detail">
+        <div class="routine-head">
+            <div class="routine-icon morning">&#127774;</div>
+            <div>
+                <span class="routine-meta">Lun-Ven &middot; 08h-12h</span>
+                <span class="routine-meta">morning</span>
+                <div class="routine-name">Prospection matinale</div>
+            </div>
+        </div>
+        <p style="color:var(--slate-600); font-size:14px; line-height:1.6">
+            Chaque matin, l'agent identifie les prospects chauds, recupere le contexte HubSpot, genere des messages personnalises et prepare des brouillons dans Gmail. L'humain valide ensuite et envoie en un clic.
+        </p>
+        <div class="routine-steps">
+            <div class="step"><div class="step-num">1 - Scan</div><div class="step-text">Lecture des nouveaux contacts et deals HubSpot</div></div>
+            <div class="step"><div class="step-num">2 - Qualifier</div><div class="step-text">Evaluation du signal (taille, secteur, timing)</div></div>
+            <div class="step"><div class="step-num">3 - Rediger</div><div class="step-text">Generation d'un message adapte au contexte</div></div>
+            <div class="step"><div class="step-num">4 - Brouillon</div><div class="step-text">Creation d'un draft Gmail pret a envoyer</div></div>
+            <div class="step"><div class="step-num">5 - Logger</div><div class="step-text">Trace dans la timeline HubSpot et Notion</div></div>
+            <div class="step"><div class="step-num">6 - Rapporter</div><div class="step-text">Mise a jour du dashboard public</div></div>
+        </div>
+    </div>
+
+    <div class="routine-detail">
+        <div class="routine-head">
+            <div class="routine-icon followup">&#128260;</div>
+            <div>
+                <span class="routine-meta">Lun-Ven &middot; 12h-18h</span>
+                <span class="routine-meta">followup</span>
+                <div class="routine-name">Suivi &amp; relances</div>
+            </div>
+        </div>
+        <p style="color:var(--slate-600); font-size:14px; line-height:1.6">
+            L'apres-midi est dedie aux relances et au suivi du pipeline. L'agent detecte les deals qui stagnent, identifie les meilleurs moments pour recontacter, et maintient les conversations chaudes.
+        </p>
+        <div class="routine-steps">
+            <div class="step"><div class="step-num">1 - Detecter</div><div class="step-text">Deals sans activite depuis 7 jours</div></div>
+            <div class="step"><div class="step-num">2 - Prioriser</div><div class="step-text">Score par montant et probabilite</div></div>
+            <div class="step"><div class="step-num">3 - Relancer</div><div class="step-text">Message personnalise par rapport au dernier echange</div></div>
+            <div class="step"><div class="step-num">4 - Reponses</div><div class="step-text">Lecture et tri des reponses emails</div></div>
+            <div class="step"><div class="step-num">5 - Actions</div><div class="step-text">Mise a jour des stages HubSpot</div></div>
+            <div class="step"><div class="step-num">6 - Alerter</div><div class="step-text">Notifications si reponse positive</div></div>
+        </div>
+    </div>
+
+    <div class="routine-detail">
+        <div class="routine-head">
+            <div class="routine-icon audit">&#128202;</div>
+            <div>
+                <span class="routine-meta">Vendredi &middot; 16h</span>
+                <span class="routine-meta">weekly_audit</span>
+                <div class="routine-name">Audit hebdomadaire</div>
+            </div>
+        </div>
+        <p style="color:var(--slate-600); font-size:14px; line-height:1.6">
+            En fin de semaine, l'agent produit un audit complet : performance du pipeline, deals gagnes et perdus, top comptes, rapport Notion prêt a partager avec l'equipe.
+        </p>
+        <div class="routine-steps">
+            <div class="step"><div class="step-num">1 - Collecter</div><div class="step-text">Toutes les activites de la semaine</div></div>
+            <div class="step"><div class="step-num">2 - Analyser</div><div class="step-text">Conversion, vitesse, taux de reponse</div></div>
+            <div class="step"><div class="step-num">3 - Produire</div><div class="step-text">Rapport Notion avec visualisations</div></div>
+            <div class="step"><div class="step-num">4 - Partager</div><div class="step-text">Email de synthese a l'equipe</div></div>
+            <div class="step"><div class="step-num">5 - Recommander</div><div class="step-text">Actions prioritaires pour la semaine suivante</div></div>
+            <div class="step"><div class="step-num">6 - Archiver</div><div class="step-text">Historique versionne sur GitHub</div></div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-head">
+            <div class="panel-title">
+                <span class="icon" style="background:rgba(99,102,241,0.1);color:#4f46e5">&#9881;</span>
+                Declencheur
+            </div>
+            <div class="panel-meta">GitHub Actions</div>
+        </div>
+        <div class="panel-body">
+            <p>Les 3 routines sont orchestrees par un workflow GitHub Actions qui tourne toutes les 10 minutes et choisit automatiquement la bonne routine selon l'heure et le jour de la semaine (fuseau Europe/Paris).</p>
+            <h3>Cron</h3>
+            <ul>
+                <li><code>*/10 * * * *</code> &mdash; verification toutes les 10 minutes</li>
+                <li>Heures 08-11 : <code>morning</code></li>
+                <li>Heures 12-18 : <code>followup</code></li>
+                <li>Vendredi 16h+ : <code>weekly_audit</code></li>
+            </ul>
+            <h3>Declenchement manuel</h3>
+            <p>N'importe quelle routine peut aussi etre lancee a la demande via <code>workflow_dispatch</code> sur GitHub.</p>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    <div class="foot-line"><strong>SNB Consulting</strong> &mdash; Agent Commercial Autonome propulse par Claude AI</div>
+    <div class="foot-line">Contact : <a href="mailto:bp.thevenot@gmail.com">bp.thevenot@gmail.com</a></div>
+    <div class="foot-nav">
+        <a href="/">Dashboard</a>
+        <a href="/pipeline.html">Pipeline</a>
+        <a href="/livrables.html">Livrables</a>
+        <a href="/missions.html">Missions</a>
+        <a href="/documents.html">Documents</a>
+        <a href="/portfolio.html">Portfolio</a>
+        <a href="/routines.html">Routines</a>
+        <a href="/architecture.html">Architecture</a>
+        <a href="/contact.html">Contact</a>
+    </div>
+</footer>
+
+</body>
+</html>

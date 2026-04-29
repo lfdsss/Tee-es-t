@@ -1,0 +1,17 @@
+node_modules
+dist
+docs/quiz
+server/data
+.env
+.env.*
+.git
+.github
+*.log
+.DS_Store
+commercial-agent
+.claude
+netlify
+netlify.toml
+README.md
+LICENSE
+*.md

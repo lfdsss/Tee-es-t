@@ -1,8 +1,24 @@
+# Dependencies
+node_modules/
+
+# Build artifacts (rebuilt by CI/Netlify)
+dist/
+docs/quiz/
+
+# Environment (contains API key!)
+.env
+
+# Quiz data (user submissions)
+server/data/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+
 # Compiled class file
 *.class
-
-# Log file
-*.log
 
 # BlueJ files
 *.ctxt
@@ -10,7 +26,7 @@
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
-# Package Files #
+# Package Files
 *.jar
 *.war
 *.nar
@@ -19,7 +35,7 @@
 *.tar.gz
 *.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+# VM crash logs
 hs_err_pid*
 replay_pid*
 

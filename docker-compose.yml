@@ -1,0 +1,81 @@
+##
+## StudentFlow — local full-stack development
+##
+## Usage:
+##   docker compose up --build          # API + agents + web dev server
+##   docker compose up api agents       # backend only
+##   docker compose logs -f api         # tail API logs
+##
+## The web service runs Vite dev server with hot reload on http://localhost:5173.
+## The API runs on http://localhost:8000.
+##
+## For Supabase, either:
+##   1. Set SUPABASE_URL + SUPABASE_SERVICE_KEY in .env (uses cloud Supabase)
+##   2. Leave them empty — falls back to InMemoryRepository (zero-config dev)
+##
+
+services:
+  api:
+    build:
+      context: ./studentflow
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./studentflow/.env
+    environment:
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - PUBLIC_BASE_URL=http://localhost:8000
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  agents:
+    build:
+      context: ./studentflow
+      dockerfile: Dockerfile
+    command: ["python", "-m", "studentflow.cli", "run-agents"]
+    env_file:
+      - ./studentflow/.env
+    environment:
+      - SCRAPER_INTERVAL_SECONDS=900
+      - MATCHER_INTERVAL_SECONDS=60
+      - NOTIFIER_INTERVAL_SECONDS=30
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+  web:
+    image: node:20-slim
+    working_dir: /app
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./studentflow-web:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    depends_on:
+      api:
+        condition: service_healthy
+
+  lfds-quiz:
+    build: .
+    ports:
+      - "3001:3001"
+    volumes:
+      - quiz-data:/app/server/data
+      - ./.env:/app/.env:ro
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+    restart: unless-stopped
+
+volumes:
+  quiz-data:

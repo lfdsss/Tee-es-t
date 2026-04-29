@@ -2,14 +2,19 @@
 
 import os
 import json
-import requests
+import logging
+
+from .http_utils import robust_request, validate_api_key, AuthError
+
+log = logging.getLogger("commercial-agent")
 
 BASE_URL = "https://api.hubapi.com"
 
 
 def _headers() -> dict:
+    key = validate_api_key("HUBSPOT_API_KEY")
     return {
-        "Authorization": f"Bearer {os.getenv('HUBSPOT_API_KEY')}",
+        "Authorization": f"Bearer {key}",
         "Content-Type": "application/json",
     }
 
@@ -189,12 +194,12 @@ def _search_contacts(input_data: dict) -> str:
     if query:
         payload["query"] = query
 
-    resp = requests.post(
+    resp = robust_request("POST",
         f"{BASE_URL}/crm/v3/objects/contacts/search",
         headers=_headers(),
         json=payload,
     )
-    resp.raise_for_status()
+    
     data = resp.json()
 
     results = []
@@ -215,14 +220,14 @@ def _search_contacts(input_data: dict) -> str:
 
 def _get_contact(input_data: dict) -> str:
     contact_id = input_data["contact_id"]
-    resp = requests.get(
+    resp = robust_request("GET",
         f"{BASE_URL}/crm/v3/objects/contacts/{contact_id}",
         headers=_headers(),
         params={
             "properties": "firstname,lastname,email,phone,company,lifecyclestage,hs_lead_status,hubspot_owner_id,createdate,lastmodifieddate",
         },
     )
-    resp.raise_for_status()
+    
     return json.dumps(resp.json(), ensure_ascii=False)
 
 
@@ -241,12 +246,12 @@ def _create_contact(input_data: dict) -> str:
     if "hs_lead_status" not in properties:
         properties["hs_lead_status"] = "NEW"
 
-    resp = requests.post(
+    resp = robust_request("POST",
         f"{BASE_URL}/crm/v3/objects/contacts",
         headers=_headers(),
         json={"properties": properties},
     )
-    resp.raise_for_status()
+    
     result = resp.json()
     return json.dumps({
         "status": "created",
@@ -259,12 +264,12 @@ def _update_contact(input_data: dict) -> str:
     contact_id = input_data["contact_id"]
     properties = input_data["properties"]
 
-    resp = requests.patch(
+    resp = robust_request("PATCH",
         f"{BASE_URL}/crm/v3/objects/contacts/{contact_id}",
         headers=_headers(),
         json={"properties": properties},
     )
-    resp.raise_for_status()
+    
     return json.dumps({"status": "updated", "id": contact_id}, ensure_ascii=False)
 
 
@@ -279,12 +284,12 @@ def _search_deals(input_data: dict) -> str:
     if query:
         payload["query"] = query
 
-    resp = requests.post(
+    resp = robust_request("POST",
         f"{BASE_URL}/crm/v3/objects/deals/search",
         headers=_headers(),
         json=payload,
     )
-    resp.raise_for_status()
+    
     return json.dumps(resp.json(), ensure_ascii=False)
 
 
@@ -301,17 +306,17 @@ def _create_deal(input_data: dict) -> str:
     if "dealstage" not in properties:
         properties["dealstage"] = "appointmentscheduled"
 
-    resp = requests.post(
+    resp = robust_request("POST",
         f"{BASE_URL}/crm/v3/objects/deals",
         headers=_headers(),
         json={"properties": properties},
     )
-    resp.raise_for_status()
+    
     result = resp.json()
 
     # Associate with contact if provided
     if "associated_contact_id" in input_data:
-        requests.put(
+        robust_request("PUT",
             f"{BASE_URL}/crm/v3/objects/deals/{result['id']}/associations/contacts/{input_data['associated_contact_id']}/deal_to_contact",
             headers=_headers(),
         )
@@ -320,7 +325,7 @@ def _create_deal(input_data: dict) -> str:
 
 
 def _create_note(input_data: dict) -> str:
-    resp = requests.post(
+    resp = robust_request("POST",
         f"{BASE_URL}/crm/v3/objects/notes",
         headers=_headers(),
         json={
@@ -333,7 +338,7 @@ def _create_note(input_data: dict) -> str:
             ],
         },
     )
-    resp.raise_for_status()
+    
     return json.dumps({"status": "created", "id": resp.json()["id"]}, ensure_ascii=False)
 
 
@@ -356,10 +361,10 @@ def _create_task(input_data: dict) -> str:
             "types": [{"associationCategory": "HUBSPOT_DEFINED", "associationTypeId": 204}],
         })
 
-    resp = requests.post(
+    resp = robust_request("POST",
         f"{BASE_URL}/crm/v3/objects/tasks",
         headers=_headers(),
         json={"properties": properties, "associations": associations},
     )
-    resp.raise_for_status()
+    
     return json.dumps({"status": "created", "id": resp.json()["id"]}, ensure_ascii=False)

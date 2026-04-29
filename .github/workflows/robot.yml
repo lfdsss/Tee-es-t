@@ -1,0 +1,100 @@
+name: Robot Commercial - Routines automatiques
+
+on:
+  schedule:
+    # Toutes les 10 minutes
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+    inputs:
+      routine:
+        description: 'Routine a executer (morning, followup, weekly_audit)'
+        required: true
+        default: 'morning'
+        type: choice
+        options:
+          - morning
+          - followup
+          - weekly_audit
+
+jobs:
+  run-robot:
+    runs-on: ubuntu-latest
+    # Garde-fou : n'accepter que les runs cron OU les dispatchs depuis main.
+    # Empeche un workflow_dispatch depuis une feature branch de pousser un
+    # status.json issu de code non merge sur main.
+    if: github.event_name == 'schedule' || github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+    defaults:
+      run:
+        working-directory: commercial-agent
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Determine routine
+        id: routine
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "name=${{ github.event.inputs.routine }}" >> $GITHUB_OUTPUT
+          else
+            HOUR=$(TZ='Europe/Paris' date +%H)
+            DOW=$(TZ='Europe/Paris' date +%u)
+            if [ "$DOW" = "5" ] && [ "$HOUR" -ge 16 ]; then
+              echo "name=weekly_audit" >> $GITHUB_OUTPUT
+            elif [ "$HOUR" -lt 12 ]; then
+              echo "name=morning" >> $GITHUB_OUTPUT
+            else
+              echo "name=followup" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+      - name: Run robot routine
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          HUBSPOT_API_KEY: ${{ secrets.HUBSPOT_API_KEY }}
+          GMAIL_CREDENTIALS_JSON: ${{ secrets.GMAIL_CREDENTIALS_JSON }}
+          NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AGENT_OWNER_NAME: Baptiste Thevenot
+          AGENT_OWNER_EMAIL: bp.thevenot@gmail.com
+          HUBSPOT_OWNER_ID: '80842560'
+        run: |
+          python autonomous.py ${{ steps.routine.outputs.name }} || true
+
+      - name: Update website status
+        run: |
+          python update_status.py ${{ steps.routine.outputs.name }}
+
+      - name: Commit and push status update
+        working-directory: .
+        run: |
+          git config user.name "Robot Commercial"
+          git config user.email "robot@snbbm-consulting.com"
+          git add docs/status.json docs/missions/ 2>/dev/null || git add docs/status.json
+          if git diff --staged --quiet; then
+            echo "Aucun changement a committer."
+            exit 0
+          fi
+          git commit -m "Robot: mise a jour statut (${{ steps.routine.outputs.name }})"
+          # Rebase sur remote pour eviter les collisions entre runs de cron
+          for i in 1 2 3 4; do
+            git fetch origin main
+            git rebase origin/main && git push origin HEAD:main && exit 0
+            echo "Push rejete, nouvelle tentative ($i/4)..."
+            sleep $((i * 2))
+          done
+          echo "Impossible de pousser apres 4 tentatives."
+          exit 1

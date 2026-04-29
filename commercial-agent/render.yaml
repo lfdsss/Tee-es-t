@@ -1,7 +1,39 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# BACKUP — non actif en production.
+# Le runtime de l'agent est piloté par .github/workflows/robot.yml
+# (cron */10 min sur GitHub Actions). Ce fichier sert de fallback prêt à
+# l'emploi pour migrer vers Render si on quitte GitHub Actions.
+# Voir commercial-agent/DEPLOY_BACKUP.md pour les détails de migration.
+# ─────────────────────────────────────────────────────────────────────────────
+
 services:
   - type: cron
-    name: commercial-agent-morning
+    name: commercial-agent-email-prospection
     schedule: "0 7 * * 1-5"
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python autonomous.py email_prospection
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: HUBSPOT_API_KEY
+        sync: false
+      - key: GMAIL_CREDENTIALS_PATH
+        value: ./config/gmail_credentials.json
+      - key: NOTION_API_KEY
+        sync: false
+      - key: GITHUB_TOKEN
+        sync: false
+      - key: AGENT_OWNER_NAME
+        value: Baptiste Thevenot
+      - key: AGENT_OWNER_EMAIL
+        value: bp.thevenot@gmail.com
+      - key: HUBSPOT_OWNER_ID
+        value: "80842560"
+
+  - type: cron
+    name: commercial-agent-morning
+    schedule: "30 7 * * 1-5"
     runtime: python
     buildCommand: pip install -r requirements.txt
     startCommand: python autonomous.py morning

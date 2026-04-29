@@ -6,8 +6,9 @@ log = logging.getLogger("commercial-agent")
 from .hubspot import HUBSPOT_TOOLS, execute_hubspot_tool
 from .notion import NOTION_TOOLS, execute_notion_tool
 from .github_tools import GITHUB_TOOLS, execute_github_tool
+from .livrables import LIVRABLES_TOOLS, execute_livrables_tool
 
-ALL_TOOLS = HUBSPOT_TOOLS + NOTION_TOOLS + GITHUB_TOOLS
+ALL_TOOLS = HUBSPOT_TOOLS + NOTION_TOOLS + GITHUB_TOOLS + LIVRABLES_TOOLS
 
 # Gmail is optional (requires OAuth flow with browser on first use)
 try:
@@ -36,5 +37,7 @@ def execute_tool(name: str, input_data: dict) -> str:
         return execute_notion_tool(name, input_data)
     elif name.startswith("github_"):
         return execute_github_tool(name, input_data)
+    elif name.startswith("livrables_"):
+        return execute_livrables_tool(name, input_data)
     else:
         return f"Error: Unknown tool '{name}'"

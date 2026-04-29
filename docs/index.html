@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SNB Consulting | Agent Commercial IA</title>
+    <meta name="description" content="SNB Consulting - Votre agent commercial autonome propulse par intelligence artificielle. Prospection, CRM, emails et suivi client automatises 24h/24.">
+    <meta property="og:title" content="SNB Consulting | Agent Commercial IA">
+    <meta property="og:description" content="Agent commercial autonome. Prospection, CRM et suivi client automatises par IA.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://snb-consulting-platform.netlify.app/">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect rx='18' width='100' height='100' fill='%230f172a'/><text x='50' y='66' text-anchor='middle' fill='%2338bdf8' font-size='48' font-family='system-ui' font-weight='800'>S</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --slate-50: #f8fafc;
+            --slate-100: #f1f5f9;
+            --slate-200: #e2e8f0;
+            --slate-300: #cbd5e1;
+            --slate-400: #94a3b8;
+            --slate-500: #64748b;
+            --slate-600: #475569;
+            --slate-700: #334155;
+            --slate-800: #1e293b;
+            --slate-900: #0f172a;
+            --blue-400: #38bdf8;
+            --blue-500: #0ea5e9;
+            --blue-600: #0284c7;
+            --blue-700: #0369a1;
+            --green-400: #4ade80;
+            --green-500: #22c55e;
+            --green-600: #16a34a;
+            --orange-400: #fb923c;
+            --orange-500: #f97316;
+            --red-400: #f87171;
+            --red-500: #ef4444;
+            --purple-500: #a855f7;
+            --radius: 10px;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--slate-50);
+            color: var(--slate-800);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ===== NAV ===== */
+        nav {
+            background: var(--slate-900);
+            padding: 0 2rem;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .nav-logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--blue-500), var(--blue-400));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 16px;
+            color: white;
+        }
+
+        .nav-title {
+            font-weight: 700;
+            font-size: 15px;
+            letter-spacing: -0.3px;
+        }
+
+        .nav-title span { color: var(--slate-400); font-weight: 400; }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: 32px;
+        }
+        .nav-link {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--slate-400);
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: color 0.15s, background 0.15s;
+        }
+        .nav-link:hover { color: var(--slate-100); background: rgba(255,255,255,0.04); }
+        .nav-link.active { color: var(--blue-400); background: rgba(14,165,233,0.1); }
+
+        .nav-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-timer {
+            font-size: 12px;
+            color: var(--slate-400);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .nav-timer strong { color: var(--slate-200); }
+
+        .nav-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: rgba(34,197,94,0.12);
+            color: var(--green-400);
+        }
+
+        .nav-badge .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--green-400);
+            animation: blink 2s ease-in-out infinite;
+        }
+
+        .nav-badge.error { background: rgba(239,68,68,0.12); color: var(--red-400); }
+        .nav-badge.error .dot { background: var(--red-400); }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            background: var(--slate-900);
+            padding: 48px 2rem 56px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 600px 300px at 30% 80%, rgba(14,165,233,0.12), transparent),
+                radial-gradient(ellipse 400px 250px at 70% 20%, rgba(168,85,247,0.08), transparent);
+        }
+
+        .hero-inner { position: relative; max-width: 640px; margin: 0 auto; }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px;
+            background: rgba(14,165,233,0.1);
+            border: 1px solid rgba(14,165,233,0.2);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--blue-400);
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: 36px;
+            font-weight: 900;
+            color: white;
+            letter-spacing: -1.5px;
+            line-height: 1.15;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            font-size: 16px;
+            color: var(--slate-400);
+            max-width: 480px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* ===== LAYOUT ===== */
+        .container {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ===== KPI CARDS ===== */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-top: -32px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .kpi {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--slate-100);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        .kpi:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .kpi-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--slate-500);
+            margin-bottom: 6px;
+        }
+
+        .kpi-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--slate-900);
+            letter-spacing: -1px;
+            line-height: 1.2;
+        }
+
+        .kpi-sub {
+            font-size: 12px;
+            color: var(--slate-400);
+            margin-top: 4px;
+        }
+
+        .kpi-value.green { color: var(--green-600); }
+        .kpi-value.blue { color: var(--blue-600); }
+        .kpi-value.purple { color: var(--purple-500); }
+
+        /* ===== SECTIONS ===== */
+        .panel {
+            background: white;
+            border-radius: var(--radius);
+            border: 1px solid var(--slate-200);
+            box-shadow: var(--shadow-sm);
+            margin-top: 16px;
+            overflow: hidden;
+        }
+
+        .panel-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--slate-100);
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--slate-800);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-title .icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .panel-meta {
+            font-size: 11px;
+            color: var(--slate-400);
+            font-weight: 500;
+        }
+
+        .panel-body { padding: 16px 20px; }
+
+        /* ===== CYCLE BANNER ===== */
+        .cycle {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            background: linear-gradient(135deg, rgba(14,165,233,0.06), rgba(168,85,247,0.04));
+            border-bottom: 1px solid var(--slate-100);
+        }
+
+        .cycle-spinner {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--blue-500);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+            animation: rotate 3s linear infinite;
+        }
+
+        @keyframes rotate { 100% { transform: rotate(360deg); } }
+
+        .cycle-text { flex: 1; }
+        .cycle-text strong { font-size: 14px; color: var(--slate-800); }
+        .cycle-text p { font-size: 12px; color: var(--slate-500); margin-top: 2px; }
+
+        .cycle-timer {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--blue-600);
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.5px;
+        }
+
+        /* ===== ROUTINES ===== */
+        .routines {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding: 16px 20px;
+        }
+
+        .routine {
+            padding: 14px;
+            background: var(--slate-50);
+            border-radius: 8px;
+            border: 1px solid var(--slate-100);
+            transition: border-color 0.15s;
+        }
+
+        .routine:hover { border-color: var(--blue-500); }
+
+        .routine-tag {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--blue-600);
+            margin-bottom: 6px;
+        }
+
+        .routine h4 { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+        .routine p { font-size: 11px; color: var(--slate-500); line-height: 1.5; }
+
+        /* ===== ACTIVITY LOG ===== */
+        .log-list { list-style: none; }
+
+        .log-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            font-size: 13px;
+            border-bottom: 1px solid var(--slate-50);
+            transition: background 0.1s;
+        }
+
+        .log-item:last-child { border-bottom: none; }
+        .log-item:hover { background: var(--slate-50); }
+
+        .log-time {
+            font-size: 11px;
+            color: var(--slate-400);
+            font-variant-numeric: tabular-nums;
+            min-width: 44px;
+        }
+
+        .log-tag {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .tag-crm { background: #dbeafe; color: #1d4ed8; }
+        .tag-email { background: #fce7f3; color: #be185d; }
+        .tag-notion { background: #f3e8ff; color: #7c3aed; }
+        .tag-systeme { background: var(--slate-100); color: var(--slate-500); }
+
+        .log-empty {
+            padding: 32px 20px;
+            text-align: center;
+            color: var(--slate-400);
+            font-size: 13px;
+        }
+
+        /* ===== SOURCES / SERVICES ===== */
+        .sources {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            padding: 16px 20px;
+        }
+
+        .source {
+            text-align: center;
+            padding: 20px 12px;
+            background: var(--slate-50);
+            border-radius: 8px;
+            border: 1px solid var(--slate-100);
+            transition: border-color 0.15s, transform 0.15s;
+        }
+
+        .source:hover {
+            border-color: var(--slate-300);
+            transform: translateY(-1px);
+        }
+
+        .source-logo {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .source-logo.hubspot { background: #fff1ef; color: #ff5c35; }
+        .source-logo.gmail { background: #fef2f2; color: #ea4335; }
+        .source-logo.notion { background: var(--slate-100); color: var(--slate-900); }
+        .source-logo.github { background: var(--slate-100); color: #24292f; }
+
+        .source h4 { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+        .source p { font-size: 11px; color: var(--slate-500); line-height: 1.4; }
+
+        .source-badge {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .source-badge.ok { background: rgba(34,197,94,0.1); color: var(--green-600); }
+        .source-badge.wait { background: rgba(249,115,22,0.1); color: var(--orange-500); }
+
+        /* ===== LIVRABLES ===== */
+        .livrables-kpis {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--slate-100);
+        }
+
+        .liv-kpi {
+            text-align: center;
+            padding: 12px;
+            background: var(--slate-50);
+            border-radius: 8px;
+        }
+
+        .liv-kpi .lk-val {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--slate-900);
+        }
+
+        .liv-kpi .lk-label {
+            font-size: 11px;
+            color: var(--slate-500);
+            margin-top: 2px;
+        }
+
+        /* ===== PIPELINE STAGES ===== */
+        .stages {
+            padding: 14px 20px 18px;
+            border-bottom: 1px solid var(--slate-100);
+        }
+        .stages-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--slate-500);
+            margin-bottom: 10px;
+        }
+        .stage-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        .stage-row:last-child { margin-bottom: 0; }
+        .stage-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--slate-700);
+            min-width: 130px;
+        }
+        .stage-bar-wrap {
+            flex: 1;
+            height: 10px;
+            background: var(--slate-100);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .stage-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--blue-500), #6366f1);
+            border-radius: 5px;
+            transition: width 0.6s ease;
+        }
+        .stage-count {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--slate-900);
+            min-width: 24px;
+            text-align: right;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            margin-top: 32px;
+            padding: 24px 2rem;
+            background: var(--slate-900);
+            text-align: center;
+            font-size: 12px;
+            color: var(--slate-500);
+        }
+
+        footer strong { color: var(--slate-300); }
+        footer a { color: var(--blue-400); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+        footer .foot-line + .foot-line { margin-top: 4px; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .kpi-row { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .kpi-row { grid-template-columns: repeat(2, 1fr); }
+            .sources { grid-template-columns: repeat(2, 1fr); }
+            .routines { grid-template-columns: 1fr; }
+            .livrables-kpis { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 26px; }
+            .hero { padding: 32px 1.5rem 44px; }
+        }
+
+        @media (max-width: 900px) {
+            .nav-menu { display: none; }
+        }
+
+        @media (max-width: 480px) {
+            nav { padding: 0 12px; }
+            .nav-timer { display: none; }
+            .kpi-row { gap: 8px; }
+            .kpi { padding: 14px; }
+            .kpi-value { font-size: 22px; }
+            .cycle { flex-wrap: wrap; }
+            .cycle-timer { width: 100%; text-align: center; margin-top: 4px; }
+        }
+
+        /* ===== SKELETON ===== */
+        .skel {
+            background: linear-gradient(90deg, var(--slate-100) 25%, var(--slate-200) 50%, var(--slate-100) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+    <a class="nav-brand" href="/">
+        <div class="nav-logo">S</div>
+        <div class="nav-title">SNB Consulting <span>| Agent IA</span></div>
+    </a>
+    <div class="nav-menu">
+        <a href="/" class="nav-link active">Dashboard</a>
+        <a href="/pipeline.html" class="nav-link">Pipeline</a>
+        <a href="/livrables.html" class="nav-link">Livrables</a>
+        <a href="/missions.html" class="nav-link">Missions</a>
+        <a href="/documents.html" class="nav-link">Documents</a>
+        <a href="/portfolio.html" class="nav-link">Portfolio</a>
+        <a href="/routines.html" class="nav-link">Routines</a>
+        <a href="/architecture.html" class="nav-link">Architecture</a>
+        <a href="/contact.html" class="nav-link">Contact</a>
+    </div>
+    <div class="nav-right">
+        <div class="nav-timer">Prochain cycle <strong id="hd-timer">--:--</strong></div>
+        <div class="nav-badge" id="nav-badge">
+            <span class="dot"></span>
+            <span id="nav-status">Actif</span>
+        </div>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-badge">Cycle automatique toutes les 10 min</div>
+        <h1>Votre agent commercial tourne en continu</h1>
+        <p>Prospection, CRM HubSpot, emails Gmail, documentation Notion et suivi GitHub — automatises par intelligence artificielle.</p>
+    </div>
+</section>
+
+<div class="container">
+
+    <!-- KPIs -->
+    <div class="kpi-row">
+        <div class="kpi">
+            <div class="kpi-label">Statut</div>
+            <div class="kpi-value green" id="kpi-status">Actif</div>
+            <div class="kpi-sub" id="kpi-lastrun"><span class="skel" style="width:120px;height:11px">&nbsp;</span></div>
+        </div>
+        <div class="kpi">
+            <div class="kpi-label">Pipeline</div>
+            <div class="kpi-value blue" id="kpi-pipeline">--</div>
+            <div class="kpi-sub" id="kpi-pipeline-sub">Valeur deals actifs</div>
+        </div>
+        <div class="kpi">
+            <div class="kpi-label">Contacts CRM</div>
+            <div class="kpi-value" id="kpi-contacts">0</div>
+            <div class="kpi-sub">Actifs dans HubSpot</div>
+        </div>
+        <div class="kpi">
+            <div class="kpi-label">Emails traites</div>
+            <div class="kpi-value" id="kpi-emails">0</div>
+            <div class="kpi-sub">Brouillons crees</div>
+        </div>
+        <div class="kpi">
+            <div class="kpi-label">Cycles cette semaine</div>
+            <div class="kpi-value" id="kpi-routines">0</div>
+            <div class="kpi-sub">Routines executees</div>
+        </div>
+    </div>
+
+    <!-- CYCLE & ROUTINES -->
+    <div class="panel">
+        <div class="panel-head">
+            <div class="panel-title">
+                <span class="icon" style="background:rgba(14,165,233,0.1);color:var(--blue-600)">&#9881;</span>
+                Cycle du Robot
+            </div>
+            <div class="panel-meta">Toutes les 10 minutes</div>
+        </div>
+        <div class="cycle">
+            <div class="cycle-spinner">&#8635;</div>
+            <div class="cycle-text">
+                <strong>Execution automatique</strong>
+                <p>Emails, CRM, relances et generation de devis — en continu</p>
+            </div>
+            <div class="cycle-timer" id="countdown">--:--</div>
+        </div>
+        <div class="routines">
+            <div class="routine">
+                <div class="routine-tag">Matin</div>
+                <h4>Traitement emails</h4>
+                <p>Lecture des emails non-lus, identification des prospects, creation de brouillons</p>
+            </div>
+            <div class="routine">
+                <div class="routine-tag">Relances</div>
+                <h4>Suivi prospects</h4>
+                <p>Relances automatiques J+3, J+7, J+14 avec devis personnalises</p>
+            </div>
+            <div class="routine">
+                <div class="routine-tag">Audit</div>
+                <h4>Rapport hebdo</h4>
+                <p>KPIs, contacts inactifs, pipeline, rapport complet chaque vendredi</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4 SOURCES -->
+    <div class="panel">
+        <div class="panel-head">
+            <div class="panel-title">
+                <span class="icon" style="background:rgba(168,85,247,0.1);color:var(--purple-500)">&#9889;</span>
+                4 Sources connectees
+            </div>
+            <div class="panel-meta">Integrations actives</div>
+        </div>
+        <div class="sources">
+            <div class="source">
+                <div class="source-logo hubspot">H</div>
+                <h4>HubSpot CRM</h4>
+                <p>Contacts, deals, taches, pipeline de vente</p>
+                <span class="source-badge ok">Connecte</span>
+            </div>
+            <div class="source">
+                <div class="source-logo gmail">G</div>
+                <h4>Gmail</h4>
+                <p>Emails, brouillons, suivi de prospection</p>
+                <span class="source-badge ok">Connecte</span>
+            </div>
+            <div class="source">
+                <div class="source-logo notion">N</div>
+                <h4>Notion</h4>
+                <p>Documentation, bases de donnees, projets</p>
+                <span class="source-badge ok">Connecte</span>
+            </div>
+            <div class="source">
+                <div class="source-logo github">GH</div>
+                <h4>GitHub</h4>
+                <p>Issues, pull requests, suivi technique</p>
+                <span class="source-badge ok">Connecte</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- JOURNAL -->
+    <div class="panel">
+        <div class="panel-head">
+            <div class="panel-title">
+                <span class="icon" style="background:rgba(34,197,94,0.1);color:var(--green-600)">&#9776;</span>
+                Journal d'activite
+            </div>
+            <div class="panel-meta" id="log-meta">Temps reel</div>
+        </div>
+        <ul class="log-list" id="activity-log">
+            <li class="log-empty">En attente de la premiere execution du robot...</li>
+        </ul>
+    </div>
+
+    <!-- LIVRABLES -->
+    <div class="panel">
+        <div class="panel-head">
+            <div class="panel-title">
+                <span class="icon" style="background:rgba(249,115,22,0.1);color:var(--orange-500)">&#128196;</span>
+                Livrables &amp; Devis
+            </div>
+            <div class="panel-meta" id="liv-meta">--</div>
+        </div>
+        <div class="livrables-kpis">
+            <div class="liv-kpi">
+                <div class="lk-val" id="kpi-devis">0</div>
+                <div class="lk-label">Devis generes</div>
+            </div>
+            <div class="liv-kpi">
+                <div class="lk-val" id="kpi-props">0</div>
+                <div class="lk-label">Propositions</div>
+            </div>
+            <div class="liv-kpi">
+                <div class="lk-val" id="kpi-montant">--</div>
+                <div class="lk-label">CA potentiel</div>
+            </div>
+        </div>
+        <div class="stages" id="stages-block" style="display:none">
+            <div class="stages-title">Pipeline par etape</div>
+            <div id="stages-list"></div>
+        </div>
+        <ul class="log-list" id="livrables-list">
+            <li class="log-empty">Aucun livrable genere pour le moment.</li>
+        </ul>
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="foot-line"><strong>SNB Consulting</strong> &mdash; Agent Commercial Autonome propulse par Claude AI</div>
+    <div class="foot-line">Contact : <a href="mailto:bp.thevenot@gmail.com">bp.thevenot@gmail.com</a></div>
+    <div class="foot-line" style="margin-top:12px">
+        <a href="/">Dashboard</a> &middot;
+        <a href="/pipeline.html">Pipeline</a> &middot;
+        <a href="/livrables.html">Livrables</a> &middot;
+        <a href="/missions.html">Missions</a> &middot;
+        <a href="/documents.html">Documents</a> &middot;
+        <a href="/portfolio.html">Portfolio</a> &middot;
+        <a href="/routines.html">Routines</a> &middot;
+        <a href="/architecture.html">Architecture</a> &middot;
+        <a href="/contact.html">Contact</a>
+    </div>
+    <div class="foot-line" id="foot-ts" style="margin-top:8px"></div>
+</footer>
+
+<script>
+(function() {
+    var CYCLE = 600; // 10 minutes
+
+    // --- Countdown ---
+    function startCountdown() {
+        var el = document.getElementById('countdown');
+        var hd = document.getElementById('hd-timer');
+        var now = Math.floor(Date.now() / 1000);
+        var rem = CYCLE - (now % CYCLE);
+
+        setInterval(function() {
+            var m = Math.floor(rem / 60);
+            var s = rem % 60;
+            var d = m + ':' + (s < 10 ? '0' : '') + s;
+            el.textContent = d;
+            hd.textContent = d;
+            if (rem <= 0) { rem = CYCLE; loadStatus(); }
+            rem--;
+        }, 1000);
+    }
+
+    // --- Relative time ---
+    function ago(iso) {
+        if (!iso) return '';
+        var s = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+        if (s < 60) return 'il y a ' + s + 's';
+        if (s < 3600) return 'il y a ' + Math.floor(s/60) + ' min';
+        if (s < 86400) return 'il y a ' + Math.floor(s/3600) + 'h';
+        return 'il y a ' + Math.floor(s/86400) + 'j';
+    }
+
+    // --- Load status ---
+    function loadStatus() {
+        fetch('status.json?_=' + Date.now())
+        .then(function(r) { if (!r.ok) throw 0; return r.json(); })
+        .then(function(d) {
+            // KPIs
+            document.getElementById('kpi-status').textContent = d.status || 'Actif';
+            document.getElementById('kpi-lastrun').textContent = d.last_run
+                ? ago(d.last_run) + ' (' + new Date(d.last_run).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) + ')'
+                : 'En attente 1ere execution';
+            document.getElementById('kpi-emails').textContent = d.emails_processed || 0;
+            document.getElementById('kpi-contacts').textContent = (d.active_contacts || 0).toLocaleString('fr-FR');
+            document.getElementById('kpi-routines').textContent = d.routines_this_week || 0;
+
+            // Pipeline KPI
+            var pipelineEl = document.getElementById('kpi-pipeline');
+            var pipelineSubEl = document.getElementById('kpi-pipeline-sub');
+            var pipelineVal = (d.livrables && d.livrables.total_montant) || d.pipeline_value || 0;
+            var dealCount = (d.livrables && d.livrables.propositions_count) || d.deals_count || 0;
+            if (pipelineVal > 0) {
+                var formatted;
+                if (pipelineVal >= 1000000) {
+                    formatted = (pipelineVal / 1000000).toFixed(1).replace('.0','') + 'M \u20ac';
+                } else if (pipelineVal >= 1000) {
+                    formatted = (pipelineVal / 1000).toFixed(1).replace('.0','') + 'k \u20ac';
+                } else {
+                    formatted = pipelineVal.toLocaleString('fr-FR') + ' \u20ac';
+                }
+                pipelineEl.textContent = formatted;
+                pipelineSubEl.textContent = dealCount + ' deal' + (dealCount > 1 ? 's' : '') + ' actif' + (dealCount > 1 ? 's' : '');
+            } else {
+                pipelineEl.textContent = '--';
+            }
+
+            // Nav badge
+            var badge = document.getElementById('nav-badge');
+            var navSt = document.getElementById('nav-status');
+            badge.className = 'nav-badge';
+            if (d.status === 'Erreur') { badge.classList.add('error'); navSt.textContent = 'Erreur'; }
+            else { navSt.textContent = 'Actif'; }
+
+            // Status color
+            var sv = document.getElementById('kpi-status');
+            sv.className = 'kpi-value' + (d.status === 'Erreur' ? '' : ' green');
+
+            // Activity log
+            var log = document.getElementById('activity-log');
+            if (d.activity && d.activity.length) {
+                log.innerHTML = '';
+                d.activity.forEach(function(a) {
+                    var tc = 'tag-' + (a.type || 'systeme');
+                    if (!['tag-crm','tag-email','tag-notion','tag-systeme'].includes(tc)) tc = 'tag-systeme';
+                    var li = document.createElement('li');
+                    li.className = 'log-item';
+                    li.innerHTML =
+                        '<span class="log-time">' + (a.time||'') + '</span>' +
+                        '<span class="log-tag ' + tc + '">' + (a.type||'info').toUpperCase() + '</span>' +
+                        '<span>' + (a.message||'') + '</span>';
+                    log.appendChild(li);
+                });
+            }
+
+            // Livrables
+            if (d.livrables) {
+                var l = d.livrables;
+                document.getElementById('kpi-devis').textContent = l.devis_count || 0;
+                document.getElementById('kpi-props').textContent = l.propositions_count || 0;
+                var mt = l.total_montant || 0;
+                document.getElementById('kpi-montant').textContent = mt > 0 ? mt.toLocaleString('fr-FR') + ' \u20ac' : '--';
+                document.getElementById('liv-meta').textContent = (l.devis_count + l.propositions_count) + ' documents';
+
+                // Pipeline par etape
+                var stagesBlock = document.getElementById('stages-block');
+                var stagesList = document.getElementById('stages-list');
+                if (d.deals_by_stage && Object.keys(d.deals_by_stage).length) {
+                    var stageLabels = {
+                        'appointmentscheduled': 'RDV planifie',
+                        'qualifiedtobuy': 'Qualifie',
+                        'presentationscheduled': 'Presentation',
+                        'decisionmakerboughtin': 'Decideur convaincu',
+                        'contractsent': 'Contrat envoye',
+                        'closedwon': 'Gagne',
+                        'closedlost': 'Perdu'
+                    };
+                    var entries = Object.keys(d.deals_by_stage).map(function(k) {
+                        return { key: k, label: stageLabels[k] || k, count: d.deals_by_stage[k] };
+                    });
+                    var maxCount = Math.max.apply(null, entries.map(function(e) { return e.count; }));
+                    entries.sort(function(a, b) { return b.count - a.count; });
+                    stagesList.innerHTML = '';
+                    entries.forEach(function(e) {
+                        var pct = maxCount > 0 ? Math.round((e.count / maxCount) * 100) : 0;
+                        var row = document.createElement('div');
+                        row.className = 'stage-row';
+                        row.innerHTML =
+                            '<div class="stage-label">' + e.label + '</div>' +
+                            '<div class="stage-bar-wrap"><div class="stage-bar" style="width:' + pct + '%"></div></div>' +
+                            '<div class="stage-count">' + e.count + '</div>';
+                        stagesList.appendChild(row);
+                    });
+                    stagesBlock.style.display = 'block';
+                }
+
+                var ll = document.getElementById('livrables-list');
+                if (l.recent && l.recent.length) {
+                    ll.innerHTML = '';
+                    l.recent.forEach(function(doc) {
+                        var li = document.createElement('li');
+                        li.className = 'log-item';
+                        var tc2 = doc.type === 'devis' ? 'tag-crm' : 'tag-notion';
+                        li.innerHTML =
+                            '<span class="log-time">' + (doc.date||'') + '</span>' +
+                            '<span class="log-tag ' + tc2 + '">' + (doc.type||'').toUpperCase() + '</span>' +
+                            '<span><strong>' + (doc.client||'') + '</strong> — ' + (doc.objet||doc.titre||'') +
+                            (doc.montant ? ' (' + doc.montant + ')' : '') + '</span>';
+                        ll.appendChild(li);
+                    });
+                }
+            }
+
+            // Footer
+            document.getElementById('foot-ts').textContent = 'MAJ : ' + new Date().toLocaleString('fr-FR');
+        })
+        .catch(function() {
+            document.getElementById('kpi-lastrun').textContent = 'En attente 1ere execution';
+            document.getElementById('foot-ts').textContent = 'MAJ : ' + new Date().toLocaleString('fr-FR');
+        });
+    }
+
+    loadStatus();
+    startCountdown();
+    setInterval(loadStatus, CYCLE * 1000);
+})();
+</script>
+
+</body>
+</html>

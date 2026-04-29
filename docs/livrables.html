@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Livrables &amp; Devis | SNB Consulting</title>
+    <meta name="description" content="Toutes les propositions commerciales et devis generes automatiquement par l'agent IA de SNB Consulting.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect rx='18' width='100' height='100' fill='%230f172a'/><text x='50' y='66' text-anchor='middle' fill='%2338bdf8' font-size='48' font-family='system-ui' font-weight='800'>S</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/style.css">
+    <style>
+        .liv-card {
+            background: white;
+            border: 1px solid var(--slate-200);
+            border-radius: var(--radius);
+            padding: 18px 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: border-color 0.15s, transform 0.15s;
+        }
+        .liv-card:hover { border-color: var(--blue-500); transform: translateY(-1px); }
+        .liv-date {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--slate-500);
+            letter-spacing: 0.4px;
+            min-width: 48px;
+        }
+        .liv-type {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            background: #f3e8ff;
+            color: #7c3aed;
+        }
+        .liv-type.devis { background: #dbeafe; color: #1d4ed8; }
+        .liv-main { flex: 1; }
+        .liv-client { font-size: 15px; font-weight: 700; color: var(--slate-900); }
+        .liv-obj { font-size: 13px; color: var(--slate-500); margin-top: 2px; }
+        .liv-montant {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--green-600);
+            font-variant-numeric: tabular-nums;
+            text-align: right;
+            min-width: 110px;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a class="nav-brand" href="/">
+        <div class="nav-logo">S</div>
+        <div class="nav-title">SNB Consulting <span>| Agent IA</span></div>
+    </a>
+    <div class="nav-menu">
+        <a href="/" class="nav-link">Dashboard</a>
+        <a href="/pipeline.html" class="nav-link">Pipeline</a>
+        <a href="/livrables.html" class="nav-link active">Livrables</a>
+        <a href="/missions.html" class="nav-link">Missions</a>
+        <a href="/documents.html" class="nav-link">Documents</a>
+        <a href="/portfolio.html" class="nav-link">Portfolio</a>
+        <a href="/routines.html" class="nav-link">Routines</a>
+        <a href="/architecture.html" class="nav-link">Architecture</a>
+        <a href="/contact.html" class="nav-link">Contact</a>
+    </div>
+    <div class="nav-right">
+        <div class="nav-badge"><span class="dot"></span><span>Actif</span></div>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-badge">&#128196; Propositions &amp; Devis</div>
+        <h1>Livrables generes</h1>
+        <p>Toutes les propositions commerciales et devis produits et envoyes automatiquement par l'agent IA.</p>
+    </div>
+</section>
+
+<div class="container narrow" style="margin-top: -32px; position: relative; z-index: 2;">
+
+    <div class="panel">
+        <div class="panel-head">
+            <div class="panel-title">
+                <span class="icon" style="background:rgba(249,115,22,0.1);color:var(--orange-500)">&#128202;</span>
+                Vue d'ensemble
+            </div>
+            <div class="panel-meta" id="liv-meta">--</div>
+        </div>
+        <div class="panel-body" style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px">
+            <div style="text-align:center; padding:14px; background:var(--slate-50); border-radius:8px">
+                <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--slate-500); letter-spacing:0.4px">Propositions</div>
+                <div id="sum-props" style="font-size:28px; font-weight:800; color:var(--slate-900); margin-top:6px">--</div>
+            </div>
+            <div style="text-align:center; padding:14px; background:var(--slate-50); border-radius:8px">
+                <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--slate-500); letter-spacing:0.4px">Devis</div>
+                <div id="sum-devis" style="font-size:28px; font-weight:800; color:var(--slate-900); margin-top:6px">--</div>
+            </div>
+            <div style="text-align:center; padding:14px; background:var(--slate-50); border-radius:8px">
+                <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--slate-500); letter-spacing:0.4px">CA potentiel</div>
+                <div id="sum-total" style="font-size:28px; font-weight:800; color:var(--green-600); margin-top:6px">--</div>
+            </div>
+        </div>
+    </div>
+
+    <h2 style="font-size: 18px; margin: 24px 0 12px; color: var(--slate-900); font-weight: 800;">Documents recents</h2>
+    <div id="liv-list">
+        <div style="text-align:center; padding:32px; color:var(--slate-400)">Chargement...</div>
+    </div>
+
+</div>
+
+<footer>
+    <div class="foot-line"><strong>SNB Consulting</strong> &mdash; Agent Commercial Autonome propulse par Claude AI</div>
+    <div class="foot-line">Contact : <a href="mailto:bp.thevenot@gmail.com">bp.thevenot@gmail.com</a></div>
+    <div class="foot-nav">
+        <a href="/">Dashboard</a>
+        <a href="/pipeline.html">Pipeline</a>
+        <a href="/livrables.html">Livrables</a>
+        <a href="/missions.html">Missions</a>
+        <a href="/documents.html">Documents</a>
+        <a href="/portfolio.html">Portfolio</a>
+        <a href="/routines.html">Routines</a>
+        <a href="/architecture.html">Architecture</a>
+        <a href="/contact.html">Contact</a>
+    </div>
+</footer>
+
+<script>
+fetch('/status.json?t=' + Date.now())
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+        var l = d.livrables || { recent: [], propositions_count: 0, devis_count: 0, total_montant: 0 };
+        document.getElementById('sum-props').textContent = l.propositions_count || 0;
+        document.getElementById('sum-devis').textContent = l.devis_count || 0;
+        document.getElementById('sum-total').textContent = (l.total_montant || 0).toLocaleString('fr-FR') + ' \u20ac';
+        document.getElementById('liv-meta').textContent = ((l.devis_count || 0) + (l.propositions_count || 0)) + ' documents';
+
+        var list = document.getElementById('liv-list');
+        var items = l.recent || [];
+        if (items.length === 0) {
+            list.innerHTML = '<div style="text-align:center; padding:32px; color:var(--slate-400)">Aucun livrable pour le moment</div>';
+            return;
+        }
+        list.innerHTML = '';
+        items.forEach(function(doc) {
+            var el = document.createElement('div');
+            el.className = 'liv-card';
+            var type = (doc.type || 'proposition').toLowerCase();
+            el.innerHTML =
+                '<div class="liv-date">' + (doc.date || '--') + '</div>' +
+                '<span class="liv-type ' + type + '">' + (doc.type || 'PROPOSITION').toUpperCase() + '</span>' +
+                '<div class="liv-main">' +
+                    '<div class="liv-client">' + (doc.client || '--') + '</div>' +
+                    '<div class="liv-obj">' + (doc.objet || doc.titre || '') + '</div>' +
+                '</div>' +
+                '<div class="liv-montant">' + (doc.montant || '--') + '</div>';
+            list.appendChild(el);
+        });
+    })
+    .catch(function() {
+        document.getElementById('liv-list').innerHTML = '<div style="text-align:center; padding:32px; color:var(--slate-400)">Donnees indisponibles</div>';
+    });
+</script>
+
+</body>
+</html>

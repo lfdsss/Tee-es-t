@@ -1,0 +1,42 @@
+name: StudentFlow Web CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "studentflow-web/**"
+      - ".github/workflows/studentflow-web-ci.yml"
+  pull_request:
+    paths:
+      - "studentflow-web/**"
+      - ".github/workflows/studentflow-web-ci.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: studentflow-web
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: studentflow-web/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Test
+        run: npm test -- --run
+
+      - name: Build
+        run: npm run build

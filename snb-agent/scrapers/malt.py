@@ -76,3 +76,37 @@ class MaltScraper(BaseScraper):
             except Exception:
                 pass
         return missions
+
+    async def fetch_fallback(self) -> List[RawMission]:
+        missions = []
+        for query in self.SEARCH_QUERIES:
+            try:
+                resp = await self._get(f"https://www.malt.fr/s?q={query}&as=t")
+                if resp.status_code != 200:
+                    continue
+                from bs4 import BeautifulSoup
+                soup = BeautifulSoup(resp.text, "html.parser")
+                for card in soup.select("li[class], div[class*='card'], div[class*='item'], section[class]"):
+                    title_el = card.select_one("h2, h3, h4, a > span, a > strong, [class*='title']")
+                    if not title_el:
+                        continue
+                    title = title_el.get_text(strip=True)
+                    if len(title) < 5:
+                        continue
+                    link_el = card.select_one("a[href]")
+                    href = link_el["href"] if link_el and link_el.get("href") else ""
+                    if href and not href.startswith("http"):
+                        href = f"https://www.malt.fr{href}"
+                    missions.append(RawMission(
+                        title=title,
+                        company="Malt",
+                        description="",
+                        budget_raw="",
+                        source="malt",
+                        source_url=href,
+                        tags=["freelance", "france"],
+                        remote=True,
+                    ))
+            except Exception:
+                pass
+        return missions

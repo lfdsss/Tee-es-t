@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact | SNB Consulting</title>
+    <meta name="description" content="Contactez SNB Consulting pour mettre en place un agent commercial autonome sur votre CRM.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect rx='18' width='100' height='100' fill='%230f172a'/><text x='50' y='66' text-anchor='middle' fill='%2338bdf8' font-size='48' font-family='system-ui' font-weight='800'>S</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/style.css">
+    <style>
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 16px;
+        }
+        .contact-card {
+            background: white;
+            border: 1px solid var(--slate-200);
+            border-radius: var(--radius);
+            padding: 24px;
+            text-align: center;
+            transition: transform 0.15s, border-color 0.15s;
+        }
+        .contact-card:hover {
+            border-color: var(--blue-500);
+            transform: translateY(-2px);
+        }
+        .contact-card .icn {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(14,165,233,0.1);
+            color: var(--blue-600);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 22px;
+        }
+        .contact-card h3 { font-size: 13px; font-weight: 700; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 6px; }
+        .contact-card a { font-size: 15px; font-weight: 700; color: var(--slate-900); display: block; }
+        .contact-card a:hover { color: var(--blue-600); text-decoration: none; }
+        @media (max-width: 640px) { .contact-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a class="nav-brand" href="/">
+        <div class="nav-logo">S</div>
+        <div class="nav-title">SNB Consulting <span>| Agent IA</span></div>
+    </a>
+    <div class="nav-menu">
+        <a href="/" class="nav-link">Dashboard</a>
+        <a href="/pipeline.html" class="nav-link">Pipeline</a>
+        <a href="/livrables.html" class="nav-link">Livrables</a>
+        <a href="/missions.html" class="nav-link">Missions</a>
+        <a href="/documents.html" class="nav-link">Documents</a>
+        <a href="/portfolio.html" class="nav-link">Portfolio</a>
+        <a href="/routines.html" class="nav-link">Routines</a>
+        <a href="/architecture.html" class="nav-link">Architecture</a>
+        <a href="/contact.html" class="nav-link active">Contact</a>
+    </div>
+    <div class="nav-right">
+        <div class="nav-badge"><span class="dot"></span><span>Actif</span></div>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-badge">&#9993; Prenez contact</div>
+        <h1>Parlons agent commercial IA</h1>
+        <p>Curieux de savoir ce qu'un agent autonome pourrait faire sur votre propre CRM ? Ecrivez-moi &mdash; reponse sous 24h.</p>
+    </div>
+</section>
+
+<div class="container narrow" style="margin-top: -32px; position: relative; z-index: 2;">
+
+    <div class="contact-grid">
+        <div class="contact-card">
+            <div class="icn">&#9993;</div>
+            <h3>Email</h3>
+            <a href="mailto:bp.thevenot@gmail.com">bp.thevenot@gmail.com</a>
+        </div>
+        <div class="contact-card">
+            <div class="icn">&#128279;</div>
+            <h3>GitHub</h3>
+            <a href="https://github.com/them311/Tee-es-t" target="_blank" rel="noopener">them311/Tee-es-t</a>
+        </div>
+        <div class="contact-card">
+            <div class="icn">&#127760;</div>
+            <h3>Dashboard live</h3>
+            <a href="https://snb-consulting-platform.netlify.app">snb-consulting-platform</a>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-head">
+            <div class="panel-title">
+                <span class="icon" style="background:rgba(14,165,233,0.1);color:var(--blue-600)">&#128172;</span>
+                Ce que je peux mettre en place chez vous
+            </div>
+        </div>
+        <div class="panel-body">
+            <h3>Agent de prospection</h3>
+            <p>Routine matinale qui identifie les prospects chauds, redige des messages personnalises et prepare des brouillons dans votre boite.</p>
+
+            <h3>Suivi &amp; relances</h3>
+            <p>Detection des deals qui stagnent, relances automatiques adaptees au contexte, lecture et tri des reponses entrantes.</p>
+
+            <h3>Audit hebdomadaire</h3>
+            <p>Rapport Notion complet chaque vendredi : conversion, top comptes, actions prioritaires pour la semaine suivante.</p>
+
+            <h3>Integration sur-mesure</h3>
+            <p>Connecteurs pour HubSpot, Pipedrive, Salesforce, Gmail, Outlook, Slack, Notion, Airtable. Ajout d'autres sources sur demande.</p>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-head">
+            <div class="panel-title">
+                <span class="icon" style="background:rgba(34,197,94,0.1);color:var(--green-600)">&#128077;</span>
+                Projets en cours
+            </div>
+        </div>
+        <div class="panel-body">
+            <p>L'agent tourne actuellement en production chez SNB Consulting avec un pipeline de 80 000 EUR, 777 contacts actifs et 303 companies suivies. L'architecture est disponible en open source sur GitHub.</p>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    <div class="foot-line"><strong>SNB Consulting</strong> &mdash; Agent Commercial Autonome propulse par Claude AI</div>
+    <div class="foot-line">Contact : <a href="mailto:bp.thevenot@gmail.com">bp.thevenot@gmail.com</a></div>
+    <div class="foot-nav">
+        <a href="/">Dashboard</a>
+        <a href="/pipeline.html">Pipeline</a>
+        <a href="/livrables.html">Livrables</a>
+        <a href="/missions.html">Missions</a>
+        <a href="/documents.html">Documents</a>
+        <a href="/portfolio.html">Portfolio</a>
+        <a href="/routines.html">Routines</a>
+        <a href="/architecture.html">Architecture</a>
+        <a href="/contact.html">Contact</a>
+    </div>
+</footer>
+
+</body>
+</html>

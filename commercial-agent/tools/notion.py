@@ -2,15 +2,20 @@
 
 import os
 import json
-import requests
+import logging
+
+from .http_utils import robust_request, validate_api_key, AuthError
+
+log = logging.getLogger("commercial-agent")
 
 BASE_URL = "https://api.notion.com/v1"
 NOTION_VERSION = "2022-06-28"
 
 
 def _headers() -> dict:
+    key = validate_api_key("NOTION_API_KEY")
     return {
-        "Authorization": f"Bearer {os.getenv('NOTION_API_KEY')}",
+        "Authorization": f"Bearer {key}",
         "Content-Type": "application/json",
         "Notion-Version": NOTION_VERSION,
     }
@@ -171,8 +176,8 @@ def _search(input_data: dict) -> str:
     if "page_size" in input_data:
         payload["page_size"] = input_data["page_size"]
 
-    resp = requests.post(f"{BASE_URL}/search", headers=_headers(), json=payload)
-    resp.raise_for_status()
+    resp = robust_request("POST", f"{BASE_URL}/search", headers=_headers(), json_data=payload)
+    
     data = resp.json()
 
     results = []
@@ -195,8 +200,8 @@ def _search(input_data: dict) -> str:
 
 def _get_page(input_data: dict) -> str:
     page_id = input_data["page_id"]
-    resp = requests.get(f"{BASE_URL}/pages/{page_id}", headers=_headers())
-    resp.raise_for_status()
+    resp = robust_request("GET", f"{BASE_URL}/pages/{page_id}", headers=_headers())
+    
     page = resp.json()
 
     # Simplify properties for readability
@@ -264,8 +269,8 @@ def _create_page(input_data: dict) -> str:
     if "content" in input_data:
         payload["children"] = _markdown_to_blocks(input_data["content"])
 
-    resp = requests.post(f"{BASE_URL}/pages", headers=_headers(), json=payload)
-    resp.raise_for_status()
+    resp = robust_request("POST", f"{BASE_URL}/pages", headers=_headers(), json_data=payload)
+    
     result = resp.json()
     return json.dumps({
         "status": "created",
@@ -278,12 +283,12 @@ def _update_page(input_data: dict) -> str:
     page_id = input_data["page_id"]
     properties = input_data["properties"]
 
-    resp = requests.patch(
+    resp = robust_request("PATCH",
         f"{BASE_URL}/pages/{page_id}",
         headers=_headers(),
         json={"properties": properties},
     )
-    resp.raise_for_status()
+    
     return json.dumps({"status": "updated", "id": page_id}, ensure_ascii=False)
 
 
@@ -298,8 +303,8 @@ def _create_database(input_data: dict) -> str:
         "properties": properties,
     }
 
-    resp = requests.post(f"{BASE_URL}/databases", headers=_headers(), json=payload)
-    resp.raise_for_status()
+    resp = robust_request("POST", f"{BASE_URL}/databases", headers=_headers(), json_data=payload)
+    
     result = resp.json()
     return json.dumps({
         "status": "created",
@@ -317,12 +322,12 @@ def _query_database(input_data: dict) -> str:
         payload["sorts"] = input_data["sorts"]
     payload["page_size"] = input_data.get("page_size", 100)
 
-    resp = requests.post(
+    resp = robust_request("POST",
         f"{BASE_URL}/databases/{database_id}/query",
         headers=_headers(),
-        json=payload,
+        json_data=payload,
     )
-    resp.raise_for_status()
+    
     data = resp.json()
 
     rows = []
@@ -364,15 +369,15 @@ def _add_comment(input_data: dict) -> str:
     page_id = input_data["page_id"]
     text = input_data["text"]
 
-    resp = requests.post(
+    resp = robust_request("POST",
         f"{BASE_URL}/comments",
         headers=_headers(),
-        json={
+        json_data={
             "parent": {"page_id": page_id},
             "rich_text": [{"type": "text", "text": {"content": text}}],
         },
     )
-    resp.raise_for_status()
+    
     return json.dumps({"status": "comment_added", "id": resp.json()["id"]}, ensure_ascii=False)
 
 

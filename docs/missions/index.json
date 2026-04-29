@@ -1,0 +1,46 @@
+[
+  {
+    "id": "20260418-143000-freelance-info-developpeur-agent-ia-python-esn",
+    "date_utc": "2026-04-18T14:30:00+00:00",
+    "platform": "freelance-info",
+    "platform_name": "Freelance-info",
+    "title": "Developpeur Agent IA Python - mission longue duree ESN",
+    "budget_hint": "TJM 650 EUR",
+    "urgency": "Demarrage 5 mai, duree 6 mois renouvelables",
+    "file": "20260418-143000-freelance-info-developpeur-agent-ia-python-esn.md",
+    "preview": "Baptiste Thevenot, SNB Consulting. Consultant freelance specialise dans la conception d'agents IA autonomes en production. 8 ans d'experience dont les 3 dernieres annees exclusivement dediees a l'orchestration d'agents Claude."
+  },
+  {
+    "id": "20260418-141500-codeur-automatisation-python-taches-recurrentes",
+    "date_utc": "2026-04-18T14:15:00+00:00",
+    "platform": "codeur",
+    "platform_name": "Codeur.com",
+    "title": "Automatisation Python de taches commerciales recurrentes",
+    "budget_hint": "1500 EUR",
+    "urgency": "Livraison sous 3 semaines",
+    "file": "20260418-141500-codeur-automatisation-python-taches-recurrentes.md",
+    "preview": "Bonjour, Mission claire et completement faisable dans votre budget et votre delai. C'est le genre d'automatisation que je livre regulierement avec Python plus APIs Google, en moins de 5 jours effectifs."
+  },
+  {
+    "id": "20260418-140000-malt-consultant-hubspot-revops-automation",
+    "date_utc": "2026-04-18T14:00:00+00:00",
+    "platform": "malt",
+    "platform_name": "Malt",
+    "title": "Consultant HubSpot RevOps - structuration CRM et automatisations",
+    "budget_hint": "TJM 600 EUR, 15 jours sur 2 mois",
+    "urgency": "Cadrage sous 10 jours",
+    "file": "20260418-140000-malt-consultant-hubspot-revops-automation.md",
+    "preview": "Bonjour, Votre brief est tres clair et correspond exactement au type de mission que je traite : structuration HubSpot sur base existante, automatisation du cycle commercial, et remontee des bons indicateurs."
+  },
+  {
+    "id": "20260418-120000-codeur-exemple-agent-commercial-hubspot",
+    "date_utc": "2026-04-18T12:00:00+00:00",
+    "platform": "codeur",
+    "platform_name": "Codeur.com",
+    "title": "Exemple - Agent commercial automatise sur HubSpot",
+    "budget_hint": "3500 EUR",
+    "urgency": "Demarrage sous 2 semaines",
+    "file": "20260418-120000-codeur-exemple-agent-commercial-hubspot.md",
+    "preview": "Bonjour, Votre mission correspond exactement au type de projet que je livre regulierement : automatisation commerciale end-to-end sur HubSpot avec qualification IA des leads et suivi des deals."
+  }
+]

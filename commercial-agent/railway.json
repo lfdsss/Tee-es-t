@@ -1,5 +1,6 @@
 {
   "$schema": "https://railway.com/railway.schema.json",
+  "_backup_note": "BACKUP — non actif en production. Le runtime de l'agent est piloté par .github/workflows/robot.yml. Voir commercial-agent/DEPLOY_BACKUP.md.",
   "build": {
     "builder": "DOCKERFILE",
     "dockerfilePath": "Dockerfile"
