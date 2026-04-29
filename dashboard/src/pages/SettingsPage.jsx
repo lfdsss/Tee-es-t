@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { fetchStats, fetchDebug } from '../lib/supabase'
-import { RefreshCw, CheckCircle2, XCircle, AlertTriangle } from 'lucide-react'
+import { fetchStats, fetchDebug, repairAllSources, repairSource } from '../lib/supabase'
+import { RefreshCw, CheckCircle2, XCircle, AlertTriangle, Wrench, Zap } from 'lucide-react'
 
 function Field({ label, value, mono = false }) {
   return (
@@ -21,6 +21,9 @@ export default function SettingsPage({ session }) {
   const [health, setHealth] = useState(null)
   const [debug, setDebug] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [repairing, setRepairing] = useState(false)
+  const [repairResult, setRepairResult] = useState(null)
+  const [repairingSingle, setRepairingSingle] = useState(null)
 
   async function loadAll() {
     setLoading(true)
@@ -32,22 +35,53 @@ export default function SettingsPage({ session }) {
 
   useEffect(() => { loadAll() }, [])
 
+  async function handleRepairAll() {
+    setRepairing(true)
+    setRepairResult(null)
+    try {
+      const res = await repairAllSources()
+      setRepairResult(res)
+      loadAll()
+    } catch (e) {
+      setRepairResult({ error: e.message })
+    }
+    setRepairing(false)
+  }
+
+  async function handleRepairOne(name) {
+    setRepairingSingle(name)
+    try {
+      const res = await repairSource(name)
+      setRepairResult(prev => ({
+        ...prev,
+        results: { ...(prev?.results || {}), [name]: res },
+      }))
+      loadAll()
+    } catch (e) {
+      console.error(e)
+    }
+    setRepairingSingle(null)
+  }
+
   const isOnline = health?.status === 'running'
   const checks = debug?.checks || {}
   const sources = debug?.sources || {}
+  const failedSources = Object.entries(sources).filter(([, info]) => info.last_status !== 'success')
 
   return (
     <div className="space-y-6 max-w-3xl">
       <div className="flex items-end justify-between flex-wrap gap-4">
         <div>
           <h2 className="text-2xl font-bold text-slate-950 tracking-tight">Paramètres</h2>
-          <p className="text-sm text-slate-500 mt-1">Configuration, diagnostic et état des services</p>
+          <p className="text-sm text-slate-500 mt-1">Configuration, diagnostic et réparation</p>
         </div>
-        <button onClick={loadAll} disabled={loading}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-slate-200 text-sm text-slate-700 hover:border-slate-300 transition-colors disabled:opacity-50">
-          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-          Actualiser
-        </button>
+        <div className="flex gap-2">
+          <button onClick={loadAll} disabled={loading}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-slate-200 text-sm text-slate-700 hover:border-slate-300 transition-colors disabled:opacity-50">
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            Actualiser
+          </button>
+        </div>
       </div>
 
       {/* Diagnostic */}
@@ -94,30 +128,82 @@ export default function SettingsPage({ session }) {
         )}
       </div>
 
-      {/* Sources status */}
+      {/* Sources + Repair */}
       <div className="bg-white border border-slate-200 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-slate-950 mb-5">État des sources ({Object.keys(sources).length})</h3>
+        <div className="flex items-center justify-between mb-5">
+          <h3 className="text-lg font-semibold text-slate-950">Sources ({Object.keys(sources).length})</h3>
+          <button onClick={handleRepairAll} disabled={repairing || debug?.error}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-950 text-white text-sm font-medium hover:bg-slate-800 transition-colors disabled:opacity-50">
+            {repairing
+              ? <><RefreshCw className="w-4 h-4 animate-spin" /> Réparation...</>
+              : <><Wrench className="w-4 h-4" /> Réparer tout</>
+            }
+          </button>
+        </div>
+
+        {repairResult && !repairResult.error && repairResult.results && (
+          <div className="mb-4 bg-slate-50 border border-slate-200 rounded-lg p-4">
+            <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">Résultat réparation</p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {Object.entries(repairResult.results).map(([name, r]) => (
+                <div key={name} className="flex items-center gap-2 text-sm">
+                  <span className={`w-1.5 h-1.5 rounded-full ${r.status === 'ok' ? 'bg-emerald-500' : 'bg-red-500'}`} />
+                  <span className="text-slate-700">{name}</span>
+                  <span className="text-slate-400 font-mono text-xs">{r.missions || 0}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {Object.keys(sources).length === 0 ? (
           <p className="text-sm text-slate-400">Aucun scan encore exécuté ou serveur inaccessible</p>
         ) : (
           <div className="space-y-0">
-            {Object.entries(sources).sort(([,a],[,b]) => (b.last_status === 'success' ? -1 : 1) - (a.last_status === 'success' ? -1 : 1)).map(([name, info]) => (
-              <div key={name} className="flex items-center justify-between py-3 border-b border-slate-100 last:border-0">
-                <div className="flex items-center gap-2.5">
-                  <span className={`w-1.5 h-1.5 rounded-full ${info.last_status === 'success' ? 'bg-emerald-500' : info.last_status === 'error' ? 'bg-red-500' : 'bg-amber-400'}`} />
-                  <span className="text-sm font-medium text-slate-950">{name}</span>
-                </div>
-                <div className="flex items-center gap-4">
-                  {info.last_error && (
-                    <span className="text-xs text-red-500 max-w-[200px] truncate">{info.last_error}</span>
-                  )}
-                  <span className="text-[13px] text-slate-400 tabular-nums">
-                    {info.last_scan ? new Date(info.last_scan).toLocaleString('fr-FR', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' }) : '—'}
-                  </span>
-                </div>
-              </div>
-            ))}
+            {Object.entries(sources)
+              .sort(([,a],[,b]) => (a.last_status === 'success' ? 0 : 1) - (b.last_status === 'success' ? 0 : 1))
+              .map(([name, info]) => {
+                const isFailed = info.last_status !== 'success'
+                const isRepairingThis = repairingSingle === name
+                return (
+                  <div key={name} className="flex items-center justify-between py-3 border-b border-slate-100 last:border-0 gap-3">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                        info.last_status === 'success' ? 'bg-emerald-500'
+                        : info.last_status === 'error' ? 'bg-red-500'
+                        : 'bg-amber-400'
+                      }`} />
+                      <span className="text-sm font-medium text-slate-950">{name}</span>
+                      {info.last_error && (
+                        <span className="text-[11px] text-red-400 truncate max-w-[180px]">{info.last_error}</span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-3 shrink-0">
+                      <span className="text-[13px] text-slate-400 tabular-nums">
+                        {info.last_scan ? new Date(info.last_scan).toLocaleString('fr-FR', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' }) : '—'}
+                      </span>
+                      {isFailed && (
+                        <button onClick={() => handleRepairOne(name)} disabled={isRepairingThis}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium border border-slate-200 text-slate-600 hover:border-slate-950 hover:text-slate-950 transition-colors disabled:opacity-50"
+                          title={`Réparer ${name}`}>
+                          {isRepairingThis
+                            ? <RefreshCw className="w-3 h-3 animate-spin" />
+                            : <Zap className="w-3 h-3" />
+                          }
+                          Réparer
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
           </div>
+        )}
+
+        {failedSources.length > 0 && (
+          <p className="text-[13px] text-slate-400 mt-4">
+            {failedSources.length} source{failedSources.length > 1 ? 's' : ''} en erreur — le système tente automatiquement des méthodes alternatives après 3 échecs consécutifs
+          </p>
         )}
       </div>
 
@@ -145,9 +231,9 @@ export default function SettingsPage({ session }) {
         <Field label="Intervalle scan rapide (Tier 1)" value="5 minutes" />
         <Field label="Intervalle scan lent (Tier 2)" value="30 minutes" />
         <Field label="Sources surveillées" value="15 scrapers" />
+        <Field label="Auto-réparation" value="Après 3 échecs consécutifs" />
         <Field label="Modèle de génération" value="Claude Opus 4.7" />
         <Field label="TJM consultant" value="450 EUR/jour HT" />
-        <Field label="Pénalité CDI" value="-15 points" />
       </div>
     </div>
   )
