@@ -6,6 +6,7 @@ import {
   ChevronRight, ChevronDown, Download, ArrowRight,
   CheckCircle2, Clock, File,
 } from 'lucide-react'
+import cleanText from '../lib/cleanText'
 
 function parsePackage(text) {
   if (!text) return null
@@ -64,9 +65,9 @@ function ProposalPreview({ pkg, proposal }) {
       {/* Header */}
       <div className="border-b border-slate-200 pb-6">
         <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">Proposition de mission</p>
-        <h2 className="text-xl font-bold text-slate-950 mt-2 leading-tight">{mission?.title || 'Mission'}</h2>
+        <h2 className="text-xl font-bold text-slate-950 mt-2 leading-tight">{cleanText(mission?.title) || 'Mission'}</h2>
         <div className="flex items-center gap-3 mt-2 text-sm text-slate-500">
-          {(mission?.company) && <span>{mission.company}</span>}
+          {(mission?.company) && <span>{cleanText(mission.company)}</span>}
           {dateStr && <><span className="text-slate-300">—</span><span>{dateStr}</span></>}
         </div>
       </div>
@@ -347,9 +348,9 @@ export default function ProposalsPage() {
               <button onClick={() => toggle(p.id)}
                 className="w-full flex items-center gap-5 px-6 py-5 text-left hover:bg-slate-50 transition-colors">
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-slate-950 truncate">{mission?.title || 'Mission'}</p>
+                  <p className="text-sm font-semibold text-slate-950 truncate">{cleanText(mission?.title) || 'Mission'}</p>
                   <p className="text-xs text-slate-400 mt-1">
-                    {mission?.company || '—'} <span className="text-slate-200 mx-1">|</span> {mission?.source || ''}
+                    {cleanText(mission?.company) || '—'} <span className="text-slate-200 mx-1">|</span> {cleanText(mission?.source) || ''}
                   </p>
                 </div>
                 <div className="flex items-center gap-4 shrink-0">

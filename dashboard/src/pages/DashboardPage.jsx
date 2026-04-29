@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { fetchMissions, fetchStats, fetchScanLogs } from '../lib/supabase'
 import { ArrowUpRight, RefreshCw } from 'lucide-react'
+import cleanText from '../lib/cleanText'
 
 function StatCard({ label, value, sub }) {
   return (
@@ -101,8 +102,8 @@ export default function DashboardPage() {
               <Link key={m.id} to={`/missions/${m.id}`} className="flex items-center gap-5 px-6 py-4 hover:bg-slate-50 transition-colors group">
                 <ScoreValue score={m.score || 0} />
                 <div className="flex-1 min-w-0">
-                  <p className="text-[14px] font-medium text-slate-950 truncate group-hover:text-blue-600 transition-colors">{m.title}</p>
-                  <p className="text-[13px] text-slate-400 mt-0.5">{m.company || 'Entreprise non précisée'} &middot; {m.source}</p>
+                  <p className="text-[14px] font-medium text-slate-950 truncate group-hover:text-blue-600 transition-colors">{cleanText(m.title)}</p>
+                  <p className="text-[13px] text-slate-400 mt-0.5">{cleanText(m.company) || 'Entreprise non précisée'} &middot; {cleanText(m.source)}</p>
                 </div>
                 <StatusDot status={m.status} />
               </Link>
