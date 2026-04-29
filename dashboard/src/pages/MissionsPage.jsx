@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { fetchMissions } from '../lib/supabase'
 import { Search, ChevronLeft, ChevronRight } from 'lucide-react'
+import cleanText from '../lib/cleanText'
 
 const TYPE_LABELS = {
   ia: 'IA', web: 'Web', data: 'Data',
@@ -111,15 +112,15 @@ export default function MissionsPage() {
             <Link key={m.id} to={`/missions/${m.id}`} className="grid grid-cols-[56px_1fr_100px_100px_120px_64px] px-6 py-4 items-center border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors group">
               <span className={`text-sm font-bold tabular-nums ${scoreColor(m.score || 0)}`}>{m.score || 0}</span>
               <div className="min-w-0 pr-4">
-                <p className="text-sm font-semibold text-slate-950 truncate group-hover:text-blue-600 transition-colors">{m.title}</p>
-                <p className="text-[13px] text-slate-500 mt-0.5 truncate">{m.company || 'Non précisé'} · {m.source}</p>
+                <p className="text-sm font-semibold text-slate-950 truncate group-hover:text-blue-600 transition-colors">{cleanText(m.title)}</p>
+                <p className="text-[13px] text-slate-500 mt-0.5 truncate">{cleanText(m.company) || 'Non précisé'} · {cleanText(m.source)}</p>
               </div>
               <span className="text-sm text-slate-600">{t}</span>
               <span className="flex items-center gap-2 text-sm text-slate-600">
                 <span className={`w-1.5 h-1.5 rounded-full ${STATUS_DOT[m.status] || STATUS_DOT.new}`} />
                 {STATUS_LABELS[m.status] || m.status}
               </span>
-              <span className="text-sm text-slate-600 font-medium">{m.budget_raw || '—'}</span>
+              <span className="text-sm text-slate-600 font-medium">{cleanText(m.budget_raw) || '—'}</span>
               <span className="text-[13px] text-slate-400 tabular-nums text-right">{timeAgo(m.found_at || m.posted_at)}</span>
             </Link>
           )

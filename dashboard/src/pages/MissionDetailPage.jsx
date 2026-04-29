@@ -2,18 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { fetchMission, fetchProposals, updateMission, getDevisUrl } from '../lib/supabase'
 import { ArrowLeft, ExternalLink, Download } from 'lucide-react'
-
-function cleanText(text) {
-  if (!text) return ''
-  return text
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&nbsp;/g, ' ')
-    .replace(/<[^>]*>/g, '')
-}
+import cleanText from '../lib/cleanText'
 
 function parsePackage(text) {
   if (!text) return null
@@ -78,14 +67,14 @@ export default function MissionDetailPage() {
       </Link>
 
       <div>
-        <h2 className="text-2xl font-bold text-slate-950 tracking-tight">{mission.title}</h2>
+        <h2 className="text-2xl font-bold text-slate-950 tracking-tight">{cleanText(mission.title)}</h2>
         <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-slate-500">
-          <span>{mission.company || 'Non précisé'}</span>
+          <span>{cleanText(mission.company) || 'Non précisé'}</span>
           <span className="text-slate-300">·</span>
           <span>{mission.source}</span>
           {mission.type && <>
             <span className="text-slate-300">·</span>
-            <span className="capitalize">{mission.type}</span>
+            <span className="capitalize">{cleanText(mission.type)}</span>
           </>}
           {mission.remote && <>
             <span className="text-slate-300">·</span>
@@ -93,7 +82,7 @@ export default function MissionDetailPage() {
           </>}
           {mission.budget_raw && <>
             <span className="text-slate-300">·</span>
-            <span className="text-slate-950 font-medium">{mission.budget_raw}</span>
+            <span className="text-slate-950 font-medium">{cleanText(mission.budget_raw)}</span>
           </>}
           <span className="text-slate-300">·</span>
           <span className={`font-bold tabular-nums ${scoreColor(score)}`}>{score}/100</span>
@@ -159,19 +148,19 @@ export default function MissionDetailPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-y-5 gap-x-8">
           <div>
             <p className="text-[13px] text-slate-500">Entreprise</p>
-            <p className="text-sm font-medium text-slate-950 mt-0.5">{mission.company || 'Non précisé'}</p>
+            <p className="text-sm font-medium text-slate-950 mt-0.5">{cleanText(mission.company) || 'Non précisé'}</p>
           </div>
           <div>
             <p className="text-[13px] text-slate-500">Source</p>
-            <p className="text-sm font-medium text-slate-950 mt-0.5">{mission.source}</p>
+            <p className="text-sm font-medium text-slate-950 mt-0.5">{cleanText(mission.source)}</p>
           </div>
           <div>
             <p className="text-[13px] text-slate-500">Type</p>
-            <p className="text-sm font-medium text-slate-950 mt-0.5 capitalize">{mission.type || '—'}</p>
+            <p className="text-sm font-medium text-slate-950 mt-0.5 capitalize">{cleanText(mission.type) || '—'}</p>
           </div>
           <div>
             <p className="text-[13px] text-slate-500">Budget</p>
-            <p className="text-sm font-medium text-slate-950 mt-0.5">{mission.budget_raw || '—'}</p>
+            <p className="text-sm font-medium text-slate-950 mt-0.5">{cleanText(mission.budget_raw) || '—'}</p>
           </div>
         </div>
       </div>
@@ -185,7 +174,7 @@ export default function MissionDetailPage() {
         {mission.tags && mission.tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-5 pt-5 border-t border-slate-100">
             {mission.tags.map((tag, i) => (
-              <span key={i} className="text-[13px] text-slate-500">{tag}{i < mission.tags.length - 1 ? ',' : ''}</span>
+              <span key={i} className="text-[13px] text-slate-500">{cleanText(tag)}{i < mission.tags.length - 1 ? ',' : ''}</span>
             ))}
           </div>
         )}

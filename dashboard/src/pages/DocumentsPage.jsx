@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { fetchMissions, getDevisUrl } from '../lib/supabase'
 import { Download, ExternalLink, Search } from 'lucide-react'
+import cleanText from '../lib/cleanText'
 
 export default function DocumentsPage() {
   const [missions, setMissions] = useState([])
@@ -80,8 +81,8 @@ export default function DocumentsPage() {
         {filtered.map((m, i) => (
           <div key={m.id} className={`flex items-center justify-between px-6 py-4 border-b border-slate-100 last:border-0 ${i % 2 === 1 ? 'bg-slate-50' : ''}`}>
             <div className="min-w-0">
-              <p className="text-sm font-medium text-slate-950 truncate">{m.title}</p>
-              <p className="text-[13px] text-slate-500 mt-0.5">{m.company || 'Non précisé'} · Score {m.score}/100</p>
+              <p className="text-sm font-medium text-slate-950 truncate">{cleanText(m.title)}</p>
+              <p className="text-[13px] text-slate-500 mt-0.5">{cleanText(m.company) || 'Non précisé'} · Score {m.score}/100</p>
             </div>
             <a href={getDevisUrl(m.id)} target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-200 text-sm text-slate-700 hover:border-slate-300 transition-colors shrink-0 ml-4">
