@@ -35,15 +35,21 @@ class BaseScraper(ABC):
         ...
 
     async def safe_fetch(self) -> List[RawMission]:
+        last_error = None
         for attempt in range(self.max_retries):
             try:
                 missions = await self.fetch()
+                if missions:
+                    logger.info(f"[{self.name}] OK — {len(missions)} missions trouvées")
+                else:
+                    logger.warning(f"[{self.name}] 0 missions (page vide ou selectors cassés)")
                 return missions
             except Exception as e:
+                last_error = e
                 wait = self.backoff_seconds[min(attempt, len(self.backoff_seconds) - 1)]
-                logger.warning(f"[{self.name}] Attempt {attempt + 1} failed: {e} — retry in {wait}s")
+                logger.warning(f"[{self.name}] Tentative {attempt + 1}/{self.max_retries} échouée: {e} — retry {wait}s")
                 await asyncio.sleep(wait)
-        logger.error(f"[{self.name}] All {self.max_retries} attempts failed")
+        logger.error(f"[{self.name}] ÉCHEC total après {self.max_retries} tentatives: {last_error}")
         return []
 
     async def _get(self, url: str, **kwargs) -> httpx.Response:
