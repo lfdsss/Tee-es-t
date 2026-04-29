@@ -186,6 +186,52 @@ async def debug():
     }
 
 
+@app.post("/repair")
+async def repair_all():
+    """Force-heal all scrapers that are failing."""
+    from scrapers.base import get_failure_counts
+    results = {}
+    try:
+        from main import ALL_SCRAPERS
+    except ImportError:
+        return {"error": "Scrapers not loaded (API-only mode)"}
+
+    for scraper in ALL_SCRAPERS:
+        try:
+            missions = await scraper.force_heal()
+            results[scraper.name] = {
+                "status": "ok" if missions else "failed",
+                "missions": len(missions),
+            }
+        except Exception as e:
+            results[scraper.name] = {"status": "error", "error": str(e)}
+
+    return {"results": results, "failure_counts": get_failure_counts()}
+
+
+@app.post("/repair/{source_name}")
+async def repair_source(source_name: str):
+    """Force-heal a specific scraper."""
+    try:
+        from main import ALL_SCRAPERS
+    except ImportError:
+        return {"error": "Scrapers not loaded (API-only mode)"}
+
+    scraper = next((s for s in ALL_SCRAPERS if s.name == source_name), None)
+    if not scraper:
+        return {"error": f"Source '{source_name}' introuvable"}
+
+    try:
+        missions = await scraper.force_heal()
+        return {
+            "source": source_name,
+            "status": "ok" if missions else "failed",
+            "missions": len(missions),
+        }
+    except Exception as e:
+        return {"source": source_name, "status": "error", "error": str(e)}
+
+
 @app.get("/missions")
 async def get_missions(limit: int = 50):
     if not _db:

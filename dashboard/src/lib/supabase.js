@@ -85,6 +85,16 @@ export function getProposalPptxUrl(proposalId) {
   return `${RAILWAY_URL}/proposal/${proposalId}/pptx`;
 }
 
+export async function repairAllSources() {
+  const res = await fetch(`${RAILWAY_URL}/repair`, { method: 'POST' });
+  return res.json();
+}
+
+export async function repairSource(name) {
+  const res = await fetch(`${RAILWAY_URL}/repair/${name}`, { method: 'POST' });
+  return res.json();
+}
+
 export async function fetchDebug() {
   try {
     const res = await fetch(`${RAILWAY_URL}/debug`);
