@@ -277,9 +277,6 @@ async def download_pptx(proposal_id: str):
 @app.post("/chat")
 async def chat(request: Request):
     """AI chatbot endpoint using Claude Opus 4.7."""
-    if not _anthropic_client:
-        return {"error": "Anthropic client not initialized"}
-
     try:
         body = await request.json()
         user_message = body.get("message", "")
@@ -287,6 +284,9 @@ async def chat(request: Request):
 
         if not user_message:
             return {"error": "Empty message"}
+
+        if not _anthropic_client:
+            return {"response": f"Bonjour, je suis Baptiste Thevenot, consultant Web & IA freelance basé à Toulouse. Mon assistant IA est temporairement indisponible (clé API non configurée), mais vous pouvez me contacter directement : bp.thevenot@gmail.com ou 06 86 50 43 79."}
 
         p = PROFILE
         skills_primary = ", ".join(p.get("skills_primary", []))
