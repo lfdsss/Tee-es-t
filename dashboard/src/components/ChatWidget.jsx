@@ -35,19 +35,23 @@ export default function ChatWidget() {
     setLoading(true)
 
     try {
-      // Build history from all messages (excluding the initial greeting)
       const history = updatedMessages
         .filter((_, i) => i > 0 || updatedMessages[0].role !== 'assistant')
         .map(m => ({ role: m.role, content: m.content }))
 
       const res = await sendChatMessage(text, history)
-      const reply = res.reply || res.response || res.message || res.answer || 'Désolé, je n\'ai pas pu traiter votre demande.'
+      const reply = res.response || res.reply || res.message || res.answer || 'Désolé, je n\'ai pas pu traiter votre demande.'
       setMessages(prev => [...prev, { role: 'assistant', content: reply }])
     } catch (err) {
       console.error('Chat error:', err)
+      const errMsg = err.message?.includes('Anthropic')
+        ? 'L\'API IA n\'est pas configurée sur le serveur. Vérifiez la clé ANTHROPIC_API_KEY.'
+        : err.message?.includes('fetch') || err.message?.includes('network') || err.message?.includes('Failed')
+        ? 'Impossible de joindre le serveur. L\'API Railway est peut-être hors ligne.'
+        : `Erreur : ${err.message || 'Connexion impossible'}`
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: 'Désolé, une erreur est survenue. Vérifiez votre connexion et réessayez.',
+        content: errMsg,
         isError: true,
       }])
     }

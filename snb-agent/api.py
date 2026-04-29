@@ -317,6 +317,8 @@ CONTACT :
 - Email : {p.get('email', '')}
 - Telephone : {p.get('phone', '')}
 - Malt : {p.get('malt_url', '')}
+- Codeur.com : {p.get('codeur_url', '')}
+- LinkedIn : {p.get('linkedin_url', '')}
 
 INSTRUCTIONS :
 Tu reponds aux questions de maniere professionnelle, directe et chaleureuse.

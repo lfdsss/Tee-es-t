@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { fetchMission, fetchProposals, updateMission, getDevisUrl } from '../lib/supabase'
-import { ArrowLeft, ExternalLink, Download } from 'lucide-react'
+import { ArrowLeft, ExternalLink, Download, FileText, Copy, Check } from 'lucide-react'
 import cleanText from '../lib/cleanText'
 
 function parsePackage(text) {
@@ -31,6 +31,7 @@ export default function MissionDetailPage() {
   const [proposals, setProposals] = useState([])
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState(false)
+  const [copied, setCopied] = useState(false)
 
   useEffect(() => {
     async function load() {
@@ -133,13 +134,28 @@ export default function MissionDetailPage() {
         {mission.source_url && (
           <a href={mission.source_url} target="_blank" rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-slate-950 text-white text-sm font-medium hover:bg-slate-800 transition-colors">
-            <ExternalLink className="w-4 h-4" /> Voir l'offre
+            <ExternalLink className="w-4 h-4" /> Postuler sur {mission.source || 'la plateforme'}
           </a>
+        )}
+        {proposal && (
+          <Link to="/proposals"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-700 hover:border-slate-950 transition-colors">
+            <FileText className="w-4 h-4" /> Voir la proposition
+          </Link>
         )}
         <a href={getDevisUrl(mission.id)} target="_blank" rel="noopener noreferrer"
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-700 hover:border-slate-300 transition-colors">
           <Download className="w-4 h-4" /> Devis
         </a>
+        {proposal && (
+          <button onClick={() => {
+            const text = proposal.text?.replace(/<!--PACKAGE_JSON:.+?-->/s, '').trim()
+            if (text) { navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 2000) }
+          }}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-700 hover:border-slate-300 transition-colors">
+            {copied ? <><Check className="w-4 h-4 text-emerald-600" /> Copié</> : <><Copy className="w-4 h-4" /> Copier la proposition</>}
+          </button>
+        )}
       </div>
 
       {/* Info grid */}

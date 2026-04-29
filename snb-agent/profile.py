@@ -24,6 +24,8 @@ PROFILE = {
     "experience_years": 5,
     "education": "Master 2 Strategie et Conseil — TBS Toulouse Business School",
     "malt_url": "https://www.malt.fr/profile/baptistethevenot1",
+    "codeur_url": "https://www.codeur.com/-baptistethevenot",
+    "linkedin_url": "https://www.linkedin.com/in/baptiste-thevenot/",
     "email": "bp.thevenot@gmail.com",
     "phone": "06 86 50 43 79",
     "siret": "849 022 058",
