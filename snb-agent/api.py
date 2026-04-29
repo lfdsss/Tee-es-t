@@ -140,6 +140,52 @@ async def stats():
     return await health()
 
 
+@app.get("/debug")
+async def debug():
+    """Diagnostic endpoint — shows what's configured and what's broken."""
+    import os
+    checks = {
+        "anthropic_api_key": bool(os.getenv("ANTHROPIC_API_KEY")),
+        "anthropic_client_loaded": _anthropic_client is not None,
+        "supabase_url": bool(os.getenv("SUPABASE_URL")),
+        "supabase_key": bool(os.getenv("SUPABASE_SERVICE_KEY")),
+        "db_connected": _db is not None,
+        "smtp_user": bool(os.getenv("SMTP_USER")),
+        "smtp_password": bool(os.getenv("SMTP_PASSWORD")),
+        "telegram_token": bool(os.getenv("TELEGRAM_BOT_TOKEN")),
+        "telegram_chat_id": bool(os.getenv("TELEGRAM_CHAT_ID")),
+    }
+
+    source_status = {}
+    if _db:
+        try:
+            logs = _db.client.table("scan_logs") \
+                .select("source,status,started_at,error_message") \
+                .order("started_at", desc=True) \
+                .limit(100) \
+                .execute()
+            for log in (logs.data or []):
+                src = log.get("source", "?")
+                if src not in source_status:
+                    source_status[src] = {
+                        "last_status": log.get("status"),
+                        "last_scan": log.get("started_at"),
+                        "last_error": log.get("error_message"),
+                    }
+        except Exception as e:
+            source_status["_error"] = str(e)
+
+    return {
+        "checks": checks,
+        "sources": source_status,
+        "chat_ready": _anthropic_client is not None,
+        "fix_instructions": {
+            "chat": "Set ANTHROPIC_API_KEY in Railway env vars" if not _anthropic_client else "OK",
+            "db": "Set SUPABASE_URL and SUPABASE_SERVICE_KEY" if not _db else "OK",
+        },
+    }
+
+
 @app.get("/missions")
 async def get_missions(limit: int = 50):
     if not _db:

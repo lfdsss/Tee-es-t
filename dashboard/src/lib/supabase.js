@@ -85,6 +85,15 @@ export function getProposalPptxUrl(proposalId) {
   return `${RAILWAY_URL}/proposal/${proposalId}/pptx`;
 }
 
+export async function fetchDebug() {
+  try {
+    const res = await fetch(`${RAILWAY_URL}/debug`);
+    return res.json();
+  } catch {
+    return { error: 'Serveur Railway inaccessible', checks: {}, sources: {} };
+  }
+}
+
 export async function sendChatMessage(message, history = []) {
   const res = await fetch(`${RAILWAY_URL}/chat`, {
     method: 'POST',
