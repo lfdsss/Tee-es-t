@@ -1,11 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { fetchMission, fetchProposals, updateMission, getDevisUrl } from '../lib/supabase'
-import {
-  ArrowLeft, ExternalLink, Download, Send,
-  CheckCircle2, XCircle, Clock, FileText,
-  Building2, MapPin, Tag, Globe,
-} from 'lucide-react'
+import { ArrowLeft, ExternalLink, Download } from 'lucide-react'
 
 function parsePackage(text) {
   if (!text) return null
@@ -15,11 +11,18 @@ function parsePackage(text) {
 }
 
 const STATUS_FLOW = [
-  { key: 'new', label: 'Nouveau', icon: Clock },
-  { key: 'proposal_ready', label: 'Proposition', icon: FileText },
-  { key: 'sent', label: 'Envoye', icon: Send },
-  { key: 'won', label: 'Gagne', icon: CheckCircle2 },
+  { key: 'new', label: 'Nouveau' },
+  { key: 'proposal_ready', label: 'Proposition' },
+  { key: 'sent', label: 'Envoye' },
+  { key: 'won', label: 'Gagne' },
 ]
+
+function scoreColor(score) {
+  if (score >= 80) return 'text-emerald-600'
+  if (score >= 60) return 'text-blue-600'
+  if (score >= 40) return 'text-amber-600'
+  return 'text-slate-400'
+}
 
 export default function MissionDetailPage() {
   const { id } = useParams()
@@ -53,127 +56,163 @@ export default function MissionDetailPage() {
 
   const currentStep = STATUS_FLOW.findIndex(s => s.key === mission.status)
   const score = mission.score || 0
-  const scoreCls = score >= 80 ? 'text-emerald-700 bg-emerald-50 ring-emerald-600/10'
-    : score >= 60 ? 'text-blue-700 bg-blue-50 ring-blue-600/10'
-    : score >= 40 ? 'text-amber-700 bg-amber-50 ring-amber-600/10'
-    : 'text-slate-600 bg-slate-50 ring-slate-500/10'
-
   const proposal = proposals[0]
   const pkg = proposal ? parsePackage(proposal.text) : null
 
   return (
-    <div className="space-y-5 max-w-5xl">
-      <Link to="/missions" className="inline-flex items-center gap-1.5 text-[13px] text-slate-500 hover:text-slate-900 font-medium transition-colors">
-        <ArrowLeft className="w-4 h-4" /> Retour aux missions
+    <div className="space-y-6 max-w-4xl">
+      <Link to="/missions" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-blue-600 transition-colors">
+        <ArrowLeft className="w-4 h-4" /> Missions
       </Link>
 
-      <div className="bg-white rounded-xl border border-slate-200/80 p-6 shadow-sm">
-        <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2.5 mb-3 flex-wrap">
-              <span className={`inline-flex items-center px-3 py-1.5 rounded-lg text-[13px] font-bold ring-1 tabular-nums ${scoreCls}`}>
-                Score {score}/100
-              </span>
-              {mission.type && <span className="text-[11px] font-semibold px-2.5 py-1 rounded-md bg-slate-50 ring-1 ring-slate-200 text-slate-600 capitalize">{mission.type}</span>}
-              {mission.remote && <span className="text-[11px] font-semibold px-2.5 py-1 rounded-md bg-emerald-50 ring-1 ring-emerald-200 text-emerald-700">Remote</span>}
-            </div>
-            <h2 className="text-xl font-bold text-slate-900 leading-tight tracking-tight">{mission.title}</h2>
-            <div className="flex flex-wrap items-center gap-4 mt-3 text-[13px] text-slate-500">
-              <span className="inline-flex items-center gap-1.5 font-medium"><Building2 className="w-3.5 h-3.5 text-slate-400" /> {mission.company || 'Non precise'}</span>
-              <span className="inline-flex items-center gap-1.5"><Globe className="w-3.5 h-3.5 text-slate-400" /> {mission.source}</span>
-              {mission.budget_raw && <span className="font-bold text-slate-800">{mission.budget_raw}</span>}
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-2 shrink-0">
-            {mission.source_url && (
-              <a href={mission.source_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-blue-600 text-white text-[13px] font-semibold hover:bg-blue-700 transition-all shadow-sm shadow-blue-600/25">
-                <ExternalLink className="w-3.5 h-3.5" /> Voir l'offre
-              </a>
-            )}
-            <a href={getDevisUrl(mission.id)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-slate-200 text-[13px] font-semibold text-slate-700 hover:bg-slate-50 transition-all shadow-sm">
-              <Download className="w-3.5 h-3.5" /> Devis
-            </a>
-          </div>
+      <div>
+        <h2 className="text-2xl font-bold text-slate-950 tracking-tight">{mission.title}</h2>
+        <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-slate-500">
+          <span>{mission.company || 'Non precise'}</span>
+          <span className="text-slate-300">·</span>
+          <span>{mission.source}</span>
+          {mission.type && <>
+            <span className="text-slate-300">·</span>
+            <span className="capitalize">{mission.type}</span>
+          </>}
+          {mission.remote && <>
+            <span className="text-slate-300">·</span>
+            <span>Remote</span>
+          </>}
+          {mission.budget_raw && <>
+            <span className="text-slate-300">·</span>
+            <span className="text-slate-950 font-medium">{mission.budget_raw}</span>
+          </>}
+          <span className="text-slate-300">·</span>
+          <span className={`font-bold tabular-nums ${scoreColor(score)}`}>{score}/100</span>
         </div>
+      </div>
 
-        <div className="pt-5 border-t border-slate-100">
-          <p className="text-[11px] font-bold tracking-wider text-slate-400 uppercase mb-3">Pipeline</p>
-          <div className="flex items-center gap-2 flex-wrap">
-            {STATUS_FLOW.map((step, i) => {
-              const Icon = step.icon
-              const isActive = step.key === mission.status
-              const isPast = i <= currentStep
-              return (
-                <button key={step.key} onClick={() => setStatus(step.key)} disabled={updating}
-                  className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-[13px] font-semibold transition-all disabled:opacity-50 ${
-                    isActive ? 'bg-slate-900 text-white shadow-sm' :
-                    isPast ? 'bg-slate-100 text-slate-700' :
-                    'bg-white text-slate-400 border border-slate-200 hover:bg-slate-50 hover:text-slate-600'
-                  }`}>
-                  <Icon className="w-3.5 h-3.5" strokeWidth={2} /> {step.label}
+      {/* Pipeline */}
+      <div className="bg-white border border-slate-200 rounded-lg p-6">
+        <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-5">Pipeline</p>
+        <div className="flex items-center gap-0">
+          {STATUS_FLOW.map((step, i) => {
+            const isActive = step.key === mission.status
+            const isPast = i <= currentStep
+            return (
+              <div key={step.key} className="flex items-center">
+                {i > 0 && <div className={`w-12 h-px ${isPast ? 'bg-slate-950' : 'bg-slate-200'}`} />}
+                <button onClick={() => setStatus(step.key)} disabled={updating}
+                  className="flex items-center gap-2.5 disabled:opacity-50 group">
+                  <div className={`w-3 h-3 rounded-full border-2 transition-colors ${
+                    isActive ? 'bg-slate-950 border-slate-950' :
+                    isPast ? 'bg-slate-950 border-slate-950' :
+                    'bg-white border-slate-300 group-hover:border-slate-400'
+                  }`} />
+                  <span className={`text-sm transition-colors ${
+                    isActive ? 'font-semibold text-slate-950' :
+                    isPast ? 'text-slate-600' :
+                    'text-slate-400 group-hover:text-slate-600'
+                  }`}>{step.label}</span>
                 </button>
-              )
-            })}
+              </div>
+            )
+          })}
+          <div className="ml-auto">
             <button onClick={() => setStatus('lost')} disabled={updating}
-              className={`ml-auto flex items-center gap-2 px-3.5 py-2 rounded-lg text-[13px] font-semibold transition-all disabled:opacity-50 ${
-                mission.status === 'lost' ? 'bg-red-600 text-white shadow-sm' :
-                'bg-white text-slate-400 border border-slate-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200'
+              className={`text-sm transition-colors disabled:opacity-50 ${
+                mission.status === 'lost' ? 'font-semibold text-red-600' :
+                'text-slate-400 hover:text-red-600'
               }`}>
-              <XCircle className="w-3.5 h-3.5" /> Perdu
+              {mission.status === 'lost' && <span className="w-1.5 h-1.5 rounded-full bg-red-500 inline-block mr-2" />}
+              Perdu
             </button>
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-200/80 p-6 shadow-sm">
-        <h3 className="text-[15px] font-bold text-slate-900 mb-4">Description du besoin</h3>
-        <div className="text-[14px] text-slate-700 leading-relaxed whitespace-pre-wrap max-h-[400px] overflow-y-auto">
+      {/* Actions */}
+      <div className="flex flex-wrap gap-3">
+        {mission.source_url && (
+          <a href={mission.source_url} target="_blank" rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-slate-950 text-white text-sm font-medium hover:bg-slate-800 transition-colors">
+            <ExternalLink className="w-4 h-4" /> Voir l'offre
+          </a>
+        )}
+        <a href={getDevisUrl(mission.id)} target="_blank" rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-700 hover:border-slate-300 transition-colors">
+          <Download className="w-4 h-4" /> Devis
+        </a>
+      </div>
+
+      {/* Info grid */}
+      <div className="bg-white border border-slate-200 rounded-lg p-6">
+        <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-4">Informations</p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-y-5 gap-x-8">
+          <div>
+            <p className="text-[13px] text-slate-500">Entreprise</p>
+            <p className="text-sm font-medium text-slate-950 mt-0.5">{mission.company || 'Non precise'}</p>
+          </div>
+          <div>
+            <p className="text-[13px] text-slate-500">Source</p>
+            <p className="text-sm font-medium text-slate-950 mt-0.5">{mission.source}</p>
+          </div>
+          <div>
+            <p className="text-[13px] text-slate-500">Type</p>
+            <p className="text-sm font-medium text-slate-950 mt-0.5 capitalize">{mission.type || '—'}</p>
+          </div>
+          <div>
+            <p className="text-[13px] text-slate-500">Budget</p>
+            <p className="text-sm font-medium text-slate-950 mt-0.5">{mission.budget_raw || '—'}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Description */}
+      <div className="bg-white border border-slate-200 rounded-lg p-6">
+        <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-4">Description</p>
+        <div className="text-sm text-slate-600 leading-relaxed whitespace-pre-wrap max-h-[400px] overflow-y-auto">
           {mission.description || 'Pas de description disponible.'}
         </div>
         {mission.tags && mission.tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-5 pt-5 border-t border-slate-100">
             {mission.tags.map((tag, i) => (
-              <span key={i} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-50 ring-1 ring-slate-200 text-[11px] font-medium text-slate-600">
-                <Tag className="w-2.5 h-2.5" /> {tag}
-              </span>
+              <span key={i} className="text-[13px] text-slate-500">{tag}{i < mission.tags.length - 1 ? ',' : ''}</span>
             ))}
           </div>
         )}
       </div>
 
+      {/* Proposal */}
       {proposal && (
-        <div className="bg-white rounded-xl border border-slate-200/80 p-6 shadow-sm">
+        <div className="bg-white border border-slate-200 rounded-lg p-6">
           <div className="flex items-center justify-between mb-5">
-            <h3 className="text-[15px] font-bold text-slate-900">Package de proposition</h3>
-            <Link to="/proposals" className="text-[12px] text-blue-600 hover:text-blue-700 font-semibold inline-flex items-center gap-1">
-              Toutes les propositions <ExternalLink className="w-3 h-3" />
+            <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">Proposition</p>
+            <Link to="/proposals" className="text-sm text-blue-600 hover:text-blue-700 transition-colors">
+              Toutes les propositions
             </Link>
           </div>
           {pkg ? (
             <div className="space-y-5">
-              {pkg.intro && <p className="text-[15px] leading-relaxed text-slate-800 font-medium">{pkg.intro}</p>}
+              {pkg.intro && <p className="text-sm leading-relaxed text-slate-700">{pkg.intro}</p>}
               {pkg.phases && pkg.phases.length > 0 && (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   {pkg.phases.map((p, i) => (
-                    <div key={i} className="border border-slate-200 rounded-xl p-4 hover:border-slate-300 transition-colors">
-                      <p className="text-[13px] font-bold text-slate-900">{p.name}</p>
-                      <p className="text-[11px] text-slate-400 mt-0.5 font-medium">{p.duration}</p>
+                    <div key={i} className="border border-slate-200 rounded-lg p-4">
+                      <p className="text-sm font-semibold text-slate-950">{p.name}</p>
+                      <p className="text-[13px] text-slate-500 mt-1">{p.duration}</p>
                     </div>
                   ))}
                 </div>
               )}
               {pkg.expected_outcome && (
-                <div className="border-l-[3px] border-blue-500 bg-blue-50/50 rounded-r-lg pl-4 pr-4 py-3">
-                  <p className="text-[11px] font-bold tracking-wider text-blue-600 uppercase mb-1">Resultat attendu</p>
-                  <p className="text-[14px] text-slate-800 leading-relaxed">{pkg.expected_outcome}</p>
+                <div className="border-l-2 border-slate-300 pl-4 py-1">
+                  <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Resultat attendu</p>
+                  <p className="text-sm text-slate-600 leading-relaxed">{pkg.expected_outcome}</p>
                 </div>
               )}
-              <Link to="/proposals" className="inline-flex items-center gap-2 text-[13px] font-semibold text-blue-600 hover:text-blue-700 transition-colors">
+              <Link to="/proposals" className="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-700 transition-colors">
                 Voir le package complet <ExternalLink className="w-3.5 h-3.5" />
               </Link>
             </div>
           ) : (
-            <pre className="text-[14px] text-slate-700 leading-relaxed whitespace-pre-wrap font-sans max-h-[300px] overflow-y-auto">
+            <pre className="text-sm text-slate-600 leading-relaxed whitespace-pre-wrap font-sans max-h-[300px] overflow-y-auto">
               {proposal.text?.replace(/<!--PACKAGE_JSON:.+?-->/s, '').trim()}
             </pre>
           )}
