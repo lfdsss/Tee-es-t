@@ -57,24 +57,35 @@ si tu veux les rééditer avant de regénérer le PDF.
 3. **Blocs alternatifs `[option A / option B / option C]`** —
    résolution via `choix_editoriaux` du profil, sinon 1ʳᵉ option.
 
-## Pour ton ami
-
-Tu copies `profil.json`, tu remplaces tout par ses vraies infos, tu
-relances la commande. Tu obtiens **son dossier complet en PDF**, prêt à
-imprimer et envoyer.
+## Pour ton ami — 1 commande
 
 ```bash
-# Copie le profil exemple
-cp dossier-ami/exemples/sophie-dupont/profil.json \
-   dossier-ami/exemples/<son-prenom>/profil.json
+# 1. Bootstrap : crée le dossier et copie le template
+./dossier-ami/scripts/new-dossier.sh <son-prenom>
 
-# Édite avec ses infos
+# 2. Édite le profil avec ses vraies infos
 $EDITOR dossier-ami/exemples/<son-prenom>/profil.json
 
-# Génère
-python3 dossier-ami/scripts/personalize.py \
-        dossier-ami/exemples/<son-prenom>/profil.json
+# 3. Génère les courriers + PDFs
+./dossier-ami/scripts/new-dossier.sh <son-prenom> --build
+
+# (optionnel) Vérifier l'état
+./dossier-ami/scripts/new-dossier.sh <son-prenom> --status
+
+# (optionnel) Ouvrir le dossier PDF
+./dossier-ami/scripts/new-dossier.sh <son-prenom> --open
 ```
+
+Tu obtiens **son dossier complet en PDF**, prêt à imprimer et envoyer.
+
+> Variante "à la main" (sans wrapper) :
+> ```bash
+> cp dossier-ami/exemples/sophie-dupont/profil.json \
+>    dossier-ami/exemples/<son-prenom>/profil.json
+> $EDITOR dossier-ami/exemples/<son-prenom>/profil.json
+> python3 dossier-ami/scripts/personalize.py \
+>         dossier-ami/exemples/<son-prenom>/profil.json
+> ```
 
 ⚠️ **Confidentialité** : les vrais profils contiennent des données
 personnelles. Le `.gitignore` exclut `dossier-ami/exemples/*/` sauf
