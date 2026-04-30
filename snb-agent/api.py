@@ -264,7 +264,9 @@ async def generate_devis(mission_id: str):
 h1{{font-size:22px;margin-bottom:4px}}h2{{font-size:16px;border-bottom:1px solid #ddd;padding-bottom:4px;margin:20px 0 10px}}
 table{{width:100%;border-collapse:collapse;margin:10px 0}}td,th{{padding:8px 10px;border:1px solid #ddd;text-align:left}}th{{background:#f5f5f5}}
 .footer{{margin-top:40px;font-size:11px;color:#888;text-align:center}}
-@media print{{body{{padding:20px}}}}</style></head><body>
+@media print{{body{{padding:20px}}}}</style>
+<script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
+</head><body>
 <div style="display:flex;justify-content:space-between;border-bottom:3px solid #111;padding-bottom:14px;margin-bottom:20px">
 <div><h1>Baptiste Thevenot</h1><p style="color:#555;font-size:13px">Consultant Web & IA — Freelance</p>
 <p style="font-size:12px;color:#888;margin-top:6px">10 chemin de Catala, 31100 Toulouse<br>bp.thevenot@gmail.com — 06 86 50 43 79<br>SIRET : 849 022 058</p></div>
