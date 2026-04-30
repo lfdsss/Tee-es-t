@@ -1,8 +1,9 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { fetchMissions } from '../lib/supabase'
 import { Search, ChevronLeft, ChevronRight } from 'lucide-react'
 import cleanText from '../lib/cleanText'
+import { cacheKey, getCache, setCache } from '../lib/cache'
 
 const TYPE_LABELS = {
   ia: 'IA', web: 'Web', data: 'Data',
@@ -39,26 +40,42 @@ export default function MissionsPage() {
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(0)
   const [search, setSearch] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
   const [status, setStatus] = useState('all')
   const [type, setType] = useState('all')
   const [minScore, setMinScore] = useState('')
   const limit = 25
+  const debounceRef = useRef(null)
+
+  function handleSearchChange(value) {
+    setSearch(value)
+    clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(() => {
+      setDebouncedSearch(value)
+      setPage(0)
+    }, 350)
+  }
 
   const loadMissions = useCallback(async () => {
+    const params = {
+      limit, offset: page * limit,
+      status: status !== 'all' ? status : undefined,
+      minScore: minScore || undefined,
+      search: debouncedSearch || undefined,
+      type: type !== 'all' ? type : undefined,
+    }
+    const key = cacheKey(params)
+    const cached = getCache(key)
+    if (cached) { setMissions(cached.data); setTotal(cached.total); setLoading(false); return }
     setLoading(true)
     try {
-      const { data, total: t } = await fetchMissions({
-        limit, offset: page * limit,
-        status: status !== 'all' ? status : undefined,
-        minScore: minScore || undefined,
-        search: search || undefined,
-        type: type !== 'all' ? type : undefined,
-      })
+      const { data, total: t } = await fetchMissions(params)
       setMissions(data || [])
       setTotal(t)
+      setCache(key, { data: data || [], total: t })
     } catch (e) { console.error(e) }
     setLoading(false)
-  }, [page, status, type, minScore, search])
+  }, [page, status, type, minScore, debouncedSearch])
 
   useEffect(() => { loadMissions() }, [loadMissions])
 
@@ -75,7 +92,8 @@ export default function MissionsPage() {
       <div className="flex flex-wrap gap-3 items-center">
         <div className="relative flex-1 min-w-[240px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-          <input type="text" value={search} onChange={e => { setSearch(e.target.value); setPage(0) }}
+          <input type="text" value={search}
+            onChange={e => handleSearchChange(e.target.value)}
             placeholder="Rechercher une mission..."
             className="w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-slate-400 transition-colors placeholder:text-slate-400" />
         </div>
