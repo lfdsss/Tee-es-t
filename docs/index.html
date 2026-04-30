@@ -608,6 +608,136 @@
             display: inline-block;
         }
         @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+        /* ===== HERO LIVE STATS ===== */
+        .hero-stats {
+            margin-top: 28px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            max-width: 720px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .hero-stat {
+            text-align: center;
+            position: relative;
+        }
+        .hero-stat-value {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--blue-400);
+            letter-spacing: -1px;
+            line-height: 1.1;
+            font-variant-numeric: tabular-nums;
+            text-shadow: 0 0 20px rgba(56, 189, 248, 0.25);
+        }
+        .hero-stat-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: var(--slate-400);
+            margin-top: 4px;
+        }
+        .hero-stat-pulse {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--green-400);
+            margin-right: 5px;
+            animation: blink 2s ease-in-out infinite;
+            vertical-align: middle;
+        }
+        @media (max-width: 640px) {
+            .hero-stats { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+            .hero-stat-value { font-size: 24px; }
+        }
+
+        /* ===== PROOF / GENERATED DOCUMENTS ===== */
+        .proof-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 16px 20px;
+        }
+        .proof-card {
+            background: var(--slate-50);
+            border: 1px solid var(--slate-100);
+            border-radius: 8px;
+            padding: 14px 16px;
+            transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+        }
+        .proof-card:hover {
+            border-color: var(--blue-500);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+        .proof-platform {
+            display: inline-block;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: rgba(168, 85, 247, 0.1);
+            color: var(--purple-500);
+            margin-bottom: 8px;
+        }
+        .proof-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--slate-900);
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+        .proof-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .proof-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.15s;
+        }
+        .proof-link.devis { background: #dbeafe; color: #1d4ed8; }
+        .proof-link.plan { background: #f3e8ff; color: #7c3aed; }
+        .proof-link.facture { background: #dcfce7; color: #166534; }
+        .proof-link:hover { filter: brightness(0.95); }
+        .proof-empty {
+            padding: 32px 20px;
+            text-align: center;
+            color: var(--slate-400);
+            font-size: 13px;
+        }
+        @media (max-width: 640px) {
+            .proof-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Entrance animation (Sprint 1 utilities) */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(8px);
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+        .fade-in-up.delay-1 { animation-delay: 0.08s; }
+        .fade-in-up.delay-2 { animation-delay: 0.16s; }
+        .fade-in-up.delay-3 { animation-delay: 0.24s; }
+        .fade-in-up.delay-4 { animation-delay: 0.32s; }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+        @media (prefers-reduced-motion: reduce) {
+            .fade-in-up { animation: none; opacity: 1; transform: none; }
+            .nav-badge .dot, .cycle-spinner { animation: none; }
+        }
     </style>
 </head>
 <body>
@@ -641,9 +771,27 @@
 <!-- HERO -->
 <section class="hero">
     <div class="hero-inner">
-        <div class="hero-badge">Cycle automatique toutes les 10 min</div>
+        <div class="hero-badge"><span class="hero-stat-pulse"></span>Cycle automatique toutes les 10 min</div>
         <h1>Votre agent commercial tourne en continu</h1>
         <p>Prospection, CRM HubSpot, emails Gmail, documentation Notion et suivi GitHub — automatises par intelligence artificielle.</p>
+        <div class="hero-stats">
+            <div class="hero-stat fade-in-up delay-1">
+                <div class="hero-stat-value" id="hs-emails" data-target="0">0</div>
+                <div class="hero-stat-label">Emails traites</div>
+            </div>
+            <div class="hero-stat fade-in-up delay-2">
+                <div class="hero-stat-value" id="hs-contacts" data-target="0">0</div>
+                <div class="hero-stat-label">Contacts CRM</div>
+            </div>
+            <div class="hero-stat fade-in-up delay-3">
+                <div class="hero-stat-value" id="hs-pipeline" data-target="0">--</div>
+                <div class="hero-stat-label">Pipeline genere</div>
+            </div>
+            <div class="hero-stat fade-in-up delay-4">
+                <div class="hero-stat-value" id="hs-docs" data-target="0">0</div>
+                <div class="hero-stat-label">Livrables produits</div>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -797,6 +945,20 @@
         </ul>
     </div>
 
+    <!-- PREUVES — vrais documents generes par le robot -->
+    <div class="panel">
+        <div class="panel-head">
+            <div class="panel-title">
+                <span class="icon" style="background:rgba(168,85,247,0.1);color:var(--purple-500)">&#128221;</span>
+                Preuves &mdash; documents reels produits par le robot
+            </div>
+            <div class="panel-meta" id="proof-meta">--</div>
+        </div>
+        <div class="proof-grid" id="proof-grid">
+            <div class="proof-empty">Chargement des livrables generes...</div>
+        </div>
+    </div>
+
 </div>
 
 <!-- FOOTER -->
@@ -837,6 +999,36 @@
             if (rem <= 0) { rem = CYCLE; loadStatus(); }
             rem--;
         }, 1000);
+    }
+
+    // --- Counter animation (eased, ~1.2s) ---
+    function animateCount(el, target, formatter) {
+        if (!el) return;
+        var current = parseFloat(el.getAttribute('data-target')) || 0;
+        if (current === target) {
+            el.textContent = formatter ? formatter(target) : target;
+            return;
+        }
+        var start = current;
+        var t0 = performance.now();
+        var dur = 1200;
+        function tick(t) {
+            var p = Math.min(1, (t - t0) / dur);
+            // easeOutCubic
+            var eased = 1 - Math.pow(1 - p, 3);
+            var v = start + (target - start) * eased;
+            el.textContent = formatter ? formatter(v) : Math.round(v).toLocaleString('fr-FR');
+            if (p < 1) requestAnimationFrame(tick);
+            else el.setAttribute('data-target', target);
+        }
+        requestAnimationFrame(tick);
+    }
+
+    function formatEuro(v) {
+        v = Math.round(v);
+        if (v >= 1000000) return (v / 1000000).toFixed(1).replace('.0','') + 'M €';
+        if (v >= 1000) return (v / 1000).toFixed(1).replace('.0','') + 'k €';
+        return v.toLocaleString('fr-FR') + ' €';
     }
 
     // --- Relative time ---
@@ -969,6 +1161,12 @@
                 }
             }
 
+            // --- Hero live stats (animated counters) ---
+            animateCount(document.getElementById('hs-emails'), d.emails_processed || 0);
+            animateCount(document.getElementById('hs-contacts'), d.active_contacts || 0);
+            animateCount(document.getElementById('hs-pipeline'), pipelineVal, formatEuro);
+            // hs-docs is populated by loadProof() — independent feed
+
             // Footer
             document.getElementById('foot-ts').textContent = 'MAJ : ' + new Date().toLocaleString('fr-FR');
         })
@@ -978,7 +1176,65 @@
         });
     }
 
+    // --- Load real generated documents (proof) ---
+    function loadProof() {
+        fetch('documents/index.json?_=' + Date.now())
+        .then(function(r) { if (!r.ok) throw 0; return r.json(); })
+        .then(function(docs) {
+            // Hero counter
+            animateCount(document.getElementById('hs-docs'), docs.length || 0);
+
+            // Group by mission_id
+            var byMission = {};
+            docs.forEach(function(doc) {
+                if (!byMission[doc.mission_id]) {
+                    byMission[doc.mission_id] = {
+                        title: doc.title,
+                        platform: doc.platform,
+                        files: {}
+                    };
+                }
+                byMission[doc.mission_id].files[doc.type] = doc.file;
+            });
+
+            var missions = Object.keys(byMission);
+            var grid = document.getElementById('proof-grid');
+            var meta = document.getElementById('proof-meta');
+            meta.textContent = missions.length + ' mission' + (missions.length > 1 ? 's' : '') +
+                               ' · ' + docs.length + ' documents';
+
+            if (!missions.length) {
+                grid.innerHTML = '<div class="proof-empty">Aucun document genere pour le moment.</div>';
+                return;
+            }
+
+            grid.innerHTML = '';
+            missions.forEach(function(mid) {
+                var m = byMission[mid];
+                var card = document.createElement('div');
+                card.className = 'proof-card';
+                var links = '';
+                ['devis', 'plan', 'facture'].forEach(function(t) {
+                    if (m.files[t]) {
+                        var label = t.charAt(0).toUpperCase() + t.slice(1);
+                        links += '<a class="proof-link ' + t + '" href="' + m.files[t] + '" target="_blank" rel="noopener">' + label + ' &rarr;</a>';
+                    }
+                });
+                card.innerHTML =
+                    '<span class="proof-platform">' + (m.platform || 'mission') + '</span>' +
+                    '<div class="proof-title">' + m.title + '</div>' +
+                    '<div class="proof-links">' + links + '</div>';
+                grid.appendChild(card);
+            });
+        })
+        .catch(function() {
+            var grid = document.getElementById('proof-grid');
+            grid.innerHTML = '<div class="proof-empty">Catalogue de livrables indisponible.</div>';
+        });
+    }
+
     loadStatus();
+    loadProof();
     startCountdown();
     setInterval(loadStatus, CYCLE * 1000);
 })();
