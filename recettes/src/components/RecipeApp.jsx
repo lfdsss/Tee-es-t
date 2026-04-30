@@ -3,8 +3,10 @@ import recipesData from "../data/recipes.json";
 import RecipeCard from "./RecipeCard.jsx";
 import RecipeFilter from "./RecipeFilter.jsx";
 import RecipeDetail from "./RecipeDetail.jsx";
+import RecipeGenerator from "./RecipeGenerator.jsx";
 
 export default function RecipeApp() {
+  const [tab, setTab] = useState("library"); // "library" | "generator"
   const [search, setSearch] = useState("");
   const [profile, setProfile] = useState(null); // null | "epicurien" | "artisan" | "pragmatique"
   const [occasion, setOccasion] = useState(null);
@@ -63,43 +65,68 @@ export default function RecipeApp() {
       </header>
 
       <section className="hero">
-        <div className="hero-tag">Bibliothèque éditoriale</div>
+        <div className="hero-tag">Bibliothèque éditoriale + chef IA</div>
         <h1>
           Cuisinez nos sauces, <em>révélez</em> vos ingrédients
         </h1>
         <p>
-          Plus d'une dizaine de recettes simples, gourmandes, conçues pour mettre en valeur les sauces
-          La Française des Sauces. Filtrez par profil, occasion ou difficulté.
+          Plus d'une dizaine de recettes éditoriales conçues pour mettre en valeur les sauces
+          La Française des Sauces — ou laissez notre chef IA composer une recette unique avec ce que vous avez.
         </p>
       </section>
 
-      <RecipeFilter
-        search={search}
-        onSearch={setSearch}
-        profile={profile}
-        onProfile={setProfile}
-        occasion={occasion}
-        onOccasion={setOccasion}
-        maxDifficulty={maxDifficulty}
-        onMaxDifficulty={setMaxDifficulty}
-        count={filtered.length}
-        total={recipesData.length}
-      />
+      <nav className="tabs" role="tablist" aria-label="Mode de recettes">
+        <button
+          role="tab"
+          aria-selected={tab === "library"}
+          className={`tab ${tab === "library" ? "active" : ""}`}
+          onClick={() => setTab("library")}
+        >
+          Bibliothèque
+        </button>
+        <button
+          role="tab"
+          aria-selected={tab === "generator"}
+          className={`tab ${tab === "generator" ? "active" : ""}`}
+          onClick={() => setTab("generator")}
+        >
+          Créer ma recette ✨
+        </button>
+      </nav>
 
-      {filtered.length === 0 ? (
-        <div className="empty">
-          <p>Aucune recette ne correspond à ces filtres.</p>
-          <p style={{ marginTop: 8, fontSize: 13 }}>Essayez de relâcher la difficulté ou de changer le profil.</p>
-        </div>
+      {tab === "library" ? (
+        <>
+          <RecipeFilter
+            search={search}
+            onSearch={setSearch}
+            profile={profile}
+            onProfile={setProfile}
+            occasion={occasion}
+            onOccasion={setOccasion}
+            maxDifficulty={maxDifficulty}
+            onMaxDifficulty={setMaxDifficulty}
+            count={filtered.length}
+            total={recipesData.length}
+          />
+
+          {filtered.length === 0 ? (
+            <div className="empty">
+              <p>Aucune recette ne correspond à ces filtres.</p>
+              <p style={{ marginTop: 8, fontSize: 13 }}>Essayez de relâcher la difficulté ou de changer le profil.</p>
+            </div>
+          ) : (
+            <div className="recipe-grid">
+              {filtered.map((r) => (
+                <RecipeCard key={r.id} recipe={r} onOpen={() => setOpenId(r.id)} />
+              ))}
+            </div>
+          )}
+
+          {openRecipe && <RecipeDetail recipe={openRecipe} onClose={() => setOpenId(null)} />}
+        </>
       ) : (
-        <div className="recipe-grid">
-          {filtered.map((r) => (
-            <RecipeCard key={r.id} recipe={r} onOpen={() => setOpenId(r.id)} />
-          ))}
-        </div>
+        <RecipeGenerator />
       )}
-
-      {openRecipe && <RecipeDetail recipe={openRecipe} onClose={() => setOpenId(null)} />}
 
       <footer className="site-footer">
         <div className="site-footer-line">
