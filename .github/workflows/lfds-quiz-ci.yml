@@ -1,0 +1,54 @@
+name: LFDS Quiz CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "server/**"
+      - "netlify/functions/**"
+      - "package.json"
+      - "package-lock.json"
+      - "vite.config.js"
+      - "Dockerfile"
+      - ".github/workflows/lfds-quiz-ci.yml"
+  pull_request:
+    paths:
+      - "src/**"
+      - "server/**"
+      - "netlify/functions/**"
+      - "package.json"
+      - "package-lock.json"
+      - "vite.config.js"
+      - "Dockerfile"
+      - ".github/workflows/lfds-quiz-ci.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build SPA
+        run: npm run build
+        env:
+          VITE_BASE: /quiz/
+
+      - name: Smoke-check Express server boots
+        run: |
+          LFDS_API_KEY=ci-smoke-key node server/index.js &
+          SERVER_PID=$!
+          sleep 3
+          curl --fail --silent --show-error http://localhost:3001/api/health
+          kill $SERVER_PID

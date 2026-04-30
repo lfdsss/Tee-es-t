@@ -58,7 +58,7 @@ When in doubt about how to behave, default to:
 | `studentflow-web/`    | Vite + React + TypeScript      | StudentFlow front-end SPA                                    | **MVP**        | Netlify (`studentflow-app`)|
 | `src/` + `server/` + `netlify/functions/` | React 18 + Vite + Express + Netlify Blobs | LFDS Quiz — lead-gen quiz pushing to HubSpot | **Production** | Netlify + Fly.io (`lfds-quiz`) |
 | `docs/`               | Static HTML + JSON             | Public status page + portfolio (bot-owned `status.json`)     | Production     | Netlify                    |
-| `daleme-scoop-2.html` | One-shot HTML                  | Legacy article — unrelated to active products                | **Archive**    | —                          |
+| `archive/`            | Static HTML                    | Legacy / one-shot artifacts kept for reference               | **Archive**    | —                          |
 
 Top-level config files: `package.json` (LFDS Quiz, name `lfds-quiz`), `vite.config.js`,
 `Dockerfile`, `docker-compose.yml`, `netlify.toml`, `fly.toml`, plus the helper
@@ -224,6 +224,7 @@ API key is auto-generated into `.env` on first run if `LFDS_API_KEY` is empty.
 | `commercial-agent-ci.yml`      | push/PR touching `commercial-agent/**`                   | pytest smoke tests                                      |
 | `studentflow-ci.yml`           | push/PR touching `studentflow/**`                        | ruff + pytest                                           |
 | `studentflow-web-ci.yml`       | push/PR touching `studentflow-web/**`                    | Vite build + Vitest                                     |
+| `lfds-quiz-ci.yml`             | push/PR touching `src/`, `server/`, `netlify/functions/` | Vite build + Express health smoke                       |
 | `deploy-api.yml`               | push to `main` (studentflow path) / dispatch             | Deploy StudentFlow API to Railway                       |
 | `deploy-web.yml`               | push to `main` (studentflow-web path) / dispatch         | Deploy StudentFlow web to Netlify                       |
 | `configure-railway.yml`        | dispatch                                                 | Sync Railway env vars                                   |
@@ -309,7 +310,7 @@ API key is auto-generated into `.env` on first run if `LFDS_API_KEY` is empty.
 
 **CI & deploy**
 - `.github/workflows/robot.yml` — cron + smart routine selection + rebase-retry push
-- `.github/workflows/studentflow-ci.yml` · `studentflow-web-ci.yml` · `commercial-agent-ci.yml`
+- `.github/workflows/studentflow-ci.yml` · `studentflow-web-ci.yml` · `commercial-agent-ci.yml` · `lfds-quiz-ci.yml`
 - `Dockerfile` (LFDS) · `studentflow/Dockerfile`
 - `fly.toml` · `netlify.toml` · `studentflow-web/netlify.toml` · `studentflow/railway.toml`
 - `docker-compose.yml` — full local stack
