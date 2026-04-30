@@ -1,15 +1,4 @@
-const PROFILES = [
-  { id: "epicurien", label: "Épicurien" },
-  { id: "artisan", label: "Artisan" },
-  { id: "pragmatique", label: "Pragmatique" },
-];
-
-const OCCASIONS = [
-  { id: "quotidien", label: "Quotidien" },
-  { id: "weekend", label: "Week-end" },
-  { id: "reception", label: "Réception" },
-  { id: "express", label: "Express" },
-];
+import { PROFILES, OCCASIONS } from "../data/profiles.js";
 
 const DIFFICULTY_LABELS = {
   1: "Facile",

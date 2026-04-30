@@ -1,12 +1,9 @@
 import { useState } from "react";
 import RecipeDetail from "./RecipeDetail.jsx";
+import { PROFILES } from "../data/profiles.js";
 
-const PROFILES = [
-  { id: "epicurien", label: "Épicurien", desc: "Gastronomique, riche, raffinée" },
-  { id: "artisan", label: "Artisan", desc: "Généreuse, rustique, traditionnelle" },
-  { id: "pragmatique", label: "Pragmatique", desc: "Légère, rapide, équilibrée" },
-];
-
+// Le générateur réordonne les occasions et précise une durée pour Express
+// pour cadrer la demande utilisateur (différent du tri du filtre catalogue).
 const OCCASIONS = [
   { id: "express", label: "Express (< 20min)" },
   { id: "quotidien", label: "Quotidien" },

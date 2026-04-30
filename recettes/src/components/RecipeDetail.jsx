@@ -1,16 +1,7 @@
-const PROFILE_GRADIENTS = {
-  epicurien: "linear-gradient(135deg, #be185d, #831843)",
-  artisan: "linear-gradient(135deg, #c2410c, #7c2d12)",
-  pragmatique: "linear-gradient(135deg, #15803d, #052e16)",
-};
-
-const PROFILE_LABELS = {
-  epicurien: "Épicurien",
-  artisan: "Artisan",
-  pragmatique: "Pragmatique",
-};
+import { PROFILE_BY_ID, DEFAULT_GRADIENT } from "../data/profiles.js";
 
 export default function RecipeDetail({ recipe, onClose }) {
+  const profile = PROFILE_BY_ID[recipe.profile];
   const onOverlayClick = (e) => {
     if (e.target === e.currentTarget) onClose();
   };
@@ -18,12 +9,12 @@ export default function RecipeDetail({ recipe, onClose }) {
   return (
     <div className="detail-overlay" onClick={onOverlayClick} role="dialog" aria-modal="true" aria-labelledby="detail-title">
       <div className="detail-card">
-        <div className="detail-thumb" style={{ background: PROFILE_GRADIENTS[recipe.profile] || "linear-gradient(135deg,#ea580c,#7c2d12)" }}>
+        <div className="detail-thumb" style={{ background: profile?.gradient || DEFAULT_GRADIENT }}>
           <button className="detail-close" onClick={onClose} aria-label="Fermer">
             ×
           </button>
           <span className={`recipe-profile-badge ${recipe.profile}`} style={{ position: "absolute", top: 16, left: 16 }}>
-            {PROFILE_LABELS[recipe.profile]}
+            {profile?.label}
           </span>
           <span className="recipe-thumb-emoji" aria-hidden style={{ position: "relative", zIndex: 1 }}>
             {recipe.emoji}
@@ -68,7 +59,7 @@ export default function RecipeDetail({ recipe, onClose }) {
 
           <div className="detail-cta">
             <div className="detail-cta-text">
-              Cette recette utilise notre <strong>Sauce {recipe.sauce_name}</strong> ({PROFILE_LABELS[recipe.profile]}).
+              Cette recette utilise notre <strong>Sauce {recipe.sauce_name}</strong> ({profile?.label}).
             </div>
             <a
               className="detail-cta-button"

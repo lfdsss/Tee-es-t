@@ -1,23 +1,14 @@
-const PROFILE_GRADIENTS = {
-  epicurien: "linear-gradient(135deg, #be185d, #831843)",
-  artisan: "linear-gradient(135deg, #c2410c, #7c2d12)",
-  pragmatique: "linear-gradient(135deg, #15803d, #052e16)",
-};
-
-const PROFILE_LABELS = {
-  epicurien: "Épicurien",
-  artisan: "Artisan",
-  pragmatique: "Pragmatique",
-};
+import { PROFILE_BY_ID, DEFAULT_GRADIENT } from "../data/profiles.js";
 
 export default function RecipeCard({ recipe, onOpen }) {
+  const profile = PROFILE_BY_ID[recipe.profile];
   return (
     <article className="recipe-card" onClick={onOpen} onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && onOpen()} tabIndex={0} role="button" aria-label={`Voir la recette ${recipe.title}`}>
       <div
         className="recipe-thumb"
-        style={{ background: PROFILE_GRADIENTS[recipe.profile] || "linear-gradient(135deg, #ea580c, #7c2d12)" }}
+        style={{ background: profile?.gradient || DEFAULT_GRADIENT }}
       >
-        <span className={`recipe-profile-badge ${recipe.profile}`}>{PROFILE_LABELS[recipe.profile]}</span>
+        <span className={`recipe-profile-badge ${recipe.profile}`}>{profile?.label}</span>
         <div className="recipe-difficulty" aria-label={`Difficulté ${recipe.difficulty} sur 3`}>
           {[1, 2, 3].map((i) => (
             <span key={i} className={`pip ${i <= recipe.difficulty ? "on" : ""}`}></span>
