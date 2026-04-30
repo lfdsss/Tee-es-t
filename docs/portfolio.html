@@ -157,9 +157,128 @@
             text-transform: uppercase;
             letter-spacing: 0.3px;
         }
+        /* Preview frame: pure-CSS mockup on top of each card */
+        .preview-frame {
+            height: 132px;
+            background: var(--slate-900);
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid var(--slate-200);
+        }
+        .preview-frame::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(56, 189, 248, 0.18), transparent 60%),
+                radial-gradient(circle at 80% 70%, rgba(168, 85, 247, 0.14), transparent 55%);
+        }
+        .preview-frame::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 12px;
+            width: 36px;
+            height: 8px;
+            background: linear-gradient(90deg, #fb7185 0 33%, #fbbf24 33% 66%, #4ade80 66% 100%);
+            border-radius: 4px;
+            opacity: 0.6;
+        }
+        .preview-content {
+            position: relative;
+            padding: 28px 16px 0;
+            color: white;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+        .preview-mock {
+            font-family: 'SF Mono', Menlo, monospace;
+            font-size: 10px;
+            color: rgba(255,255,255,0.55);
+            line-height: 1.6;
+        }
+        .preview-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 4px;
+            height: 38px;
+            margin-bottom: 10px;
+        }
+        .preview-bars span {
+            flex: 1;
+            background: linear-gradient(180deg, var(--blue-400), var(--blue-600));
+            border-radius: 2px;
+            opacity: 0.85;
+        }
+        .preview-bars span:nth-child(1) { height: 40%; }
+        .preview-bars span:nth-child(2) { height: 70%; }
+        .preview-bars span:nth-child(3) { height: 55%; }
+        .preview-bars span:nth-child(4) { height: 90%; }
+        .preview-bars span:nth-child(5) { height: 65%; }
+        .preview-bars span:nth-child(6) { height: 80%; }
+        .preview-bars span:nth-child(7) { height: 45%; }
+        .preview-tag {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--slate-400);
+            padding: 2px 8px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        /* Themed preview variants */
+        .preview-frame.theme-lfds { background: linear-gradient(135deg, #7c2d12, #1c0a05); }
+        .preview-frame.theme-lfds .preview-bars span { background: linear-gradient(180deg, #fb923c, #c2410c); }
+        .preview-frame.theme-lfds-quiz { background: linear-gradient(135deg, #be185d, #1e1b4b); }
+        .preview-frame.theme-lfds-quiz .preview-bars span { background: linear-gradient(180deg, #f472b6, #be185d); }
+        .preview-frame.theme-lfds-recettes { background: linear-gradient(135deg, #166534, #052e16); }
+        .preview-frame.theme-lfds-recettes .preview-bars span { background: linear-gradient(180deg, #4ade80, #166534); }
+        .preview-frame.theme-rag { background: linear-gradient(135deg, #4338ca, #0f172a); }
+        .preview-frame.theme-rag .preview-bars span { background: linear-gradient(180deg, #818cf8, #4f46e5); }
+        .preview-frame.theme-mission { background: linear-gradient(135deg, #1e40af, #0f172a); }
+        .preview-frame.theme-studentflow { background: linear-gradient(135deg, #0d9488, #042f2e); }
+        .preview-frame.theme-studentflow .preview-bars span { background: linear-gradient(180deg, #5eead4, #0d9488); }
+        .preview-frame.theme-gmail { background: linear-gradient(135deg, #b91c1c, #1c0202); }
+        .preview-frame.theme-gmail .preview-bars span { background: linear-gradient(180deg, #fca5a5, #b91c1c); }
+        .preview-frame.theme-dashboard { background: linear-gradient(135deg, #0369a1, #0c1a2b); }
+
+        /* CTA banner above project grid */
+        .cta-bar {
+            background: linear-gradient(135deg, var(--slate-900), #1e293b);
+            color: white;
+            border-radius: var(--radius);
+            padding: 24px 28px;
+            margin-top: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .cta-bar h3 {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+        .cta-bar p {
+            font-size: 13px;
+            color: var(--slate-400);
+            margin: 0;
+        }
+        .cta-bar .btn { background: var(--blue-500); }
+        .cta-bar .btn:hover { background: var(--blue-400); }
+
         @media (max-width: 640px) {
             .kpi-row { grid-template-columns: repeat(2, 1fr); }
             .project-grid { grid-template-columns: 1fr; }
+            .preview-frame { height: 100px; }
         }
     </style>
 </head>
@@ -197,16 +316,31 @@
 <div class="container" style="padding-bottom: 48px;">
 
     <div class="kpi-row">
-        <div class="kpi-box"><div class="kpi-num">8+</div><div class="kpi-label">Projets livres</div></div>
-        <div class="kpi-box"><div class="kpi-num">3</div><div class="kpi-label">En production</div></div>
+        <div class="kpi-box"><div class="kpi-num">9</div><div class="kpi-label">Projets vitrine</div></div>
+        <div class="kpi-box"><div class="kpi-num">5</div><div class="kpi-label">En production</div></div>
         <div class="kpi-box"><div class="kpi-num">8</div><div class="kpi-label">Ans d'exp.</div></div>
-        <div class="kpi-box"><div class="kpi-num">6+</div><div class="kpi-label">APIs integrees</div></div>
+        <div class="kpi-box"><div class="kpi-num">8+</div><div class="kpi-label">APIs integrees</div></div>
         <div class="kpi-box"><div class="kpi-num">24/7</div><div class="kpi-label">Automatise</div></div>
+    </div>
+
+    <div class="cta-bar">
+        <div>
+            <h3>Besoin d'un systeme similaire pour votre activite ?</h3>
+            <p>Devis indicatif genere en 30s &middot; reponse personnalisee sous 10 min par le robot.</p>
+        </div>
+        <a class="btn" href="/devis-instant.html">Generer mon devis &rarr;</a>
     </div>
 
     <div class="project-grid">
 
         <div class="project-card">
+            <div class="preview-frame theme-dashboard">
+                <span class="preview-tag">Dashboard live</span>
+                <div class="preview-content">
+                    <div class="preview-bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                    <div class="preview-mock">[robot.yml] cycle */10 · status: Actif</div>
+                </div>
+            </div>
             <div class="project-header">
                 <div class="project-logo" style="background:linear-gradient(135deg,#0ea5e9,#38bdf8);color:white">S</div>
                 <div>
@@ -230,43 +364,133 @@
                     <span class="stack-tag">Netlify</span>
                 </div>
                 <div class="project-metrics">
-                    <div class="metric"><div class="metric-num">777</div><div class="metric-label">Contacts</div></div>
-                    <div class="metric"><div class="metric-num">80k</div><div class="metric-label">Pipeline</div></div>
-                    <div class="metric"><div class="metric-num">303</div><div class="metric-label">Companies</div></div>
+                    <div class="metric"><div class="metric-num" id="pf-contacts">777</div><div class="metric-label">Contacts</div></div>
+                    <div class="metric"><div class="metric-num" id="pf-pipeline">80k</div><div class="metric-label">Pipeline</div></div>
+                    <div class="metric"><div class="metric-num" id="pf-emails">201</div><div class="metric-label">Emails traites</div></div>
                 </div>
             </div>
         </div>
 
         <div class="project-card">
+            <div class="preview-frame theme-lfds">
+                <span class="preview-tag">Boutique</span>
+                <div class="preview-content">
+                    <div class="preview-bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                    <div class="preview-mock">l-fds.com · WP + WooCommerce · B2C+B2B</div>
+                </div>
+            </div>
             <div class="project-header">
                 <div class="project-logo" style="background:#fef3c7;color:#92400e">L</div>
                 <div>
-                    <div class="project-name">La Francaise des Sauces</div>
-                    <div class="project-subtitle">E-commerce + quiz interactif</div>
+                    <div class="project-name">LFDS &mdash; Site E-commerce</div>
+                    <div class="project-subtitle">Vitrine + boutique B2C/B2B</div>
+                </div>
+            </div>
+            <div class="project-body">
+                <span class="project-status status-dev">Migration en cours</span>
+                <p class="project-desc">
+                    Migration du site La Francaise des Sauces vers WordPress + WooCommerce :
+                    boutique B2C, espace pro B2B (devis HT), pages produit, formulaires lead,
+                    integration HubSpot. Hebergement O2switch geree de A a Z.
+                </p>
+                <div class="project-stack">
+                    <span class="stack-tag">WordPress</span>
+                    <span class="stack-tag">WooCommerce</span>
+                    <span class="stack-tag">Stripe</span>
+                    <span class="stack-tag">Kadence</span>
+                    <span class="stack-tag">B2BKing</span>
+                    <span class="stack-tag">Fluent Forms</span>
+                </div>
+                <div class="project-metrics">
+                    <div class="metric"><div class="metric-num">B2C</div><div class="metric-label">+ B2B</div></div>
+                    <div class="metric"><div class="metric-num">FR</div><div class="metric-label">Hebergement</div></div>
+                    <div class="metric"><div class="metric-num">SEO</div><div class="metric-label">Ready</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-card">
+            <div class="preview-frame theme-lfds-quiz">
+                <span class="preview-tag">Quiz live</span>
+                <div class="preview-content">
+                    <div class="preview-bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                    <div class="preview-mock">8 questions · 3 profils &rarr; redirect produit</div>
+                </div>
+            </div>
+            <div class="project-header">
+                <div class="project-logo" style="background:#fce7f3;color:#be185d">Q</div>
+                <div>
+                    <div class="project-name">LFDS &mdash; Quiz Epicurien</div>
+                    <div class="project-subtitle">Decouverte produit + lead capture</div>
                 </div>
             </div>
             <div class="project-body">
                 <span class="project-status status-live">En production</span>
                 <p class="project-desc">
-                    Marque premium de sauces artisanales. Quiz interactif de decouverte produit dedie au B2C,
-                    systeme de commande, landing pages optimisees, generation de leads restaurateurs.
+                    Quiz interactif 8 questions qui revele le profil gourmand (epicurien, artisan, pragmatique)
+                    et redirige vers la sauce LFDS adaptee. Backend Express persiste les leads et les pousse
+                    automatiquement dans HubSpot.
                 </p>
                 <div class="project-stack">
                     <span class="stack-tag">React</span>
                     <span class="stack-tag">Vite</span>
-                    <span class="stack-tag">Netlify</span>
-                    <span class="stack-tag">Shopify</span>
-                    <span class="stack-tag">API REST</span>
+                    <span class="stack-tag">Express</span>
+                    <span class="stack-tag">Fly.io</span>
+                    <span class="stack-tag">HubSpot API</span>
                 </div>
                 <div class="project-metrics">
-                    <div class="metric"><div class="metric-num">Quiz</div><div class="metric-label">Interactif</div></div>
-                    <div class="metric"><div class="metric-num">B2C</div><div class="metric-label">+ B2B</div></div>
-                    <div class="metric"><div class="metric-num">SEO</div><div class="metric-label">Optimise</div></div>
+                    <div class="metric"><div class="metric-num">8</div><div class="metric-label">Questions</div></div>
+                    <div class="metric"><div class="metric-num">3</div><div class="metric-label">Profils</div></div>
+                    <div class="metric"><div class="metric-num">CRM</div><div class="metric-label">Push auto</div></div>
                 </div>
             </div>
         </div>
 
         <div class="project-card">
+            <div class="preview-frame theme-lfds-recettes">
+                <span class="preview-tag">Bibliotheque</span>
+                <div class="preview-content">
+                    <div class="preview-bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                    <div class="preview-mock">recettes.l-fds.com &rarr; CTA acheter la sauce</div>
+                </div>
+            </div>
+            <div class="project-header">
+                <div class="project-logo" style="background:#dcfce7;color:#166534">R</div>
+                <div>
+                    <div class="project-name">LFDS &mdash; Site Recettes</div>
+                    <div class="project-subtitle">Bibliotheque editoriale + generateur IA</div>
+                </div>
+            </div>
+            <div class="project-body">
+                <span class="project-status status-dev">En developpement</span>
+                <p class="project-desc">
+                    Site dedie aux recettes mettant en scene les sauces LFDS : catalogue editorial filtrable
+                    (sauce, occasion, difficulte) plus generateur de recettes personnalisees via Claude API.
+                    Chaque fiche pousse vers la sauce associee sur la boutique WP.
+                </p>
+                <div class="project-stack">
+                    <span class="stack-tag">React</span>
+                    <span class="stack-tag">Vite</span>
+                    <span class="stack-tag">Netlify</span>
+                    <span class="stack-tag">Claude API</span>
+                    <span class="stack-tag">JSON statique</span>
+                </div>
+                <div class="project-metrics">
+                    <div class="metric"><div class="metric-num">10+</div><div class="metric-label">Recettes</div></div>
+                    <div class="metric"><div class="metric-num">IA</div><div class="metric-label">Generateur</div></div>
+                    <div class="metric"><div class="metric-num">CTA</div><div class="metric-label">Boutique</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-card">
+            <div class="preview-frame theme-mission">
+                <span class="preview-tag">Devis auto</span>
+                <div class="preview-content">
+                    <div class="preview-bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                    <div class="preview-mock">mission &rarr; devis + plan + facture HTML</div>
+                </div>
+            </div>
             <div class="project-header">
                 <div class="project-logo" style="background:#dbeafe;color:#1d4ed8">M</div>
                 <div>
@@ -295,34 +519,50 @@
         </div>
 
         <div class="project-card">
+            <div class="preview-frame theme-studentflow">
+                <span class="preview-tag">Marketplace</span>
+                <div class="preview-content">
+                    <div class="preview-bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                    <div class="preview-mock">3 agents · matcher temps reel · FastAPI</div>
+                </div>
+            </div>
             <div class="project-header">
-                <div class="project-logo" style="background:#f0fdf4;color:#166534">A</div>
+                <div class="project-logo" style="background:#ccfbf1;color:#0d9488">SF</div>
                 <div>
-                    <div class="project-name">Pipeline Automation</div>
-                    <div class="project-subtitle">Automatisation CRM HubSpot</div>
+                    <div class="project-name">StudentFlow</div>
+                    <div class="project-subtitle">Marketplace jobs etudiants temps reel</div>
                 </div>
             </div>
             <div class="project-body">
-                <span class="project-status status-complete">Livre</span>
+                <span class="project-status status-dev">MVP</span>
                 <p class="project-desc">
-                    Mise en place d'un pipeline commercial automatise sur HubSpot : scoring de leads, sequences outbound,
-                    routage automatique, dashboards direction, integration Gmail et Slack.
+                    Trois agents Python autonomes (scraper, matcher, notifier) couples a une API FastAPI et
+                    une base Supabase. Matching pondere temps-reel entre offres scrapees (France Travail OAuth2)
+                    et profils etudiants. 23 tests verts sur le moteur de matching.
                 </p>
                 <div class="project-stack">
-                    <span class="stack-tag">HubSpot</span>
-                    <span class="stack-tag">Python</span>
-                    <span class="stack-tag">Gmail API</span>
-                    <span class="stack-tag">Slack API</span>
+                    <span class="stack-tag">Python 3.11</span>
+                    <span class="stack-tag">FastAPI</span>
+                    <span class="stack-tag">Supabase</span>
+                    <span class="stack-tag">Pydantic v2</span>
+                    <span class="stack-tag">Vite + TS</span>
                 </div>
                 <div class="project-metrics">
-                    <div class="metric"><div class="metric-num">4k</div><div class="metric-label">Deals</div></div>
-                    <div class="metric"><div class="metric-num">22</div><div class="metric-label">Commerciaux</div></div>
-                    <div class="metric"><div class="metric-num">45j</div><div class="metric-label">Cycle vente</div></div>
+                    <div class="metric"><div class="metric-num">3</div><div class="metric-label">Agents</div></div>
+                    <div class="metric"><div class="metric-num">23/23</div><div class="metric-label">Tests OK</div></div>
+                    <div class="metric"><div class="metric-num">5</div><div class="metric-label">Scrapers</div></div>
                 </div>
             </div>
         </div>
 
         <div class="project-card">
+            <div class="preview-frame theme-gmail">
+                <span class="preview-tag">Email parsing</span>
+                <div class="preview-content">
+                    <div class="preview-bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                    <div class="preview-mock">40 emails/j &rarr; Sheets &rarr; rapport hebdo</div>
+                </div>
+            </div>
             <div class="project-header">
                 <div class="project-logo" style="background:#fef2f2;color:#dc2626">G</div>
                 <div>
@@ -351,6 +591,13 @@
         </div>
 
         <div class="project-card">
+            <div class="preview-frame theme-dashboard">
+                <span class="preview-tag">Live KPIs</span>
+                <div class="preview-content">
+                    <div class="preview-bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                    <div class="preview-mock">JSON git-versionne &rarr; Netlify &rarr; 0 € infra</div>
+                </div>
+            </div>
             <div class="project-header">
                 <div class="project-logo" style="background:#f5f3ff;color:#7c3aed">D</div>
                 <div>
@@ -379,6 +626,13 @@
         </div>
 
         <div class="project-card">
+            <div class="preview-frame theme-rag">
+                <span class="preview-tag">Vector search</span>
+                <div class="preview-content">
+                    <div class="preview-bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                    <div class="preview-mock">10k docs &rarr; pgvector &rarr; reponse Claude</div>
+                </div>
+            </div>
             <div class="project-header">
                 <div class="project-logo" style="background:#ecfdf5;color:#059669">R</div>
                 <div>
@@ -403,33 +657,6 @@
                     <div class="metric"><div class="metric-num">10k+</div><div class="metric-label">Documents</div></div>
                     <div class="metric"><div class="metric-num">Sub-s</div><div class="metric-label">Latence</div></div>
                     <div class="metric"><div class="metric-num">95%</div><div class="metric-label">Pertinence</div></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="project-card">
-            <div class="project-header">
-                <div class="project-logo" style="background:#fff1f2;color:#e11d48">N</div>
-                <div>
-                    <div class="project-name">Notion Ops Center</div>
-                    <div class="project-subtitle">Centre de documentation automatise</div>
-                </div>
-            </div>
-            <div class="project-body">
-                <span class="project-status status-complete">Livre</span>
-                <p class="project-desc">
-                    Systeme de documentation automatique dans Notion : creation de pages projet, suivi de progression,
-                    base de donnees structuree, reporting hebdomadaire automatise.
-                </p>
-                <div class="project-stack">
-                    <span class="stack-tag">Notion API</span>
-                    <span class="stack-tag">Python</span>
-                    <span class="stack-tag">GitHub Actions</span>
-                </div>
-                <div class="project-metrics">
-                    <div class="metric"><div class="metric-num">Auto</div><div class="metric-label">Doc</div></div>
-                    <div class="metric"><div class="metric-num">Hebdo</div><div class="metric-label">Reporting</div></div>
-                    <div class="metric"><div class="metric-num">API</div><div class="metric-label">Driven</div></div>
                 </div>
             </div>
         </div>
@@ -471,5 +698,27 @@
     </div>
 </footer>
 
+<script>
+// Live metrics on SNB Consulting Platform card
+(function() {
+    function fmtK(v) {
+        if (!v) return '--';
+        if (v >= 1000000) return (v / 1000000).toFixed(1).replace('.0','') + 'M';
+        if (v >= 1000) return (v / 1000).toFixed(1).replace('.0','') + 'k';
+        return v.toLocaleString('fr-FR');
+    }
+    fetch('/status.json?_=' + Date.now())
+        .then(function(r) { return r.ok ? r.json() : null; })
+        .then(function(d) {
+            if (!d) return;
+            var pf;
+            if ((pf = document.getElementById('pf-contacts')) && d.active_contacts) pf.textContent = d.active_contacts.toLocaleString('fr-FR');
+            var pipelineVal = (d.livrables && d.livrables.total_montant) || d.pipeline_value || 0;
+            if ((pf = document.getElementById('pf-pipeline')) && pipelineVal) pf.textContent = fmtK(pipelineVal) + '€';
+            if ((pf = document.getElementById('pf-emails')) && d.emails_processed) pf.textContent = d.emails_processed.toLocaleString('fr-FR');
+        })
+        .catch(function(){});
+})();
+</script>
 </body>
 </html>

@@ -452,3 +452,35 @@ footer .foot-nav a {
     nav { padding: 0 12px; }
     .deal-table th, .deal-table td { padding: 10px 12px; font-size: 12px; }
 }
+
+/* ====== UTILITIES (Sprint 1) ====== */
+
+/* Entrance animation — apply to any block to fade in from below */
+.fade-in-up {
+    opacity: 0;
+    transform: translateY(8px);
+    animation: fadeInUp 0.5s ease-out forwards;
+}
+.fade-in-up.delay-1 { animation-delay: 0.08s; }
+.fade-in-up.delay-2 { animation-delay: 0.16s; }
+.fade-in-up.delay-3 { animation-delay: 0.24s; }
+.fade-in-up.delay-4 { animation-delay: 0.32s; }
+@keyframes fadeInUp {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Subtle glow pulse — apply to live numbers to signal "live data" */
+.counter-glow {
+    animation: counterGlow 2.4s ease-in-out infinite;
+}
+@keyframes counterGlow {
+    0%, 100% { text-shadow: 0 0 12px rgba(56, 189, 248, 0.15); }
+    50%      { text-shadow: 0 0 22px rgba(56, 189, 248, 0.45); }
+}
+
+/* Reduced motion: disable decorative animations */
+@media (prefers-reduced-motion: reduce) {
+    .fade-in-up { animation: none; opacity: 1; transform: none; }
+    .counter-glow { animation: none; }
+    .nav-badge .dot { animation: none; }
+}

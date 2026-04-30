@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devis instant | SNB Consulting</title>
+    <meta name="description" content="Generez en 30 secondes un devis indicatif pour automatiser votre activite : agent commercial IA, scraping, dashboard, RAG metier.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect rx='18' width='100' height='100' fill='%230f172a'/><text x='50' y='66' text-anchor='middle' fill='%2338bdf8' font-size='48' font-family='system-ui' font-weight='800'>S</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/style.css">
+    <style>
+        .form-card {
+            background: white;
+            border: 1px solid var(--slate-200);
+            border-radius: var(--radius);
+            padding: 28px;
+            box-shadow: var(--shadow-sm);
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+        .form-row.full { grid-template-columns: 1fr; }
+        .form-field label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--slate-700);
+            margin-bottom: 6px;
+            letter-spacing: 0.2px;
+        }
+        .form-field input,
+        .form-field select,
+        .form-field textarea {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            border: 1px solid var(--slate-300);
+            border-radius: 8px;
+            background: white;
+            color: var(--slate-900);
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .form-field input:focus,
+        .form-field select:focus,
+        .form-field textarea:focus {
+            outline: none;
+            border-color: var(--blue-500);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.12);
+        }
+        .form-field .hint {
+            font-size: 11px;
+            color: var(--slate-400);
+            margin-top: 4px;
+        }
+        .submit-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 18px;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .estimate {
+            font-size: 13px;
+            color: var(--slate-500);
+        }
+        .estimate strong {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--slate-900);
+            margin-left: 6px;
+        }
+        .live-est {
+            background: linear-gradient(135deg, #f8fafc, #e0f2fe);
+            border: 1px solid #bae6fd;
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: var(--slate-700);
+        }
+        .result-block {
+            margin-top: 24px;
+            display: none;
+        }
+        .result-block.visible { display: block; }
+        .result-frame {
+            width: 100%;
+            height: 720px;
+            border: 1px solid var(--slate-200);
+            border-radius: var(--radius);
+            background: white;
+            box-shadow: var(--shadow-md);
+        }
+        .status-line {
+            margin-top: 12px;
+            font-size: 13px;
+            padding: 10px 14px;
+            border-radius: 8px;
+        }
+        .status-line.success { background: rgba(34,197,94,0.08); color: var(--green-600); border: 1px solid rgba(34,197,94,0.2); }
+        .status-line.error { background: rgba(239,68,68,0.08); color: var(--red-500); border: 1px solid rgba(239,68,68,0.2); }
+        .loading {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(14,165,233,0.2);
+            border-top-color: var(--blue-500);
+            border-radius: 50%;
+            animation: rotate 0.8s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        @keyframes rotate { 100% { transform: rotate(360deg); } }
+        @media (max-width: 640px) {
+            .form-row { grid-template-columns: 1fr; }
+            .submit-row { flex-direction: column; align-items: stretch; }
+            .submit-row .btn { width: 100%; justify-content: center; }
+            .result-frame { height: 560px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a class="nav-brand" href="/">
+        <div class="nav-logo">S</div>
+        <div class="nav-title">SNB Consulting <span>| Agent IA</span></div>
+    </a>
+    <div class="nav-menu">
+        <a href="/" class="nav-link">Dashboard</a>
+        <a href="/pipeline.html" class="nav-link">Pipeline</a>
+        <a href="/livrables.html" class="nav-link">Livrables</a>
+        <a href="/missions.html" class="nav-link">Missions</a>
+        <a href="/documents.html" class="nav-link">Documents</a>
+        <a href="/portfolio.html" class="nav-link">Portfolio</a>
+        <a href="/routines.html" class="nav-link">Routines</a>
+        <a href="/architecture.html" class="nav-link">Architecture</a>
+        <a href="/contact.html" class="nav-link">Contact</a>
+    </div>
+    <div class="nav-right">
+        <div class="nav-badge"><span class="dot"></span><span>Actif</span></div>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-badge">&#128190; Devis instant</div>
+        <h1>Votre devis en 30 secondes</h1>
+        <p>Type de mission, jours estimes, TJM cible. Le robot SNB genere le devis HTML imprimable et notifie l'agent commercial. Reponse personnalisee sous 10 minutes.</p>
+    </div>
+</section>
+
+<div class="container narrow" style="margin-top: -32px; position: relative; z-index: 2; padding-bottom: 48px;">
+
+    <div class="form-card">
+        <form id="devis-form">
+            <div class="live-est">
+                <span>Estimation en direct</span>
+                <span class="estimate">Total HT : <strong id="live-total">--</strong></span>
+            </div>
+
+            <div class="form-row full">
+                <div class="form-field">
+                    <label for="mission_type">Type de mission</label>
+                    <select id="mission_type" name="mission_type" required>
+                        <option value="agent-commercial">Agent commercial autonome (CRM + emails)</option>
+                        <option value="automation-python">Automatisation Python de taches recurrentes</option>
+                        <option value="scraping">Pipeline de scraping et collecte de donnees</option>
+                        <option value="dashboard">Dashboard temps reel multi-source</option>
+                        <option value="rag">Systeme RAG (recherche semantique)</option>
+                        <option value="integration-hubspot">Integration HubSpot CRM</option>
+                        <option value="autre">Autre / mission sur-mesure</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label for="days">Jours estimes</label>
+                    <input type="number" id="days" name="days" min="0.5" max="60" step="0.5" value="3" required>
+                    <div class="hint">Entre 0,5 et 60 jours</div>
+                </div>
+                <div class="form-field">
+                    <label for="tjm">TJM cible (EUR HT)</label>
+                    <input type="number" id="tjm" name="tjm" min="200" max="2500" step="50" value="600" required>
+                    <div class="hint">TJM standard : 550 - 750 EUR</div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label for="name">Votre nom</label>
+                    <input type="text" id="name" name="name" placeholder="Optionnel" maxlength="80">
+                </div>
+                <div class="form-field">
+                    <label for="email">Votre email</label>
+                    <input type="email" id="email" name="email" placeholder="vous@exemple.fr" maxlength="120" required>
+                    <div class="hint">Pour recevoir une reponse personnalisee</div>
+                </div>
+            </div>
+
+            <div class="submit-row">
+                <div class="estimate" style="font-size:11px;color:var(--slate-400)">
+                    Devis indicatif &mdash; cadrage final apres echange 30 min
+                </div>
+                <button type="submit" class="btn" id="submit-btn">Generer le devis &rarr;</button>
+            </div>
+        </form>
+
+        <div id="status" class="status-line" style="display:none"></div>
+    </div>
+
+    <div id="result" class="result-block">
+        <div class="panel" style="margin-top:24px">
+            <div class="panel-head">
+                <div class="panel-title">
+                    <span class="icon" style="background:rgba(34,197,94,0.1);color:var(--green-600)">&#9989;</span>
+                    Votre devis genere
+                </div>
+                <div class="panel-meta">
+                    <a href="#" id="open-new-tab" target="_blank" rel="noopener" style="font-size:11px">Ouvrir dans un onglet</a>
+                </div>
+            </div>
+            <iframe id="result-frame" class="result-frame" title="Devis genere"></iframe>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    <div class="foot-line"><strong>SNB Consulting</strong> &mdash; Agent Commercial Autonome propulse par Claude AI</div>
+    <div class="foot-line">Contact : <a href="mailto:bp.thevenot@gmail.com">bp.thevenot@gmail.com</a></div>
+    <div class="foot-nav">
+        <a href="/">Dashboard</a>
+        <a href="/pipeline.html">Pipeline</a>
+        <a href="/livrables.html">Livrables</a>
+        <a href="/missions.html">Missions</a>
+        <a href="/documents.html">Documents</a>
+        <a href="/portfolio.html">Portfolio</a>
+        <a href="/routines.html">Routines</a>
+        <a href="/architecture.html">Architecture</a>
+        <a href="/contact.html">Contact</a>
+    </div>
+</footer>
+
+<script>
+(function() {
+    var form = document.getElementById('devis-form');
+    var statusEl = document.getElementById('status');
+    var submitBtn = document.getElementById('submit-btn');
+    var resultBlock = document.getElementById('result');
+    var resultFrame = document.getElementById('result-frame');
+    var openNewTab = document.getElementById('open-new-tab');
+    var liveTotal = document.getElementById('live-total');
+
+    function updateLiveTotal() {
+        var d = parseFloat(document.getElementById('days').value) || 0;
+        var t = parseFloat(document.getElementById('tjm').value) || 0;
+        var total = d * t;
+        if (total > 0) {
+            liveTotal.textContent = total.toLocaleString('fr-FR') + ' EUR';
+        } else {
+            liveTotal.textContent = '--';
+        }
+    }
+    document.getElementById('days').addEventListener('input', updateLiveTotal);
+    document.getElementById('tjm').addEventListener('input', updateLiveTotal);
+    updateLiveTotal();
+
+    function setStatus(msg, type) {
+        statusEl.textContent = msg;
+        statusEl.className = 'status-line ' + (type || '');
+        statusEl.style.display = 'block';
+    }
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        statusEl.style.display = 'none';
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="loading"></span>Generation en cours...';
+
+        var payload = {
+            mission_type: document.getElementById('mission_type').value,
+            days: parseFloat(document.getElementById('days').value),
+            tjm: parseFloat(document.getElementById('tjm').value),
+            name: document.getElementById('name').value.trim(),
+            email: document.getElementById('email').value.trim()
+        };
+
+        // 1. Generation devis (HTML)
+        var devisPromise = fetch('/api/devis-generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }).then(function(r) {
+            if (!r.ok) throw new Error('Erreur generation devis (' + r.status + ')');
+            return r.text();
+        });
+
+        // 2. Lead capture HubSpot (en parallele, ne bloque pas si echec)
+        var leadPromise = fetch('/api/lead-capture', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: payload.email,
+                name: payload.name,
+                mission_type: payload.mission_type,
+                budget: (payload.days * payload.tjm) + ' EUR',
+                source: 'devis-instant'
+            })
+        }).then(function(r) { return r.json(); }).catch(function() { return { ok: false }; });
+
+        Promise.all([devisPromise, leadPromise]).then(function(results) {
+            var html = results[0];
+            var lead = results[1];
+
+            // Affichage du devis dans iframe
+            var blob = new Blob([html], { type: 'text/html' });
+            var url = URL.createObjectURL(blob);
+            resultFrame.src = url;
+            openNewTab.href = url;
+            resultBlock.classList.add('visible');
+            resultBlock.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            if (lead && lead.ok) {
+                setStatus('Devis genere. Vous etes ajoute au CRM, le robot vous repondra sous 10 minutes.', 'success');
+            } else {
+                setStatus('Devis genere. La capture CRM a echoue (token serveur a configurer) - le devis reste accessible.', 'success');
+            }
+        }).catch(function(err) {
+            setStatus('Erreur : ' + err.message, 'error');
+        }).finally(function() {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Generer un nouveau devis &rarr;';
+        });
+    });
+})();
+</script>
+
+</body>
+</html>
