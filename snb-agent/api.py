@@ -428,7 +428,7 @@ Reponds en francais par defaut, sauf si le message est en anglais."""
         messages.append({"role": "user", "content": user_message})
 
         last_err = None
-        for model in ["claude-sonnet-4-6-20250514", "claude-sonnet-4-5-20241022", "claude-haiku-4-5-20251001"]:
+        for model in ["claude-opus-4-7-20250415", "claude-sonnet-4-6-20250514", "claude-haiku-4-5-20251001"]:
             try:
                 response = _anthropic_client.messages.create(
                     model=model,
