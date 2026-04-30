@@ -49,3 +49,21 @@ commercial-agent/config/gmail_credentials.json
 __pycache__/
 *.pyc
 .venv/
+
+# Dossier perso — ne JAMAIS committer les pièces / archives
+# (on garde les sous-dossiers via .gitkeep et les README, on ignore le reste)
+dossier-ami/pieces/*/*
+!dossier-ami/pieces/*/.gitkeep
+!dossier-ami/pieces/README.md
+dossier-ami/archives/*/*
+!dossier-ami/archives/*/.gitkeep
+# PDF générés : on bloque PARTOUT sauf le kit + l'exemple public Sophie Dupont
+dossier-ami/**/*.pdf
+!dossier-ami/pdf/**/*.pdf
+!dossier-ami/exemples/sophie-dupont/pdf/*.pdf
+dossier-ami/INDEX.pdf
+
+# Profils personnels : tout sauf l'exemple public est local-only
+dossier-ami/exemples/*
+!dossier-ami/exemples/sophie-dupont/
+!dossier-ami/exemples/sophie-dupont/**

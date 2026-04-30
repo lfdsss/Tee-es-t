@@ -1,0 +1,11 @@
+id,date_envoi,organisme,canal,numero_suivi_ou_AR,objet,date_limite_reponse,date_reponse_recue,statut,action_suivante
+1,,Cetelem,Email,,Reclamation initiale,,,A envoyer,
+2,,Cetelem,LRAR,,Reclamation initiale (doublon papier),,,A envoyer,
+3,,Banque,Messagerie securisee,,Reclamation initiale,,,A envoyer,
+4,,Banque,Email,,Reclamation initiale,,,A envoyer,
+5,,Operateur,Appel + email,,Reclamation initiale,,,A envoyer,
+6,,CNIL,Formulaire en ligne,,Plainte CNIL,,,A envoyer,
+7,,Assurance,Email,,Declaration / reclamation,,,A envoyer,
+8,,Assurance,LRAR,,Declaration / reclamation,,,A envoyer,
+9,,Banque de France,Email,,Demande FICP / FCC,,,A envoyer,
+10,,Banque de France,LRAR,,Demande FICP / FCC,,,A envoyer,

@@ -1,0 +1,74 @@
+{
+  "_commentaire": "EXEMPLE FICTIF — Sophie Dupont, scénario usurpation d'identité, à des fins de démonstration uniquement. Aucune correspondance avec une personne réelle.",
+  "identite": {
+    "prenom": "Sophie",
+    "nom": "Dupont",
+    "date_naissance": "14 mars 1992",
+    "lieu_naissance": "Lyon (69)",
+    "adresse": {
+      "ligne_1": "8 rue Paul Bert",
+      "code_postal": "69003",
+      "ville": "Lyon"
+    },
+    "email": "sophie.dupont@protonmail.com",
+    "telephone": "07 81 23 45 67"
+  },
+  "references": {
+    "cetelem_contrat": "CRD-2025-08847291",
+
+    "banque_nom": "Crédit Agricole Centre-Est",
+    "banque_compte": "1234 5678 9012",
+    "banque_agence": "Lyon Part-Dieu",
+    "banque_email": "reclamations@ca-centrest.fr",
+    "banque_rum": "++CETPF20250114SOPDU",
+    "banque_montant_cumule": "1 247,52",
+
+    "operateur_nom": "Orange",
+    "operateur_ligne": "07 81 23 45 67",
+    "operateur_contrat": "OR-FR-118420573",
+    "operateur_ticket": "TKT-2026-04-1138942",
+    "operateur_email": "service.reclamations@orange.fr",
+
+    "assurance_nom": "MAIF",
+    "assurance_contrat": "AUTO-3094782-S",
+
+    "bdf_succursale": "Banque de France — Succursale du Rhône",
+    "bdf_email": "lyon@banque-france.fr",
+
+    "service_email": "service.reclamations@orange.fr",
+    "service_adresse": "Service Réclamations Clients — TSA 50124 — 75441 Paris Cedex 09",
+
+    "montant_principal": "412,89"
+  },
+  "faits": {
+    "date_du_jour": "25 avril 2026",
+
+    "cetelem_date_courrier": "9 avril 2026",
+    "cetelem_date_lrar": "25 avril 2026",
+
+    "banque_date_premier_prelevement": "5 février 2026",
+    "banque_date_premier_contact": "10 avril 2026",
+    "banque_ref_message": "MSG-2026-04-487291",
+
+    "operateur_date_appel": "12 avril 2026",
+    "operateur_date_email": "13 avril 2026",
+    "operateur_duree_coupure": "environ 6 heures",
+    "operateur_faits_concomitants": "la souscription frauduleuse d'un crédit Cetelem à mon nom (cf. courrier reçu le 9 avril 2026), ce qui suggère que mes données et ma ligne ont été détournées dans le cadre d'une opération d'usurpation d'identité",
+
+    "autres_pieces": "Procès-verbal de dépôt de plainte (à joindre dès réception)",
+
+    "date_generique": "25 avril 2026"
+  },
+  "choix_editoriaux": {
+    "non / oui": "Non",
+    "ou « le [date] »": "le 25 avril 2026",
+    "découvre l'existence": "découvre l'existence",
+    "j'ai été privé(e)": "j'ai été privé(e) de signal mobile pendant environ 6 heures",
+    "sans réponse / sans réponse satisfaisante": "sans réponse",
+    "déclare le sinistre / formalise ma réclamation": "formalise ma réclamation",
+    "déclaration de sinistre / réclamation": "réclamation",
+    "communication de mon relevé ficp": "Communication de mon relevé FICP",
+    "ou": "le 25 avril 2026"
+  },
+  "_situation_resumee": "Le 9 avril 2026, Sophie Dupont reçoit un courrier de Cetelem mentionnant un crédit de 8 500 € qu'elle n'a jamais souscrit (CRD-2025-08847291). Elle constate que son compte Crédit Agricole subit depuis février des prélèvements SEPA mensuels au profit de Cetelem (cumul 1 247,52 €). Le 12 avril, sa ligne Orange a été coupée pendant 6h sans préavis (suspicion de SIM swap). Elle saisit en parallèle la CNIL et la Banque de France pour vérifier l'existence d'un fichage FICP."
+}
