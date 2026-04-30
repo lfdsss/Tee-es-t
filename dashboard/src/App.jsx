@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { getSession } from './lib/auth'
 import Layout from './components/Layout'
@@ -6,10 +6,11 @@ import LoginPage from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
 import MissionsPage from './pages/MissionsPage'
 import MissionDetailPage from './pages/MissionDetailPage'
-import ProposalsPage from './pages/ProposalsPage'
-import DocumentsPage from './pages/DocumentsPage'
-import AgentPage from './pages/AgentPage'
-import SettingsPage from './pages/SettingsPage'
+
+const ProposalsPage = lazy(() => import('./pages/ProposalsPage'))
+const DocumentsPage = lazy(() => import('./pages/DocumentsPage'))
+const AgentPage = lazy(() => import('./pages/AgentPage'))
+const SettingsPage = lazy(() => import('./pages/SettingsPage'))
 
 function ProtectedRoute({ children }) {
   const session = getSession()
@@ -40,10 +41,10 @@ export default function App() {
         <Route index element={<DashboardPage session={session} />} />
         <Route path="missions" element={<MissionsPage session={session} />} />
         <Route path="missions/:id" element={<MissionDetailPage session={session} />} />
-        <Route path="proposals" element={<ProposalsPage session={session} />} />
-        <Route path="documents" element={<DocumentsPage session={session} />} />
-        <Route path="agent" element={<AgentPage session={session} />} />
-        <Route path="settings" element={<SettingsPage session={session} />} />
+        <Route path="proposals" element={<Suspense fallback={null}><ProposalsPage session={session} /></Suspense>} />
+        <Route path="documents" element={<Suspense fallback={null}><DocumentsPage session={session} /></Suspense>} />
+        <Route path="agent" element={<Suspense fallback={null}><AgentPage session={session} /></Suspense>} />
+        <Route path="settings" element={<Suspense fallback={null}><SettingsPage session={session} /></Suspense>} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

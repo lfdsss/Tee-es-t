@@ -7,7 +7,9 @@ const headers = {
   'Content-Type': 'application/json',
 };
 
-const RAILWAY_URL = 'https://web-production-610b0.up.railway.app';
+const RAILWAY_URL = import.meta.env.DEV
+  ? 'https://web-production-610b0.up.railway.app'
+  : '/api';
 
 function dedup(missions) {
   const seen = new Map();
