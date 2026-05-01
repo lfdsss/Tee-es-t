@@ -24,35 +24,19 @@ are not aggressive but we keep a user agent for politeness.
 from __future__ import annotations
 
 import logging
-import re
 from xml.etree import ElementTree as ET
 
 import httpx
 
-from ..models import ContractType, Offer, Source
+from ..models import Offer, Source
 from ..utils.skills import extract_skills
+from ._text import extract_city_from_dashed_title, guess_contract, strip_html
 from .base import BaseScraper
 
 log = logging.getLogger(__name__)
 
 FEED_URL = "https://www.hellowork.com/fr-fr/emploi/recherche.html"
 USER_AGENT = "StudentFlow/0.1 (+https://github.com/them311/Tee-es-t)"
-
-# Rough mapping of French contract keywords to our enum. Case-insensitive.
-CONTRACT_PATTERNS: list[tuple[re.Pattern[str], ContractType]] = [
-    (re.compile(r"\b(stage|stagiaire)\b", re.I), ContractType.INTERNSHIP),
-    (re.compile(r"\b(alternance|apprentissage|apprenti)\b", re.I), ContractType.APPRENTICESHIP),
-    (re.compile(r"\bcdi\b", re.I), ContractType.CDI),
-    (re.compile(r"\bcdd\b", re.I), ContractType.CDD),
-    (
-        re.compile(r"\b(temps partiel|part.?time|week.?end|job étudiant)\b", re.I),
-        ContractType.PART_TIME,
-    ),
-    (re.compile(r"\b(freelance|indépendant|independant)\b", re.I), ContractType.FREELANCE),
-]
-
-# Strip HTML tags without pulling in BeautifulSoup. Good enough for descriptions.
-_HTML_TAG = re.compile(r"<[^>]+>")
 
 
 class HelloWorkScraper(BaseScraper):
@@ -105,12 +89,11 @@ class HelloWorkScraper(BaseScraper):
             return None
 
         link = text("link")
-        description_raw = text("description")
-        description = _HTML_TAG.sub("", description_raw).strip()
+        description = strip_html(text("description"))
         guid = text("guid") or link or title
 
-        contract = _guess_contract(title + " " + description)
-        city = _extract_city(title)
+        contract = guess_contract(title + " " + description)
+        city = extract_city_from_dashed_title(title)
 
         skills = extract_skills(f"{title}\n{description}")
 
@@ -126,25 +109,3 @@ class HelloWorkScraper(BaseScraper):
             skills=skills,
             url=link,
         )
-
-
-def _guess_contract(text: str) -> ContractType:
-    for pattern, contract in CONTRACT_PATTERNS:
-        if pattern.search(text):
-            return contract
-    return ContractType.OTHER
-
-
-def _extract_city(title: str) -> str:
-    """HelloWork titles are usually `Job title - Contract - City`.
-
-    Fall back to empty string if the pattern doesn't hold.
-    """
-    parts = [p.strip() for p in title.split(" - ")]
-    if len(parts) >= 2:
-        # Last segment is typically the location.
-        candidate = parts[-1]
-        # Strip trailing department code like "Paris (75)" → "Paris"
-        candidate = re.sub(r"\s*\(\d+\)\s*$", "", candidate)
-        return candidate
-    return ""

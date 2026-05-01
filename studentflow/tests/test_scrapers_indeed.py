@@ -12,12 +12,8 @@ import pytest
 import respx
 
 from studentflow.models import ContractType, Source
-from studentflow.scrapers.indeed import (
-    FEED_URL,
-    IndeedScraper,
-    _extract_city,
-    _guess_contract,
-)
+from studentflow.scrapers._text import extract_city_from_dashed_title, guess_contract
+from studentflow.scrapers.indeed import FEED_URL, IndeedScraper
 
 CANNED_RSS = b"""<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
@@ -135,14 +131,14 @@ async def test_indeed_handles_invalid_xml() -> None:
 
 
 def test_extract_city_from_title() -> None:
-    assert _extract_city("Dev React - Acme - Paris (75)") == "Paris"
-    assert _extract_city("Vendeur - Lyon") == "Lyon"
-    assert _extract_city("No dash") == ""
+    assert extract_city_from_dashed_title("Dev React - Acme - Paris (75)") == "Paris"
+    assert extract_city_from_dashed_title("Vendeur - Lyon") == "Lyon"
+    assert extract_city_from_dashed_title("No dash") == ""
 
 
 def test_guess_contract_patterns() -> None:
-    assert _guess_contract("stage de fin d'etudes") == ContractType.INTERNSHIP
-    assert _guess_contract("contrat en alternance") == ContractType.APPRENTICESHIP
-    assert _guess_contract("poste en CDI") == ContractType.CDI
-    assert _guess_contract("job etudiant temps partiel") == ContractType.PART_TIME
-    assert _guess_contract("aucun indicateur") == ContractType.OTHER
+    assert guess_contract("stage de fin d'etudes") == ContractType.INTERNSHIP
+    assert guess_contract("contrat en alternance") == ContractType.APPRENTICESHIP
+    assert guess_contract("poste en CDI") == ContractType.CDI
+    assert guess_contract("job etudiant temps partiel") == ContractType.PART_TIME
+    assert guess_contract("aucun indicateur") == ContractType.OTHER

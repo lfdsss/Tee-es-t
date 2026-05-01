@@ -115,7 +115,7 @@ FastAPI.
 - `src/studentflow/cli.py` — CLI: `studentflow run-api`, `run-agents`, `tick`
 - `src/studentflow/agents.py` — `ScraperAgent` (15 min) · `MatcherAgent` (1 min) · `NotifierAgent` (30 s)
 - `src/studentflow/matching.py` — pure deterministic scorer (no I/O)
-- `src/studentflow/scrapers/` — `france_travail.py` is live; `indeed`, `hellowork`, `studentjob`, `jobteaser`, `adzuna`, `jooble` are stubs
+- `src/studentflow/scrapers/` — live: `france_travail` (REST), `adzuna` and `jooble` (REST + API key), `hellowork` and `indeed` (RSS). Stubs: `studentjob` (HTML, blocked on Cloudflare-style anti-bot from sandbox/CI), `jobteaser` (per-school OAuth credentials). Shared text helpers in `scrapers/_text.py` (contract guessing, city extraction, HTML stripping)
 - `schema.sql` — full Postgres schema (idempotent)
 - `migrations/002_uber_grade.sql` — delta if you previously applied an older schema
 

@@ -45,8 +45,11 @@ instantanée au meilleur candidat → accept en 1 clic.
 | `src/studentflow/db.py`           | Client Supabase / repository pattern                |
 | `src/studentflow/matching.py`     | Moteur de scoring pur (sans I/O)                    |
 | `src/studentflow/scrapers/base.py`| Classe abstraite `BaseScraper`                      |
+| `src/studentflow/scrapers/_text.py`| Helpers texte partagés (contrat, ville, strip HTML) |
 | `src/studentflow/scrapers/france_travail.py` | Scraper officiel via API publique        |
-| `src/studentflow/scrapers/indeed.py` / `hellowork.py` / `studentjob.py` / `jobteaser.py` | Stubs propres à implémenter |
+| `src/studentflow/scrapers/adzuna.py` / `jooble.py` | Scrapers REST (clé API publique)             |
+| `src/studentflow/scrapers/hellowork.py` / `indeed.py` | Scrapers RSS publics                       |
+| `src/studentflow/scrapers/studentjob.py` / `jobteaser.py` | Stubs à implémenter (HTML / OAuth école) |
 | `src/studentflow/agents.py`       | Boucles agent (scraper/matcher/notifier)            |
 | `src/studentflow/api.py`          | FastAPI app + routes                                |
 | `src/studentflow/cli.py`          | Entry points CLI (`studentflow run-api`, `run-agents`) |
