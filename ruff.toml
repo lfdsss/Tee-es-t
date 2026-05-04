@@ -1,10 +1,14 @@
-# Root configuration — applies to Python code outside of nested packages
+# Root Ruff configuration — applies to Python code outside of nested packages
 # (commercial-agent/, snb-agent/, scripts, etc.)
+#
+# Stored as ruff.toml (not pyproject.toml) so deploy platforms (Vercel,
+# Netlify) don't misidentify the repo root as a Python project. Ruff
+# resolves both file names natively; in ruff.toml sections live at the top
+# level (no [tool.ruff] prefix).
 #
 # Nested packages with their own pyproject.toml (studentflow/) keep their
 # own — Ruff resolves the closest config per file.
 
-[tool.ruff]
 line-length = 100
 target-version = "py311"
 extend-exclude = [
@@ -16,15 +20,15 @@ extend-exclude = [
     "*.egg-info",
 ]
 
-[tool.ruff.lint]
-# E   = pycodestyle errors
-# F   = pyflakes (unused imports, undefined names)
-# BLE = flake8-blind-except (catches `except:` and `except Exception:` that
-#       silently swallow errors — the #1 source of invisible bugs in agents)
+[lint]
+# E      = pycodestyle errors
+# F      = pyflakes (unused imports, undefined names)
+# BLE    = flake8-blind-except (catches `except:` and `except Exception:`
+#          that silently swallow errors — #1 source of invisible bugs in agents)
 # RUF100 = unused `# noqa` directives
 select = ["E", "F", "BLE", "RUF100"]
 
-[tool.ruff.lint.per-file-ignores]
+[lint.per-file-ignores]
 # Scrapers, agent loops and tool routers: blind except is INTENTIONAL —
 # one failing source (network, parser, 3rd-party API change) must never
 # crash the whole agent. Pattern documented in studentflow/CLAUDE.md.
