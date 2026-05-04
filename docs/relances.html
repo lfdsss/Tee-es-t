@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relances L-FDS · Pipeline 80k€</title>
+<meta name="description" content="Tracker des relances commerciales La Française Des Sauces — pipeline 80 000€ sur 10 deals qualifiés.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect rx='18' width='100' height='100' fill='%230f172a'/><text x='50' y='66' text-anchor='middle' fill='%2338bdf8' font-size='48' font-family='system-ui' font-weight='800'>L</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f172a;
+    --bg-card: #1e293b;
+    --bg-card-hover: #334155;
+    --border: #334155;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --accent: #38bdf8;
+    --accent-hover: #0ea5e9;
+    --green: #22c55e;
+    --orange: #f59e0b;
+    --red: #ef4444;
+    --purple: #a855f7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+  .container { max-width: 1280px; margin: 0 auto; padding: 24px; }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+  header .title { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
+  header .title span { color: var(--accent); }
+  header .subtitle { font-size: 14px; color: var(--muted); margin-top: 4px; }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .stat {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .stat .label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+  .stat .value { font-size: 28px; font-weight: 800; margin-top: 8px; letter-spacing: -0.02em; }
+  .stat .value.accent { color: var(--accent); }
+  .stat .value.green { color: var(--green); }
+  .stat .value.orange { color: var(--orange); }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .filter {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .filter:hover { background: var(--bg-card-hover); color: var(--text); }
+  .filter.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+    gap: 20px;
+  }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: border-color 0.15s;
+  }
+  .card:hover { border-color: var(--accent); }
+  .card.sent { opacity: 0.55; }
+  .card.sent::before { content: "✓ envoyé"; color: var(--green); font-weight: 600; font-size: 12px; }
+
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .card-company { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
+  .card-contact { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .card-amount {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--green);
+    background: rgba(34, 197, 94, 0.1);
+    padding: 4px 10px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; }
+  .badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .badge.persona-grossiste { background: rgba(56, 189, 248, 0.15); color: var(--accent); }
+  .badge.persona-bio { background: rgba(34, 197, 94, 0.15); color: var(--green); }
+  .badge.persona-premium { background: rgba(168, 85, 247, 0.15); color: var(--purple); }
+  .badge.persona-traiteur { background: rgba(245, 158, 11, 0.15); color: var(--orange); }
+  .badge.persona-artisan { background: rgba(239, 68, 68, 0.15); color: var(--red); }
+  .badge.priority-high { background: rgba(239, 68, 68, 0.15); color: var(--red); }
+  .badge.priority-medium { background: rgba(245, 158, 11, 0.15); color: var(--orange); }
+  .badge.priority-low { background: rgba(148, 163, 184, 0.15); color: var(--muted); }
+
+  .email-fields { display: flex; flex-direction: column; gap: 8px; }
+  .field-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+  .email-to { font-size: 13px; font-family: ui-monospace, SFMono-Regular, monospace; color: var(--accent); }
+  .email-subject {
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    width: 100%;
+  }
+  .email-body {
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    line-height: 1.55;
+    width: 100%;
+    min-height: 200px;
+    resize: vertical;
+    white-space: pre-wrap;
+  }
+  .email-subject:focus, .email-body:focus { outline: 2px solid var(--accent); border-color: var(--accent); }
+
+  .actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .btn {
+    background: var(--bg-card-hover);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .btn:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .btn.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+  .btn.success { background: var(--green); color: var(--bg); border-color: var(--green); }
+  .btn.success:hover { filter: brightness(1.1); }
+
+  .footer {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .footer a { color: var(--accent); text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--green);
+    color: var(--bg);
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.25s;
+    z-index: 100;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  @media (max-width: 640px) {
+    .container { padding: 16px; }
+    header .title { font-size: 22px; }
+    .grid { grid-template-columns: 1fr; }
+    .card { padding: 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <div>
+    <div class="title">Relances <span>L-FDS</span></div>
+    <div class="subtitle">Pipeline qualifié · stage <code>qualifiedtobuy</code> · ~12 jours de retard moyen</div>
+  </div>
+  <div style="font-size: 13px; color: var(--muted); text-align: right;">
+    Owner : Baptiste Thévenot<br>
+    <a href="https://app.hubspot.com/contacts/147714071/objects/0-3/views/all/list" target="_blank" style="color: var(--accent);">Voir dans HubSpot →</a>
+  </div>
+</header>
+
+<div class="stats">
+  <div class="stat">
+    <div class="label">Relances ouvertes</div>
+    <div class="value accent" id="stat-open">10</div>
+  </div>
+  <div class="stat">
+    <div class="label">Pipeline total</div>
+    <div class="value green">80 000 €</div>
+  </div>
+  <div class="stat">
+    <div class="label">Top 3 deals</div>
+    <div class="value orange">45 000 €</div>
+  </div>
+  <div class="stat">
+    <div class="label">Brouillons Gmail prêts</div>
+    <div class="value accent" id="stat-drafts">5 / 10</div>
+  </div>
+</div>
+
+<div class="filters" id="filters">
+  <button class="filter active" data-filter="all">Tous (10)</button>
+  <button class="filter" data-filter="grossiste">Grossistes</button>
+  <button class="filter" data-filter="bio">Bio</button>
+  <button class="filter" data-filter="premium">Premium</button>
+  <button class="filter" data-filter="traiteur">Traiteur</button>
+  <button class="filter" data-filter="artisan">Artisan</button>
+  <button class="filter" data-filter="todo">À faire</button>
+  <button class="filter" data-filter="sent">Envoyés</button>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<div class="footer">
+  <p>Interface autonome — édition locale · données sauvegardées dans <code>localStorage</code> · aucun backend</p>
+  <p style="margin-top: 8px;">Voix de marque <strong>L-FDS</strong> appliquée selon <a href="../.claude/skills/email-adaptatif/SKILL.md">skill email-adaptatif</a> · "Sublimer sans masquer"</p>
+</div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const RELANCES = [
+  {
+    id: "davigel",
+    company: "Davigel / Nestlé Pro",
+    contact: "Guillaume Floc'h",
+    email: "guillaume.floch@davigel.fr",
+    phone: "0235047600",
+    amount: 20000,
+    persona: "grossiste",
+    priority: "high",
+    draftReady: true,
+    subject: "Sauce de finition L-FDS — proposition pour Davigel",
+    body: `Monsieur Floc'h,
+
+Suite à notre échange et au devis transmis, je reviens vers vous concernant le référencement de notre sauce de finition bio française.
+
+Pour Davigel/Nestlé Professional, l'enjeu serait simple : ajouter à votre catalogue une référence artisanale 100% française, certifiée AB, sur une catégorie en croissance forte (sauces bio premium, +18% en 2025).
+
+Notre capacité de production en Occitanie permet déjà des engagements de volume avec rotation assurée — c'est un consommable récurrent en restauration professionnelle.
+
+Auriez-vous 20 minutes la semaine prochaine pour un appel de cadrage ? Je peux vous adresser en parallèle notre dossier de référencement complet.
+
+Bien respectueusement,
+
+Baptiste Thévenot
+La Française Des Sauces — Sublimer sans masquer
+l-fds.com`
+  },
+  {
+    id: "pomona",
+    company: "Groupe Pomona",
+    contact: "Yasmine Slaoui",
+    email: "y.slaoui@groupe-pomona.fr",
+    phone: "01 55 59 61 00",
+    amount: 15000,
+    persona: "grossiste",
+    priority: "high",
+    draftReady: true,
+    subject: "Référencement L-FDS — proposition Pomona",
+    body: `Madame Slaoui,
+
+Je reviens vers vous suite à notre prise de contact sur le référencement de la gamme La Française Des Sauces dans le catalogue Pomona.
+
+Notre proposition couvre une référence de finition bio artisanale française, sur une catégorie en croissance soutenue. Pour le réseau Pomona, l'argument fort est la capacité de production engagée sur volumes et la régularité des livraisons depuis l'Occitanie.
+
+J'ai préparé une grille tarifaire volume et une projection annuelle estimée à 28 000€ HT sur les centrales régionales — je peux vous l'adresser en amont.
+
+Auriez-vous 30 minutes cette semaine pour un appel de cadrage ?
+
+Bien respectueusement,
+
+Baptiste Thévenot
+La Française Des Sauces
+l-fds.com`
+  },
+  {
+    id: "satoriz",
+    company: "Satoriz",
+    contact: "Ludovic Michot",
+    email: "ludovic.michot@satoriz.fr",
+    phone: "04 79 385 439",
+    amount: 10000,
+    persona: "bio",
+    priority: "high",
+    draftReady: true,
+    subject: "L-FDS — sauce bio Occitanie pour le réseau Satoriz",
+    body: `Bonjour Ludovic,
+
+Je reviens vers vous concernant le potentiel référencement de notre sauce de finition bio dans le réseau Satoriz.
+
+Notre démarche correspond aux valeurs Satoriz : 100% bio, 100% française, fabriquée artisanalement en Occitanie, sans additif, sans conservateur. Beurre français, échalotes, estragon, basilic. Une sauce qui sublime sans masquer — pensée pour un consommateur engagé.
+
+Avant d'aller plus loin, êtes-vous bien la bonne personne pour le référencement, ou souhaitez-vous me rediriger ? Je peux vous envoyer dossier produit et échantillons pour vos magasins pilotes.
+
+Bien cordialement,
+
+Baptiste Thévenot
+La Française Des Sauces
+l-fds.com`
+  },
+  {
+    id: "naturalia",
+    company: "Naturalia",
+    contact: "Bastien Fitussi",
+    email: "sguillonneau@naturalia.fr",
+    phone: "01 78 99 90 00",
+    amount: 8000,
+    persona: "bio",
+    priority: "medium",
+    draftReady: true,
+    subject: "Échantillons et dossier bio — L-FDS pour Naturalia",
+    body: `Bonjour Bastien,
+
+Je reviens vers vous au sujet de la gamme L-FDS pour le réseau Naturalia.
+
+Une sauce de finition certifiée AB et Eurofeuille, fabriquée artisanalement en Occitanie : beurre français, échalotes, estragon, basilic. Aucun additif, aucun conservateur, packaging éco. Le récit produit est aligné avec ce que vos consommateurs cherchent.
+
+J'ai préparé un devis spécifique (2 170€ HT) et je peux vous envoyer un échantillonnage complet pour vos 180 magasins. Avez-vous 15 minutes cette semaine pour un point téléphonique ?
+
+Naturellement votre,
+
+Baptiste Thévenot
+La Française Des Sauces — Sublimer sans masquer
+l-fds.com`
+  },
+  {
+    id: "biodis",
+    company: "Biodis",
+    contact: "Mme Jourdan",
+    email: "commercial@biodis.eu",
+    phone: "02 99 14 41 20",
+    amount: 7000,
+    persona: "bio",
+    priority: "medium",
+    draftReady: true,
+    subject: "L-FDS — sauce bio française pour distribution Europe",
+    body: `Madame Jourdan,
+
+Je reviens vers vous concernant la distribution de notre sauce de finition bio sur le réseau Biodis et son potentiel export Europe.
+
+Made in France + 100% bio + zéro additif sont aujourd'hui trois arguments forts à l'export, particulièrement sur les marchés bio allemand, néerlandais et scandinave que vous couvrez. Notre fabrication artisanale en Occitanie est un atout différenciant face aux références industrielles dominantes.
+
+Auriez-vous 20 minutes pour un échange ? Je peux vous adresser en parallèle notre catalogue export et un échantillonnage.
+
+Bien cordialement,
+
+Baptiste Thévenot
+La Française Des Sauces — Sublimer sans masquer
+l-fds.com`
+  },
+  {
+    id: "avigros",
+    company: "Avigros",
+    contact: "Arthur Avigros",
+    email: "contact@avigros.fr",
+    phone: "01 46 86 74 73",
+    amount: 6000,
+    persona: "grossiste",
+    priority: "medium",
+    draftReady: false,
+    subject: "Référencement L-FDS — Avigros",
+    body: `Bonjour Arthur,
+
+Je reviens vers vous au sujet du référencement de La Française Des Sauces dans le catalogue Avigros.
+
+Pour la restauration collective et professionnelle, nous proposons une sauce de finition bio française en grands conditionnements adaptés (déclinaisons 5L à l'étude). L'argument volume + qualité artisanale + bio est rare sur cette gamme.
+
+Pouvez-vous me confirmer les conditions d'entrée en catalogue ? Je peux vous transmettre une grille tarifaire grossiste détaillée et nos formats pro.
+
+Bien à vous,
+
+Baptiste Thévenot
+La Française Des Sauces
+l-fds.com`
+  },
+  {
+    id: "dalloyau",
+    company: "Dalloyau",
+    contact: "Michel Duval",
+    email: "michel.duval@dalloyau.fr",
+    phone: "01 56 83 32 65",
+    amount: 5000,
+    persona: "premium",
+    priority: "medium",
+    draftReady: false,
+    subject: "Sauce de finition artisanale — Dalloyau",
+    body: `Monsieur Duval,
+
+Je reviens vers vous concernant l'intégration possible de notre sauce de finition à la gamme traiteur Dalloyau.
+
+Une fabrication 100% artisanale en Occitanie, beurre français, échalotes, estragon, basilic — pensée comme une sauce de finition haut de gamme, dans le même esprit d'exigence que vos créations. Une option marque blanche est envisageable.
+
+Je serais honoré de vous faire parvenir quelques pots pour une dégustation, ainsi que notre devis Prestige (3 590€ HT). Avez-vous une disponibilité pour un échange de 15 minutes ?
+
+Avec toute ma considération,
+
+Baptiste Thévenot
+La Française Des Sauces — Sublimer sans masquer
+l-fds.com`
+  },
+  {
+    id: "receptions",
+    company: "Réceptions Paris",
+    contact: "Nicolas Rousseau",
+    email: "nicolas@receptions.paris",
+    phone: "06 24 12 76 34",
+    amount: 4000,
+    persona: "traiteur",
+    priority: "low",
+    draftReady: false,
+    subject: "Sauce L-FDS — partenariat Réceptions Paris",
+    body: `Bonjour Nicolas,
+
+Je reviens vers vous au sujet d'un partenariat avec Réceptions Paris pour vos prestations événementielles.
+
+Notre sauce de finition bio française est prête à l'emploi, qualité constante, et nous proposons des formats dédiés à l'événementiel (petits conditionnements premium, étiquetage co-brandé possible). Idéal pour des prestations haut de gamme où la régularité est non-négociable.
+
+Puis-je vous faire parvenir un échantillonnage pour votre prochaine prestation, et vous appeler 15 minutes pour caler les besoins formats ?
+
+Bien à vous,
+
+Baptiste Thévenot
+La Française Des Sauces
+l-fds.com`
+  },
+  {
+    id: "metzger",
+    company: "Metzger Frères",
+    contact: "Olivier Metzger",
+    email: "olivier.metzger@metzger-freres.com",
+    phone: "01 41 80 10 30",
+    amount: 3000,
+    persona: "artisan",
+    priority: "low",
+    draftReady: false,
+    subject: "Partenariat artisan à artisan — L-FDS × Metzger Frères",
+    body: `Bonjour Olivier,
+
+Je reviens vers vous au sujet du partenariat entre Metzger Frères et La Française Des Sauces.
+
+L'idée d'un co-branding charcuterie / sauce de finition fait sens pour nos deux marques : même exigence artisanale, même attachement au terroir. Une offre combinée (coffret, recette signature, étiquetage croisé) ouvrirait des prescriptions intéressantes.
+
+Seriez-vous ouvert à un échange de produits pour tester, et un appel de 15 minutes pour explorer concrètement ?
+
+Avec mes meilleures salutations,
+
+Baptiste Thévenot
+La Française Des Sauces
+l-fds.com`
+  },
+  {
+    id: "delon",
+    company: "Delon",
+    contact: "M. Delon",
+    email: "delon.lagache.mesnil@delon.fr",
+    phone: "01 41 73 07 30",
+    amount: 2000,
+    persona: "artisan",
+    priority: "low",
+    draftReady: false,
+    subject: "Une sauce de finition artisanale française — pour Delon",
+    body: `Monsieur Delon,
+
+Je vous contacte au sujet d'un éventuel partenariat avec La Française Des Sauces, sauce de finition bio française fabriquée artisanalement en Occitanie.
+
+Un produit pensé pour les artisans traiteurs comme vous : pour compléter une gamme avec une référence haut de gamme, sans dénaturer le savoir-faire maison. Beurre français, échalotes, estragon, basilic — sublimer sans masquer.
+
+Seriez-vous ouvert à recevoir quelques pots en dégustation ? Un appel de 15 minutes me permettrait de comprendre vos besoins.
+
+Avec mes meilleures salutations,
+
+Baptiste Thévenot
+La Française Des Sauces
+l-fds.com`
+  }
+];
+
+const STORAGE_KEY = "lfds-relances-state-v1";
+const state = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+let activeFilter = "all";
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  refreshStats();
+}
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+}
+
+function buildMailto(email, subject, body) {
+  const params = new URLSearchParams({ subject, body });
+  return `mailto:${email}?${params.toString()}`;
+}
+
+function buildGmailCompose(email, subject, body) {
+  const params = new URLSearchParams({
+    view: "cm",
+    fs: "1",
+    to: email,
+    su: subject,
+    body: body
+  });
+  return `https://mail.google.com/mail/?${params.toString()}`;
+}
+
+function currentValues(card, r) {
+  const subject = card.querySelector('[data-field="subject"]')?.value ?? r.subject;
+  const body = card.querySelector('[data-field="body"]')?.value ?? r.body;
+  return { subject, body };
+}
+
+function render() {
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+  const filtered = RELANCES.filter(r => {
+    if (activeFilter === "all") return true;
+    if (activeFilter === "todo") return !state[r.id]?.sent;
+    if (activeFilter === "sent") return state[r.id]?.sent;
+    return r.persona === activeFilter;
+  });
+
+  for (const r of filtered) {
+    const s = state[r.id] || {};
+    const card = document.createElement("article");
+    card.className = "card" + (s.sent ? " sent" : "");
+    card.dataset.id = r.id;
+    card.innerHTML = `
+      <div class="card-head">
+        <div>
+          <div class="card-company">${escapeHtml(r.company)}</div>
+          <div class="card-contact">${escapeHtml(r.contact)} · ${escapeHtml(r.phone)}</div>
+        </div>
+        <div class="card-amount">${r.amount.toLocaleString("fr-FR")} €</div>
+      </div>
+      <div class="badges">
+        <span class="badge persona-${r.persona}">${r.persona}</span>
+        <span class="badge priority-${r.priority}">${r.priority === "high" ? "🔴 prioritaire" : r.priority === "medium" ? "🟡 standard" : "🟢 secondaire"}</span>
+        ${r.draftReady ? '<span class="badge persona-bio">✓ draft Gmail</span>' : ''}
+      </div>
+      <div class="email-fields">
+        <div class="field-label">À</div>
+        <div class="email-to">${escapeHtml(r.email)}</div>
+        <div class="field-label">Objet</div>
+        <input type="text" class="email-subject" data-field="subject" value="${escapeHtml(s.subject || r.subject)}">
+        <div class="field-label">Corps</div>
+        <textarea class="email-body" data-field="body">${escapeHtml(s.body || r.body)}</textarea>
+      </div>
+      <div class="actions">
+        <button class="btn" data-action="copy">📋 Copier</button>
+        <a class="btn primary" data-action="gmail" href="#" target="_blank" rel="noopener">📧 Gmail</a>
+        <a class="btn" data-action="mailto" href="#">✉️ Mailto</a>
+        <button class="btn ${s.sent ? "" : "success"}" data-action="toggle-sent">${s.sent ? "↩️ Reprendre" : "✓ Marquer envoyé"}</button>
+      </div>
+    `;
+    grid.appendChild(card);
+
+    const gmailLink = card.querySelector('[data-action="gmail"]');
+    const mailtoLink = card.querySelector('[data-action="mailto"]');
+    const refreshLinks = () => {
+      const { subject, body } = currentValues(card, r);
+      gmailLink.href = buildGmailCompose(r.email, subject, body);
+      mailtoLink.href = buildMailto(r.email, subject, body);
+    };
+    refreshLinks();
+
+    card.querySelectorAll('input[data-field], textarea[data-field]').forEach(el => {
+      el.addEventListener('input', () => {
+        state[r.id] = state[r.id] || {};
+        state[r.id][el.dataset.field] = el.value;
+        saveState();
+        refreshLinks();
+      });
+    });
+
+    card.querySelector('[data-action="copy"]').addEventListener('click', () => {
+      const subject = card.querySelector('[data-field="subject"]').value;
+      const body = card.querySelector('[data-field="body"]').value;
+      const text = `À : ${r.email}\nObjet : ${subject}\n\n${body}`;
+      navigator.clipboard.writeText(text);
+      showToast("Email copié dans le presse-papier");
+    });
+
+    card.querySelector('[data-action="toggle-sent"]').addEventListener('click', () => {
+      state[r.id] = state[r.id] || {};
+      state[r.id].sent = !state[r.id].sent;
+      state[r.id].sentAt = state[r.id].sent ? new Date().toISOString() : null;
+      saveState();
+      render();
+      showToast(state[r.id].sent ? `✓ ${r.company} marqué envoyé` : `↩️ ${r.company} repris en cours`);
+    });
+  }
+}
+
+function refreshStats() {
+  const total = RELANCES.length;
+  const sent = RELANCES.filter(r => state[r.id]?.sent).length;
+  const open = total - sent;
+  document.getElementById("stat-open").textContent = open;
+  const draftsReady = RELANCES.filter(r => r.draftReady).length;
+  document.getElementById("stat-drafts").textContent = `${draftsReady} / ${total}`;
+}
+
+document.getElementById("filters").addEventListener("click", (e) => {
+  const btn = e.target.closest(".filter");
+  if (!btn) return;
+  document.querySelectorAll(".filter").forEach(f => f.classList.remove("active"));
+  btn.classList.add("active");
+  activeFilter = btn.dataset.filter;
+  render();
+});
+
+const toastEl = document.getElementById("toast");
+let toastTimer;
+function showToast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2200);
+}
+
+render();
+refreshStats();
+</script>
+</body>
+</html>
