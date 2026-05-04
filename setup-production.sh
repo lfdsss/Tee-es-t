@@ -46,14 +46,24 @@ if [ "${SKIP_BOOTSTRAP:-0}" != "1" ]; then
   fi
   ok "Homebrew available: $(brew --version | head -1)"
 
-  # 0b. Supabase CLI
+  # 0b. Brewfile bundle — applies the curated set of CLIs in one shot
+  if [ -f "$ROOT/Brewfile" ]; then
+    echo "→ Running brew bundle install (Brewfile)…"
+    if ! (cd "$ROOT" && brew bundle check --quiet 2>/dev/null); then
+      (cd "$ROOT" && brew bundle install --quiet) \
+        || echo "⚠️  brew bundle install reported issues — continuing (some deps may be optional)"
+    fi
+    ok "Brewfile applied"
+  fi
+
+  # 0c. Supabase CLI (defensive — should already be covered by Brewfile)
   if ! command -v supabase >/dev/null 2>&1; then
     echo "→ supabase CLI missing — installing via brew"
     brew install supabase/tap/supabase || bail "supabase install failed"
   fi
   ok "supabase CLI available: $(supabase --version 2>/dev/null || echo unknown)"
 
-  # 0c. Railway CLI
+  # 0d. Railway CLI (npm-only, no brew formula)
   if ! command -v railway >/dev/null 2>&1; then
     echo "→ railway CLI missing — installing via npm"
     command -v npm >/dev/null 2>&1 || bail "npm required to install railway CLI"

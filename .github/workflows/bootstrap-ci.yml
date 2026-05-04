@@ -1,0 +1,93 @@
+name: bootstrap-ci
+
+on:
+  push:
+    paths:
+      - "scripts/install-homebrew.sh"
+      - "setup-production.sh"
+      - "Brewfile"
+      - "Makefile"
+      - ".github/workflows/bootstrap-ci.yml"
+  pull_request:
+    paths:
+      - "scripts/install-homebrew.sh"
+      - "setup-production.sh"
+      - "Brewfile"
+      - "Makefile"
+      - ".github/workflows/bootstrap-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  shellcheck:
+    name: Lint bash scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: shellcheck
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq shellcheck
+          shellcheck -S warning scripts/install-homebrew.sh setup-production.sh
+
+  install-homebrew:
+    name: Verify install-homebrew.sh on Linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Cache the Linuxbrew tree so subsequent runs are seconds, not minutes
+      - name: Cache Homebrew
+        uses: actions/cache@v4
+        with:
+          path: |
+            /home/linuxbrew/.linuxbrew/Cellar
+            /home/linuxbrew/.linuxbrew/Caskroom
+            /home/linuxbrew/.linuxbrew/Homebrew
+          key: brew-${{ runner.os }}-${{ hashFiles('Brewfile') }}
+          restore-keys: |
+            brew-${{ runner.os }}-
+
+      - name: Run install-homebrew.sh (idempotent)
+        run: |
+          chmod +x scripts/install-homebrew.sh
+          NONINTERACTIVE=1 ./scripts/install-homebrew.sh
+
+      - name: Verify brew is callable
+        run: |
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          brew --version
+          brew --prefix
+
+  brewfile-check:
+    name: Validate Brewfile syntax
+    runs-on: ubuntu-latest
+    needs: install-homebrew
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Homebrew
+        uses: actions/cache@v4
+        with:
+          path: |
+            /home/linuxbrew/.linuxbrew/Cellar
+            /home/linuxbrew/.linuxbrew/Caskroom
+            /home/linuxbrew/.linuxbrew/Homebrew
+          key: brew-${{ runner.os }}-${{ hashFiles('Brewfile') }}
+          restore-keys: |
+            brew-${{ runner.os }}-
+
+      - name: Install Homebrew
+        run: |
+          chmod +x scripts/install-homebrew.sh
+          NONINTERACTIVE=1 ./scripts/install-homebrew.sh
+
+      - name: brew bundle check (dry-run, no install)
+        run: |
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          # Parse the Brewfile without installing — fails on syntax errors
+          brew bundle list --file=Brewfile >/dev/null
+          echo "Brewfile is parseable. Lines:"
+          brew bundle list --file=Brewfile | wc -l
