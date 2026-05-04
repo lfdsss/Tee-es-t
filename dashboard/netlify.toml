@@ -1,0 +1,38 @@
+# Netlify configuration for the SNB dashboard (migrated from vercel.json).
+# Link this directory as the Netlify site base, or deploy dashboard/dist via the
+# .github/workflows/deploy-netlify.yml pipeline.
+
+[build]
+  base = "dashboard"
+  command = "npm ci && npm run build"
+  publish = "dashboard/dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Proxy API calls to the Railway backend (formerly handled by vercel.json rewrites).
+[[redirects]]
+  from = "/api/*"
+  to = "https://web-production-610b0.up.railway.app/:splat"
+  status = 200
+  force = true
+
+# SPA fallback so React Router owns every non-asset route.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Long-lived cache for hashed Vite assets.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Baseline security headers for every other response.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"

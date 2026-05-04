@@ -13,9 +13,9 @@
     ]
   },
   "mcpServers": {
-    "vercel": {
+    "netlify": {
       "type": "http",
-      "url": "https://mcp.vercel.com"
+      "url": "https://mcp.netlify.com"
     }
   }
 }
