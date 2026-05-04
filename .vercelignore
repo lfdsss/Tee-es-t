@@ -1,0 +1,29 @@
+# Python agent stacks — not deployed to Vercel
+commercial-agent/
+snb-agent/
+studentflow/
+studentflow-web/
+dossier-ami/
+
+# Local-only build artefacts
+Dockerfile
+docker-compose.yml
+.dockerignore
+fly.toml
+deploy-fly.sh
+deploy.sh
+setup.sh
+setup-production.sh
+Brewfile
+Makefile
+
+# Repos / dumps that should never ship
+images/
+scripts/
+server/
+
+# Docs that already get served from /docs as the static root
+DEPLOY.md
+DEPLOY_PROMPT.md
+CLAUDE.md
+README.md
