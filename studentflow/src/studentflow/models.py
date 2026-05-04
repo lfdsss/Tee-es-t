@@ -36,6 +36,23 @@ class Source(StrEnum):
     JOOBLE = "jooble"
 
 
+class SalaryPeriod(StrEnum):
+    """How a salary figure should be interpreted.
+
+    HOURLY  — euros per hour worked (most jobs étudiants).
+    MONTHLY — euros per month, gross (alternance, CDI/CDD).
+    FIXED   — flat sum, mostly stage gratification (e.g. 600€ for the whole stage).
+
+    The matcher normalizes everything to an hourly rate before comparing to a
+    student's `min_hourly_salary`, so this enum is just a hint for that
+    conversion — see `matching._to_hourly()`.
+    """
+
+    HOURLY = "hourly"
+    MONTHLY = "monthly"
+    FIXED = "fixed"
+
+
 class MatchState(StrEnum):
     """Lifecycle of a match from the student's perspective.
 
@@ -86,6 +103,10 @@ class Offer(BaseModel):
     contact_email: str = ""  # set when an employer publishes via POST /offers
     latitude: float | None = None
     longitude: float | None = None
+    salary_min: float | None = None
+    salary_max: float | None = None
+    salary_period: SalaryPeriod | None = None
+    expires_at: datetime | None = None
     scraped_at: datetime = Field(default_factory=datetime.utcnow)
 
     def model_post_init(self, _: object) -> None:
@@ -108,6 +129,7 @@ class Student(BaseModel):
     available_until: date | None = None
     latitude: float | None = None
     longitude: float | None = None
+    min_hourly_salary: float | None = None
     active: bool = True
 
     def model_post_init(self, _: object) -> None:

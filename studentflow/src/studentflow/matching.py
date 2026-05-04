@@ -11,15 +11,21 @@ from __future__ import annotations
 
 from datetime import date
 
-from .models import ContractType, MatchResult, Offer, Student
+from .models import ContractType, MatchResult, Offer, SalaryPeriod, Student
 from .utils.geo import distance_score, haversine_km
 
+# Heuristic for monthly → hourly conversion: 35h/week x ~4.33 weeks/month.
+# Good enough for the matcher; the precise SMIC arithmetic is not needed
+# because we only compare a floor to an offered range.
+_HOURS_PER_MONTH = 35 * 4.33
+
 WEIGHTS: dict[str, float] = {
-    "skills": 0.40,
+    "skills": 0.35,
     "location": 0.25,
     "contract": 0.15,
     "hours": 0.10,
     "availability": 0.10,
+    "salary": 0.05,
 }
 assert abs(sum(WEIGHTS.values()) - 1.0) < 1e-9, "WEIGHTS must sum to 1.0"
 
@@ -100,6 +106,52 @@ def _score_hours(offer: Offer, student: Student) -> tuple[float, str]:
     return score, f"{offer.hours_per_week}h/sem > {student.max_hours_per_week}h max"
 
 
+def _to_hourly(amount: float, period: SalaryPeriod) -> float:
+    """Best-effort conversion of a salary figure to euros per hour.
+
+    `FIXED` (typically a stage gratification) is treated as monthly because
+    that's what students naively compare against — refining this would require
+    knowing the contract duration, which isn't always present.
+    """
+    if period == SalaryPeriod.HOURLY:
+        return amount
+    # MONTHLY and FIXED → divide by hours/month.
+    return amount / _HOURS_PER_MONTH
+
+
+def _score_salary(offer: Offer, student: Student) -> tuple[float, str]:
+    """Compare the offer's pay range to the student's `min_hourly_salary`.
+
+    Stays neutral (0.5) when either side hasn't filled in the data — we don't
+    want to penalize an offer just because the source didn't expose a salary.
+    The matcher only kicks in when both sides have something to compare.
+    """
+    if student.min_hourly_salary is None:
+        return 0.5, "Étudiant n'a pas précisé de salaire minimum"
+
+    has_offer_amount = (offer.salary_min is not None or offer.salary_max is not None) and (
+        offer.salary_period is not None
+    )
+    if not has_offer_amount:
+        return 0.5, "Salaire non précisé dans l'offre"
+
+    period = offer.salary_period or SalaryPeriod.HOURLY
+    # Prefer salary_max as the most generous interpretation; fall back to min.
+    raw = offer.salary_max if offer.salary_max is not None else offer.salary_min
+    assert raw is not None  # guaranteed by has_offer_amount
+    offered_hourly = _to_hourly(raw, period)
+    floor = student.min_hourly_salary
+
+    if offered_hourly >= floor:
+        return 1.0, f"Salaire ≥ minimum ({offered_hourly:.2f}€/h ≥ {floor:.2f}€/h)"
+
+    # Gradual penalty proportional to the shortfall, capped at 0.
+    ratio = offered_hourly / floor if floor > 0 else 0.0
+    return max(0.0, ratio), (
+        f"Salaire en dessous du minimum ({offered_hourly:.2f}€/h < {floor:.2f}€/h)"
+    )
+
+
 def _score_availability(offer: Offer, student: Student) -> tuple[float, str]:
     """Rough overlap check between offer window and student window."""
     # If nothing specified, stay neutral.
@@ -149,6 +201,10 @@ def score(offer: Offer, student: Student) -> MatchResult:
     s_avail, r_avail = _score_availability(offer, student)
     components["availability"] = s_avail
     reasons.append(f"[availability {s_avail:.2f}] {r_avail}")
+
+    s_salary, r_salary = _score_salary(offer, student)
+    components["salary"] = s_salary
+    reasons.append(f"[salary {s_salary:.2f}] {r_salary}")
 
     total = sum(components[name] * WEIGHTS[name] for name in WEIGHTS)
     return MatchResult(

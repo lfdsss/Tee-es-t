@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from datetime import datetime
 
 from .config import Settings, get_settings
 from .db import Repository
@@ -58,6 +59,14 @@ class MatcherAgent:
         offers = self.repo.list_recent_unmatched_offers()
         students = self.repo.list_active_students()
         if not offers or not students:
+            return 0
+
+        # Drop expired offers before scoring. The scraper agent might have
+        # picked them up before they were taken down upstream, and notifying a
+        # student about a dead offer is a waste of trust.
+        now = datetime.utcnow()
+        offers = [o for o in offers if o.expires_at is None or o.expires_at > now]
+        if not offers:
             return 0
 
         created = 0

@@ -54,6 +54,32 @@ async def test_matcher_agent_creates_matches() -> None:
 
 
 @pytest.mark.asyncio
+async def test_matcher_agent_skips_expired_offers() -> None:
+    """Offers whose expires_at is in the past must not produce notifs."""
+    from datetime import datetime, timedelta
+
+    past = datetime.utcnow() - timedelta(days=1)
+    repo = InMemoryRepository()
+    repo.upsert_offers([make_offer(source_id="ft-expired", expires_at=past)])
+    repo.insert_student(make_student())
+
+    created = await MatcherAgent(repo, threshold=0.6).tick()
+    assert created == 0
+    assert len(repo.matches) == 0
+
+
+@pytest.mark.asyncio
+async def test_matcher_agent_keeps_offers_without_expiration() -> None:
+    """expires_at = None means 'unknown' and should not be filtered out."""
+    repo = InMemoryRepository()
+    repo.upsert_offers([make_offer(expires_at=None)])
+    repo.insert_student(make_student())
+
+    created = await MatcherAgent(repo, threshold=0.6).tick()
+    assert created == 1
+
+
+@pytest.mark.asyncio
 async def test_notifier_agent_dispatches_via_null_channel() -> None:
     repo = InMemoryRepository()
     repo.upsert_offers([make_offer()])

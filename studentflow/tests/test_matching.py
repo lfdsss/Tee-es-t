@@ -12,12 +12,13 @@ from studentflow.matching import (
     _score_contract,
     _score_hours,
     _score_location,
+    _score_salary,
     _score_skills,
     rank_offers_for_student,
     rank_students_for_offer,
     score,
 )
-from studentflow.models import ContractType
+from studentflow.models import ContractType, SalaryPeriod
 
 from .fixtures import make_offer, make_student
 
@@ -127,6 +128,52 @@ def test_availability_incompatible() -> None:
     student = make_student(available_from=date(2026, 1, 1), available_until=date(2026, 12, 31))
     s, _ = _score_availability(offer, student)
     assert s == 0.0
+
+
+def test_score_salary_above_minimum_full_score() -> None:
+    offer = make_offer(salary_min=12.0, salary_max=14.0, salary_period=SalaryPeriod.HOURLY)
+    student = make_student(min_hourly_salary=10.0)
+    s, reason = _score_salary(offer, student)
+    assert s == 1.0
+    assert "≥" in reason
+
+
+def test_score_salary_below_minimum_graceful() -> None:
+    offer = make_offer(salary_min=8.0, salary_max=8.0, salary_period=SalaryPeriod.HOURLY)
+    student = make_student(min_hourly_salary=10.0)
+    s, _ = _score_salary(offer, student)
+    # ratio = 8/10 = 0.8
+    assert s == pytest.approx(0.8, rel=1e-3)
+
+
+def test_score_salary_neutral_when_student_has_no_floor() -> None:
+    offer = make_offer(salary_min=12.0, salary_max=14.0, salary_period=SalaryPeriod.HOURLY)
+    student = make_student(min_hourly_salary=None)
+    s, _ = _score_salary(offer, student)
+    assert s == 0.5
+
+
+def test_score_salary_neutral_when_offer_has_no_amount() -> None:
+    offer = make_offer(salary_min=None, salary_max=None, salary_period=None)
+    student = make_student(min_hourly_salary=10.0)
+    s, _ = _score_salary(offer, student)
+    assert s == 0.5
+
+
+def test_score_salary_converts_monthly_to_hourly() -> None:
+    """1500 EUR/month / (35 * 4.33) ~= 9.9 EUR/h, above 8 EUR/h floor -> score 1.0."""
+    offer = make_offer(salary_min=1500.0, salary_max=1500.0, salary_period=SalaryPeriod.MONTHLY)
+    student = make_student(min_hourly_salary=8.0)
+    s, _ = _score_salary(offer, student)
+    assert s == 1.0
+
+
+def test_score_salary_uses_max_when_range_provided() -> None:
+    """Generosity bias: a 10-14€/h range against a 12€ floor scores full."""
+    offer = make_offer(salary_min=10.0, salary_max=14.0, salary_period=SalaryPeriod.HOURLY)
+    student = make_student(min_hourly_salary=12.0)
+    s, _ = _score_salary(offer, student)
+    assert s == 1.0
 
 
 def test_rank_offers_for_student_sorts_desc() -> None:

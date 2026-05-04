@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import date
 
-from studentflow.models import ContractType, Offer, Source, Student
+from studentflow.models import ContractType, Offer, SalaryPeriod, Source, Student
 
 
 def make_offer(**overrides: object) -> Offer:
@@ -21,6 +21,9 @@ def make_offer(**overrides: object) -> Offer:
         "skills": ["React", "JavaScript", "CSS"],
         "starts_on": date(2026, 9, 1),
         "ends_on": date(2027, 8, 31),
+        "salary_min": 1500.0,
+        "salary_max": 1700.0,
+        "salary_period": SalaryPeriod.MONTHLY,
         "url": "https://example.com/offer/1",
     }
     base.update(overrides)
@@ -38,6 +41,7 @@ def make_student(**overrides: object) -> Student:
         "max_hours_per_week": 40,
         "available_from": date(2026, 9, 1),
         "available_until": date(2027, 9, 1),
+        "min_hourly_salary": 8.0,
     }
     base.update(overrides)
     return Student(**base)  # type: ignore[arg-type]

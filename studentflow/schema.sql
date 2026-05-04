@@ -24,6 +24,10 @@ create table if not exists offers (
     contact_email text default '',
     latitude      double precision,
     longitude     double precision,
+    salary_min    double precision,
+    salary_max    double precision,
+    salary_period text,
+    expires_at    timestamptz,
     scraped_at    timestamptz not null default now(),
     unique (source, source_id)
 );
@@ -33,6 +37,8 @@ create index if not exists idx_offers_city on offers (city);
 create index if not exists idx_offers_contract on offers (contract);
 create index if not exists idx_offers_geo on offers (latitude, longitude)
     where latitude is not null and longitude is not null;
+create index if not exists idx_offers_expires_at on offers (expires_at)
+    where expires_at is not null;
 
 -- ---------- students ----------
 create table if not exists students (
@@ -48,6 +54,7 @@ create table if not exists students (
     available_until    date,
     latitude           double precision,
     longitude          double precision,
+    min_hourly_salary  double precision,
     active             boolean not null default true,
     created_at         timestamptz not null default now()
 );

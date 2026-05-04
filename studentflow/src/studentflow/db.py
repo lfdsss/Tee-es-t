@@ -214,6 +214,10 @@ def _offer_to_row(o: Offer) -> dict[str, Any]:
         "contact_email": o.contact_email,
         "latitude": o.latitude,
         "longitude": o.longitude,
+        "salary_min": o.salary_min,
+        "salary_max": o.salary_max,
+        "salary_period": o.salary_period.value if o.salary_period else None,
+        "expires_at": o.expires_at.isoformat() if o.expires_at else None,
         "scraped_at": o.scraped_at.isoformat(),
     }
 
@@ -236,6 +240,7 @@ def _student_to_row(s: Student) -> dict[str, Any]:
         "available_until": s.available_until.isoformat() if s.available_until else None,
         "latitude": s.latitude,
         "longitude": s.longitude,
+        "min_hourly_salary": s.min_hourly_salary,
         "active": s.active,
     }
 

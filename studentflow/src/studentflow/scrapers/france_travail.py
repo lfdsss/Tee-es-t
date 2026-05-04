@@ -11,14 +11,15 @@ Docs: https://francetravail.io/data/api/offres-emploi
 from __future__ import annotations
 
 import logging
-from datetime import date, datetime
+import re
+from datetime import UTC, date, datetime, timedelta
 from typing import Any
 
 import httpx
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 from ..config import get_settings
-from ..models import ContractType, Offer, Source
+from ..models import ContractType, Offer, SalaryPeriod, Source
 from .base import BaseScraper
 
 log = logging.getLogger(__name__)
@@ -125,6 +126,16 @@ class FranceTravailScraper(BaseScraper):
                 except ValueError:
                     hours = None
 
+        salaire = row.get("salaire") or {}
+        salary_min, salary_max, salary_period = _parse_salary(salaire.get("libelle") or "")
+
+        # France Travail doesn't ship an expiration field, but offers go stale
+        # within ~30 days of the last actualisation. Use that as a soft floor
+        # so the MatcherAgent stops pushing notifs on dead listings.
+        expires_at = _parse_datetime(row.get("dateActualisation"))
+        if expires_at is not None:
+            expires_at = expires_at + timedelta(days=30)
+
         return Offer(
             source=Source.FRANCE_TRAVAIL,
             source_id=str(row.get("id", "")),
@@ -137,6 +148,10 @@ class FranceTravailScraper(BaseScraper):
             hours_per_week=hours,
             skills=skills,
             starts_on=starts_on,
+            salary_min=salary_min,
+            salary_max=salary_max,
+            salary_period=salary_period,
+            expires_at=expires_at,
             url=row.get("origineOffre", {}).get("urlOrigine", "") or "",
         )
 
@@ -148,3 +163,78 @@ def _parse_date(value: str | None) -> date | None:
         return datetime.fromisoformat(value.replace("Z", "+00:00")).date()
     except ValueError:
         return None
+
+
+def _parse_datetime(value: str | None) -> datetime | None:
+    if not value:
+        return None
+    try:
+        dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    # Drop timezone — Offer.expires_at is naive UTC like scraped_at.
+    if dt.tzinfo is not None:
+        dt = dt.astimezone(UTC).replace(tzinfo=None)
+    return dt
+
+
+# Regexes for the most common France Travail salary libellés. We do best-effort
+# parsing — if none match, (None, None, None) is returned and the offer keeps
+# salary fields null. Examples we handle:
+#   "Mensuel de 1 800,00 Euros à 2 200,00 Euros sur 12 mois"
+#   "Horaire de 11,52 € à 14,00 €"
+#   "Annuel de 30000,00 Euros sur 12 mois"
+#   "Mensuel de 2000 Euros"
+_NUM = r"(\d+(?:[ .]?\d{3})*(?:,\d+)?)"  # captures "1 800,00", "30000,00", "11,52"
+_RANGE_RE = re.compile(
+    rf"\b(Horaire|Mensuel|Annuel)\s+de\s+{_NUM}\s*(?:€|Euros?)\s*(?:à|a)\s+{_NUM}\s*(?:€|Euros?)",
+    re.IGNORECASE,
+)
+_SINGLE_RE = re.compile(
+    rf"\b(Horaire|Mensuel|Annuel)\s+de\s+{_NUM}\s*(?:€|Euros?)",
+    re.IGNORECASE,
+)
+
+
+def _to_float(raw: str) -> float | None:
+    cleaned = raw.replace(" ", "").replace(".", "").replace(",", ".")
+    try:
+        return float(cleaned)
+    except ValueError:
+        return None
+
+
+def _resolve_period(label: str, amount: float | None) -> tuple[SalaryPeriod | None, float | None]:
+    """Map a FT libellé prefix ('Horaire'/'Mensuel'/'Annuel') to our enum.
+
+    Annual figures are folded down to monthly so the matcher can compare them
+    on the same axis as MONTHLY salaries. HOURLY stays HOURLY.
+    """
+    label = label.lower()
+    if label == "horaire":
+        return SalaryPeriod.HOURLY, amount
+    if label == "mensuel":
+        return SalaryPeriod.MONTHLY, amount
+    if label == "annuel":
+        return SalaryPeriod.MONTHLY, (amount / 12 if amount is not None else None)
+    return None, None
+
+
+def _parse_salary(libelle: str) -> tuple[float | None, float | None, SalaryPeriod | None]:
+    if not libelle:
+        return None, None, None
+
+    m = _RANGE_RE.search(libelle)
+    if m:
+        period, lo = _resolve_period(m.group(1), _to_float(m.group(2)))
+        _, hi = _resolve_period(m.group(1), _to_float(m.group(3)))
+        if period and lo is not None and hi is not None:
+            return lo, hi, period
+
+    m = _SINGLE_RE.search(libelle)
+    if m:
+        period, amount = _resolve_period(m.group(1), _to_float(m.group(2)))
+        if period and amount is not None:
+            return amount, None, period
+
+    return None, None, None
