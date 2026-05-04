@@ -108,7 +108,7 @@ else
 
   # PATH persistant pour le user courant
   SHELL_RC="$HOME/.bashrc"
-  [ -n "${ZSH_VERSION:-}" ] && SHELL_RC="$HOME/.zshrc"
+  [[ "${SHELL:-}" == */zsh ]] && SHELL_RC="$HOME/.zshrc"
   if ! grep -q "brew shellenv" "$SHELL_RC" 2>/dev/null; then
     {
       echo ""
@@ -117,6 +117,9 @@ else
     } >> "$SHELL_RC"
     ok "PATH ajouté à $SHELL_RC"
   fi
+
+  # PATH dans la session courante pour la verification ci-dessous
+  eval "$("$BREW_PREFIX/bin/brew" shellenv)"
 fi
 
 # ── Vérification ────────────────────────────
