@@ -16,6 +16,10 @@
     "vercel": {
       "type": "http",
       "url": "https://mcp.vercel.com"
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "playwright-mcp"
     }
   }
 }
