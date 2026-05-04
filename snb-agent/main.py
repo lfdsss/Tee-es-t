@@ -21,7 +21,7 @@ from scorer import score_mission, classify_mission
 from proposer import Proposer
 from notifier import notify_telegram, send_email_digest
 from email_sender import send_proposal_email, test_smtp_connection
-from api import app, set_db
+from api import set_db
 
 # Scrapers
 from scrapers.remoteok import RemoteOKScraper

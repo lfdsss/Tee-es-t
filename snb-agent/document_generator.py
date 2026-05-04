@@ -8,9 +8,9 @@ from typing import Dict, Any, List
 
 from fpdf import FPDF
 from pptx import Presentation
-from pptx.util import Inches, Pt, Emu
+from pptx.util import Inches, Pt
 from pptx.dml.color import RGBColor
-from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
+from pptx.enum.text import PP_ALIGN
 
 BLUE_ACCENT = (37, 99, 235)
 DARK_BLUE = (30, 58, 95)
@@ -92,7 +92,6 @@ class ProposalPDF(FPDF):
     def bullet(self, text: str):
         self.set_font("Helvetica", "", 10)
         self.set_text_color(*DARK_TEXT)
-        x = self.get_x()
         self.cell(6, 5, chr(8226))
         self.multi_cell(0, 5, text)
         self.ln(1)

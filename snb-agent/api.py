@@ -378,7 +378,7 @@ async def chat(request: Request):
             return {"error": "Empty message"}
 
         if not _anthropic_client:
-            return {"response": f"Bonjour, je suis Baptiste Thevenot, consultant Web & IA freelance basé à Toulouse. Mon assistant IA est temporairement indisponible (clé API non configurée), mais vous pouvez me contacter directement : bp.thevenot@gmail.com ou 06 86 50 43 79."}
+            return {"response": "Bonjour, je suis Baptiste Thevenot, consultant Web & IA freelance basé à Toulouse. Mon assistant IA est temporairement indisponible (clé API non configurée), mais vous pouvez me contacter directement : bp.thevenot@gmail.com ou 06 86 50 43 79."}
 
         p = PROFILE
         skills_primary = ", ".join(p.get("skills_primary", []))

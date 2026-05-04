@@ -259,7 +259,7 @@ def format_text(profile: dict) -> str:
     lines.append(f"Langues : {', '.join(id_['languages'])}")
     lines.append("")
 
-    lines.append(f"TITRE / HEADLINE")
+    lines.append("TITRE / HEADLINE")
     lines.append(profile["headline"])
     lines.append("")
 

@@ -1,10 +1,9 @@
 """Notion tools for the commercial agent — project management, documentation, CRM notes."""
 
-import os
 import json
 import logging
 
-from .http_utils import robust_request, validate_api_key, AuthError
+from .http_utils import robust_request, validate_api_key
 
 log = logging.getLogger("commercial-agent")
 
@@ -283,12 +282,12 @@ def _update_page(input_data: dict) -> str:
     page_id = input_data["page_id"]
     properties = input_data["properties"]
 
-    resp = robust_request("PATCH",
+    robust_request("PATCH",
         f"{BASE_URL}/pages/{page_id}",
         headers=_headers(),
         json={"properties": properties},
     )
-    
+
     return json.dumps({"status": "updated", "id": page_id}, ensure_ascii=False)
 
 

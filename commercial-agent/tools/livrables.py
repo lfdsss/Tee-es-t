@@ -445,7 +445,7 @@ def _create_proposition(input_data: dict) -> str:
         pricing_html += f'<tr><td>{item["poste"]}</td><td style="text-align:right;">{item["montant"]:,.2f} &euro;</td></tr>'
         total += item["montant"]
     if input_data.get("pricing"):
-        pricing_html += f'<tr><td class="total" style="border-top:2px solid #2c7be5;padding-top:0.75rem;">Total HT</td>'
+        pricing_html += '<tr><td class="total" style="border-top:2px solid #2c7be5;padding-top:0.75rem;">Total HT</td>'
         pricing_html += f'<td class="total" style="text-align:right;border-top:2px solid #2c7be5;padding-top:0.75rem;">{total:,.2f} &euro;</td></tr>'
     else:
         pricing_html = '<tr><td colspan="2"><em>Tarification a definir apres cadrage.</em></td></tr>'

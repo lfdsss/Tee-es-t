@@ -1,7 +1,6 @@
 """Script interactif pour coller les cles API dans le fichier .env."""
 
 import os
-import sys
 
 ENV_FILE = os.path.join(os.path.dirname(__file__), ".env")
 ENV_EXAMPLE = os.path.join(os.path.dirname(__file__), ".env.example")
@@ -64,16 +63,16 @@ def main():
             updated += 1
             print(f"  ✓ {key['name']} enregistre")
         else:
-            print(f"  — Passe")
+            print("  — Passe")
 
     # Gmail credentials path
-    print(f"\n  5/5 — Fichier Gmail credentials")
+    print("\n  5/5 — Fichier Gmail credentials")
     gmail_path = "./config/gmail_credentials.json"
     if os.path.exists(gmail_path):
         print(f"  ✓ Fichier trouve : {gmail_path}")
     else:
         print(f"  Le fichier {gmail_path} n'existe pas encore.")
-        print(f"  Telecharge-le depuis Google Cloud Console et place-le dans config/")
+        print("  Telecharge-le depuis Google Cloud Console et place-le dans config/")
         custom = input("  Chemin personnalise (ou Enter pour garder le defaut) : ").strip()
         if custom:
             gmail_path = custom
@@ -87,11 +86,11 @@ def main():
     if updated > 0:
         print(f"  {updated} cle(s) enregistree(s) dans .env")
     else:
-        print(f"  Aucune modification.")
-    print(f"\n  Pour verifier : python -c \"from dotenv import load_dotenv; load_dotenv(); import os; print('Anthropic:', 'OK' if os.getenv('ANTHROPIC_API_KEY','').startswith('sk-') else 'MISSING')\"")
-    print(f"\n  Pour lancer l'agent :")
-    print(f"    python main.py              (mode interactif)")
-    print(f"    python autonomous.py morning (mode autonome)")
+        print("  Aucune modification.")
+    print("\n  Pour verifier : python -c \"from dotenv import load_dotenv; load_dotenv(); import os; print('Anthropic:', 'OK' if os.getenv('ANTHROPIC_API_KEY','').startswith('sk-') else 'MISSING')\"")
+    print("\n  Pour lancer l'agent :")
+    print("    python main.py              (mode interactif)")
+    print("    python autonomous.py morning (mode autonome)")
     print(f"{'=' * 60}")
 
 

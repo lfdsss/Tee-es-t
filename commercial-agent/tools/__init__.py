@@ -1,18 +1,20 @@
 import logging
 
-log = logging.getLogger("commercial-agent")
-
 # Always available
-from .hubspot import HUBSPOT_TOOLS, execute_hubspot_tool
-from .notion import NOTION_TOOLS, execute_notion_tool
 from .github_tools import GITHUB_TOOLS, execute_github_tool
+from .hubspot import HUBSPOT_TOOLS, execute_hubspot_tool
 from .livrables import LIVRABLES_TOOLS, execute_livrables_tool
+from .notion import NOTION_TOOLS, execute_notion_tool
+
+log = logging.getLogger("commercial-agent")
 
 ALL_TOOLS = HUBSPOT_TOOLS + NOTION_TOOLS + GITHUB_TOOLS + LIVRABLES_TOOLS
 
-# Gmail is optional (requires OAuth flow with browser on first use)
+# Gmail is optional (requires OAuth flow with browser on first use).
+# Broad except is intentional: any import-time failure (missing deps, bad
+# credentials, OAuth issue) must downgrade gracefully — never crash the agent.
 try:
-    from .gmail import GMAIL_TOOLS, execute_gmail_tool, GMAIL_AVAILABLE
+    from .gmail import GMAIL_AVAILABLE, GMAIL_TOOLS, execute_gmail_tool
     if GMAIL_AVAILABLE:
         ALL_TOOLS = ALL_TOOLS + GMAIL_TOOLS
         log.info(f"Gmail tools loaded ({len(GMAIL_TOOLS)} tools)")
