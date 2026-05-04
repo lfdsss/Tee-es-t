@@ -560,20 +560,26 @@ function escapeHtml(s) {
   return s.replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
 }
 
-function buildMailto(r) {
-  const params = new URLSearchParams({ subject: r.subject, body: r.body });
-  return `mailto:${r.email}?${params.toString()}`;
+function buildMailto(email, subject, body) {
+  const params = new URLSearchParams({ subject, body });
+  return `mailto:${email}?${params.toString()}`;
 }
 
-function buildGmailCompose(r) {
+function buildGmailCompose(email, subject, body) {
   const params = new URLSearchParams({
     view: "cm",
     fs: "1",
-    to: r.email,
-    su: r.subject,
-    body: r.body
+    to: email,
+    su: subject,
+    body: body
   });
   return `https://mail.google.com/mail/?${params.toString()}`;
+}
+
+function currentValues(card, r) {
+  const subject = card.querySelector('[data-field="subject"]')?.value ?? r.subject;
+  const body = card.querySelector('[data-field="body"]')?.value ?? r.body;
+  return { subject, body };
 }
 
 function render() {
@@ -614,18 +620,28 @@ function render() {
       </div>
       <div class="actions">
         <button class="btn" data-action="copy">📋 Copier</button>
-        <a class="btn primary" href="${buildGmailCompose(r)}" target="_blank" rel="noopener">📧 Gmail</a>
-        <a class="btn" href="${buildMailto(r)}">✉️ Mailto</a>
+        <a class="btn primary" data-action="gmail" href="#" target="_blank" rel="noopener">📧 Gmail</a>
+        <a class="btn" data-action="mailto" href="#">✉️ Mailto</a>
         <button class="btn ${s.sent ? "" : "success"}" data-action="toggle-sent">${s.sent ? "↩️ Reprendre" : "✓ Marquer envoyé"}</button>
       </div>
     `;
     grid.appendChild(card);
+
+    const gmailLink = card.querySelector('[data-action="gmail"]');
+    const mailtoLink = card.querySelector('[data-action="mailto"]');
+    const refreshLinks = () => {
+      const { subject, body } = currentValues(card, r);
+      gmailLink.href = buildGmailCompose(r.email, subject, body);
+      mailtoLink.href = buildMailto(r.email, subject, body);
+    };
+    refreshLinks();
 
     card.querySelectorAll('input[data-field], textarea[data-field]').forEach(el => {
       el.addEventListener('input', () => {
         state[r.id] = state[r.id] || {};
         state[r.id][el.dataset.field] = el.value;
         saveState();
+        refreshLinks();
       });
     });
 
