@@ -1,14 +1,223 @@
 {
-    "status": "Actif",
-    "last_run": null,
-    "emails_processed": 0,
-    "active_contacts": 0,
-    "routines_this_week": 0,
-    "activity": [
-        {
-            "time": "--:--",
-            "type": "systeme",
-            "message": "Robot configure et pret a demarrer. En attente de la premiere execution automatique."
-        }
+  "status": "Actif",
+  "last_run": "2026-05-04T09:30:00",
+  "emails_processed": 7,
+  "emails_processed_date": "2026-05-04",
+  "active_contacts": 3,
+  "routines_this_week": 14,
+  "activity": [
+    {
+      "time": "09:30",
+      "type": "crm",
+      "message": "Routine du matin terminee - 5 actions executees, 2 emails traites"
+    },
+    {
+      "time": "14:15",
+      "type": "email",
+      "message": "Relances prospects terminee - 3 actions executees, 1 email traite"
+    },
+    {
+      "time": "09:00",
+      "type": "crm",
+      "message": "Routine du matin terminee - 8 actions executees, 4 emails traites"
+    },
+    {
+      "time": "16:30",
+      "type": "systeme",
+      "message": "Audit hebdomadaire termine - rapport KPI genere"
+    },
+    {
+      "time": "09:15",
+      "type": "email",
+      "message": "Routine du matin terminee - 6 actions executees, 3 brouillons crees"
+    }
+  ],
+  "livrables": {
+    "devis_count": 3,
+    "propositions_count": 2,
+    "total_montant": 71500,
+    "recent": [
+      {
+        "id": "DEV-20260502-1400",
+        "type": "devis",
+        "date": "02/05/2026",
+        "client": "DataFlow SAS",
+        "objet": "Audit infrastructure cloud et recommandations",
+        "montant": "8,500 EUR",
+        "status": "envoye",
+        "total_ht": 8500,
+        "total_ttc": 10200
+      },
+      {
+        "id": "PROP-20260428-0900",
+        "type": "proposition",
+        "date": "28/04/2026",
+        "client": "TechVision",
+        "objet": "Integration API et migration donnees",
+        "montant": "18,000 EUR",
+        "status": "envoye",
+        "total_ht": 18000,
+        "total_ttc": 21600
+      },
+      {
+        "id": "DEV-20260420-1030",
+        "type": "devis",
+        "date": "20/04/2026",
+        "client": "Acme Corp",
+        "objet": "Refonte site e-commerce - Phase 1",
+        "montant": "25,000 EUR",
+        "status": "accepte",
+        "total_ht": 25000,
+        "total_ttc": 30000
+      },
+      {
+        "id": "PROP-20260415-1100",
+        "type": "proposition",
+        "date": "15/04/2026",
+        "client": "Acme Corp",
+        "objet": "Proposition commerciale - Refonte digitale complete",
+        "montant": "12,000 EUR",
+        "status": "accepte",
+        "total_ht": 12000,
+        "total_ttc": 14400
+      },
+      {
+        "id": "DEV-20260410-0830",
+        "type": "devis",
+        "date": "10/04/2026",
+        "client": "LogiPro",
+        "objet": "Formation equipe - Outils collaboratifs",
+        "montant": "8,000 EUR",
+        "status": "refuse",
+        "total_ht": 8000,
+        "total_ttc": 9600
+      }
     ]
+  },
+  "contacts": [
+    {
+      "id": "hs_10201",
+      "firstname": "Jean",
+      "lastname": "Dupont",
+      "email": "jean.dupont@acme-corp.fr",
+      "phone": "+33 6 12 34 56 78",
+      "company": "Acme Corp",
+      "lifecyclestage": "customer",
+      "hs_lead_status": "CONNECTED",
+      "last_activity": "2026-05-03T14:00:00",
+      "created_at": "2026-03-10T09:00:00"
+    },
+    {
+      "id": "hs_10342",
+      "firstname": "Marie",
+      "lastname": "Laurent",
+      "email": "marie.laurent@techvision.io",
+      "phone": "+33 7 98 76 54 32",
+      "company": "TechVision",
+      "lifecyclestage": "opportunity",
+      "hs_lead_status": "OPEN",
+      "last_activity": "2026-05-01T10:30:00",
+      "created_at": "2026-04-05T11:00:00"
+    },
+    {
+      "id": "hs_10487",
+      "firstname": "Philippe",
+      "lastname": "Martin",
+      "email": "p.martin@dataflow.fr",
+      "phone": "+33 6 55 44 33 22",
+      "company": "DataFlow SAS",
+      "lifecyclestage": "lead",
+      "hs_lead_status": "NEW",
+      "last_activity": "2026-04-28T16:00:00",
+      "created_at": "2026-04-20T14:30:00"
+    }
+  ],
+  "deals": [
+    {
+      "id": "deal_501",
+      "dealname": "Refonte site e-commerce Acme",
+      "amount": 25000,
+      "dealstage": "contractsent",
+      "closedate": "2026-06-30",
+      "contact_id": "hs_10201"
+    },
+    {
+      "id": "deal_502",
+      "dealname": "Integration API TechVision",
+      "amount": 18000,
+      "dealstage": "proposalmade",
+      "closedate": "2026-07-15",
+      "contact_id": "hs_10342"
+    }
+  ],
+  "missions": [
+    {
+      "id": "mission_001",
+      "name": "Refonte site e-commerce",
+      "client": "Acme Corp",
+      "status": "en_cours",
+      "progress": 65,
+      "start_date": "2026-04-01",
+      "end_date": "2026-06-30",
+      "deliverables": ["Maquettes UI/UX", "Frontend React", "Backend API", "Tests & recette"],
+      "deal_id": "deal_501"
+    },
+    {
+      "id": "mission_002",
+      "name": "Integration API & migration",
+      "client": "TechVision",
+      "status": "planifie",
+      "progress": 10,
+      "start_date": "2026-05-15",
+      "end_date": "2026-07-15",
+      "deliverables": ["Specifications API", "Connecteurs", "Migration donnees", "Documentation"],
+      "deal_id": "deal_502"
+    }
+  ],
+  "budget": {
+    "ca_total": 47000,
+    "pipeline_value": 26500,
+    "expenses": 12500,
+    "margin_percent": 73,
+    "acceptance_rate": 67,
+    "ca_mensuel": [
+      {"mois": "Jan", "montant": 5000},
+      {"mois": "Fev", "montant": 8000},
+      {"mois": "Mar", "montant": 12000},
+      {"mois": "Avr", "montant": 15000},
+      {"mois": "Mai", "montant": 7000}
+    ],
+    "transactions": [
+      {
+        "date": "2026-05-01",
+        "type": "revenu",
+        "description": "Paiement Acme Corp - Phase 1 maquettes",
+        "montant": 7000
+      },
+      {
+        "date": "2026-04-28",
+        "type": "depense",
+        "description": "Hebergement cloud + outils SaaS",
+        "montant": -450
+      },
+      {
+        "date": "2026-04-20",
+        "type": "revenu",
+        "description": "Acompte Acme Corp - Lancement projet",
+        "montant": 12500
+      },
+      {
+        "date": "2026-04-15",
+        "type": "depense",
+        "description": "Licence design Figma",
+        "montant": -180
+      },
+      {
+        "date": "2026-04-01",
+        "type": "revenu",
+        "description": "Formation equipe LogiPro (clos)",
+        "montant": 5000
+      }
+    ]
+  }
 }
