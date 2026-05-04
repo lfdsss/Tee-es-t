@@ -2,14 +2,19 @@
 
 import os
 import json
-import requests
+import logging
+
+from .http_utils import robust_request, validate_api_key, AuthError
+
+log = logging.getLogger("commercial-agent")
 
 BASE_URL = "https://api.github.com"
 
 
 def _headers() -> dict:
+    key = validate_api_key("GITHUB_TOKEN")
     return {
-        "Authorization": f"Bearer {os.getenv('GITHUB_TOKEN')}",
+        "Authorization": f"Bearer {key}",
         "Accept": "application/vnd.github+json",
         "X-GitHub-Api-Version": "2022-11-28",
     }
@@ -199,8 +204,8 @@ def execute_github_tool(name: str, input_data: dict) -> str:
 
 def _search_repos(input_data: dict) -> str:
     params = {"q": input_data["query"], "per_page": input_data.get("per_page", 10)}
-    resp = requests.get(f"{BASE_URL}/search/repositories", headers=_headers(), params=params)
-    resp.raise_for_status()
+    resp = robust_request("GET", f"{BASE_URL}/search/repositories", headers=_headers(), params=params)
+    
     data = resp.json()
 
     results = []
@@ -219,8 +224,8 @@ def _search_repos(input_data: dict) -> str:
 
 def _get_repo(input_data: dict) -> str:
     owner, repo = input_data["owner"], input_data["repo"]
-    resp = requests.get(f"{BASE_URL}/repos/{owner}/{repo}", headers=_headers())
-    resp.raise_for_status()
+    resp = robust_request("GET", f"{BASE_URL}/repos/{owner}/{repo}", headers=_headers())
+    
     r = resp.json()
 
     return json.dumps({
@@ -246,8 +251,8 @@ def _list_issues(input_data: dict) -> str:
     if "labels" in input_data:
         params["labels"] = input_data["labels"]
 
-    resp = requests.get(f"{BASE_URL}/repos/{owner}/{repo}/issues", headers=_headers(), params=params)
-    resp.raise_for_status()
+    resp = robust_request("GET", f"{BASE_URL}/repos/{owner}/{repo}/issues", headers=_headers(), params=params)
+    
 
     issues = []
     for issue in resp.json():
@@ -276,8 +281,8 @@ def _create_issue(input_data: dict) -> str:
     if "assignees" in input_data:
         payload["assignees"] = input_data["assignees"]
 
-    resp = requests.post(f"{BASE_URL}/repos/{owner}/{repo}/issues", headers=_headers(), json=payload)
-    resp.raise_for_status()
+    resp = robust_request("POST", f"{BASE_URL}/repos/{owner}/{repo}/issues", headers=_headers(), json_data=payload)
+    
     issue = resp.json()
 
     return json.dumps({
@@ -291,17 +296,17 @@ def _get_issue(input_data: dict) -> str:
     owner, repo = input_data["owner"], input_data["repo"]
     number = input_data["issue_number"]
 
-    resp = requests.get(f"{BASE_URL}/repos/{owner}/{repo}/issues/{number}", headers=_headers())
-    resp.raise_for_status()
+    resp = robust_request("GET", f"{BASE_URL}/repos/{owner}/{repo}/issues/{number}", headers=_headers())
+    
     issue = resp.json()
 
     # Get comments
-    comments_resp = requests.get(
+    comments_resp = robust_request("GET",
         f"{BASE_URL}/repos/{owner}/{repo}/issues/{number}/comments",
         headers=_headers(),
         params={"per_page": 20},
     )
-    comments_resp.raise_for_status()
+    comments_
     comments = [
         {"author": c["user"]["login"], "body": c["body"][:500], "created": c["created_at"]}
         for c in comments_resp.json()
@@ -323,12 +328,12 @@ def _add_issue_comment(input_data: dict) -> str:
     owner, repo = input_data["owner"], input_data["repo"]
     number = input_data["issue_number"]
 
-    resp = requests.post(
+    resp = robust_request("POST",
         f"{BASE_URL}/repos/{owner}/{repo}/issues/{number}/comments",
         headers=_headers(),
-        json={"body": input_data["body"]},
+        json_data={"body": input_data["body"]},
     )
-    resp.raise_for_status()
+    
     return json.dumps({"status": "comment_added", "id": resp.json()["id"]}, ensure_ascii=False)
 
 
@@ -339,8 +344,8 @@ def _list_pull_requests(input_data: dict) -> str:
         "per_page": input_data.get("per_page", 10),
     }
 
-    resp = requests.get(f"{BASE_URL}/repos/{owner}/{repo}/pulls", headers=_headers(), params=params)
-    resp.raise_for_status()
+    resp = robust_request("GET", f"{BASE_URL}/repos/{owner}/{repo}/pulls", headers=_headers(), params=params)
+    
 
     prs = []
     for pr in resp.json():
@@ -365,12 +370,12 @@ def _get_file_contents(input_data: dict) -> str:
     if "ref" in input_data:
         params["ref"] = input_data["ref"]
 
-    resp = requests.get(
+    resp = robust_request("GET",
         f"{BASE_URL}/repos/{owner}/{repo}/contents/{path}",
         headers=_headers(),
         params=params,
     )
-    resp.raise_for_status()
+    
     data = resp.json()
 
     if isinstance(data, list):
@@ -395,8 +400,8 @@ def _list_branches(input_data: dict) -> str:
     owner, repo = input_data["owner"], input_data["repo"]
     params = {"per_page": input_data.get("per_page", 30)}
 
-    resp = requests.get(f"{BASE_URL}/repos/{owner}/{repo}/branches", headers=_headers(), params=params)
-    resp.raise_for_status()
+    resp = robust_request("GET", f"{BASE_URL}/repos/{owner}/{repo}/branches", headers=_headers(), params=params)
+    
 
     branches = [{"name": b["name"], "sha": b["commit"]["sha"][:8]} for b in resp.json()]
     return json.dumps({"total": len(branches), "branches": branches}, ensure_ascii=False)
@@ -408,8 +413,8 @@ def _list_commits(input_data: dict) -> str:
     if "path" in input_data:
         params["path"] = input_data["path"]
 
-    resp = requests.get(f"{BASE_URL}/repos/{owner}/{repo}/commits", headers=_headers(), params=params)
-    resp.raise_for_status()
+    resp = robust_request("GET", f"{BASE_URL}/repos/{owner}/{repo}/commits", headers=_headers(), params=params)
+    
 
     commits = []
     for c in resp.json():

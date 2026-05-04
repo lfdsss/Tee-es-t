@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LFDS Quiz — Snippets d'intégration pour l-fds.com</title>
+  <style>
+    :root {
+      --bg: #faf7f2;
+      --ink: #2b1d12;
+      --accent: #c8102e;
+      --soft: #efe7dc;
+      --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      padding: 40px 24px;
+    }
+    .wrap { max-width: 880px; margin: 0 auto; }
+    h1 { font-weight: 300; letter-spacing: -0.02em; margin: 0 0 8px; }
+    h2 { font-weight: 400; margin-top: 48px; border-bottom: 1px solid var(--soft); padding-bottom: 8px; }
+    p { color: #5a4a3a; }
+    pre {
+      background: #fff;
+      border: 1px solid var(--soft);
+      border-radius: 8px;
+      padding: 18px 20px;
+      overflow-x: auto;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .preview {
+      background: #fff;
+      border: 1px solid var(--soft);
+      border-radius: 8px;
+      padding: 28px;
+      margin: 16px 0;
+    }
+    /* ─── Bouton LFDS Quiz (à copier dans le head ou inline) ─── */
+    .lfds-quiz-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 32px;
+      background: linear-gradient(135deg, #c8102e 0%, #8b0a1f 100%);
+      color: #fff;
+      text-decoration: none;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 4px 14px rgba(200, 16, 46, 0.25);
+    }
+    .lfds-quiz-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(200, 16, 46, 0.35);
+    }
+    .lfds-quiz-cta::after {
+      content: "→";
+      font-size: 18px;
+      transition: transform 0.2s ease;
+    }
+    .lfds-quiz-cta:hover::after { transform: translateX(4px); }
+    .note {
+      background: #fff8e8;
+      border-left: 3px solid #d4a017;
+      padding: 14px 18px;
+      border-radius: 4px;
+      font-size: 14px;
+      margin: 16px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>LFDS Quiz — Intégration sur l-fds.com</h1>
+    <p>Trois façons d'ajouter le quiz « Quel gourmet êtes-vous ? » sur votre site La Française Des Sauces.</p>
+
+    <div class="note">
+      <strong>URL du quiz :</strong> remplacez <code>https://lfds-quiz.netlify.app</code> par l'URL réelle de votre site Netlify (ou par <code>https://quiz.l-fds.com</code> si vous configurez un sous-domaine).
+    </div>
+
+    <h2>1 — Bouton CTA (recommandé)</h2>
+    <p>À coller n'importe où dans votre page (header, hero, footer…). Le visiteur arrive sur le quiz dans un nouvel onglet.</p>
+
+    <div class="preview">
+      <a class="lfds-quiz-cta" href="https://lfds-quiz.netlify.app/quiz/" target="_blank" rel="noopener">
+        Découvrir mon profil gourmet
+      </a>
+    </div>
+
+<pre>&lt;a href="https://lfds-quiz.netlify.app/quiz/"
+   target="_blank"
+   rel="noopener"
+   style="display:inline-flex;align-items:center;gap:12px;
+          padding:16px 32px;
+          background:linear-gradient(135deg,#c8102e 0%,#8b0a1f 100%);
+          color:#fff;text-decoration:none;
+          font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+          font-size:15px;font-weight:500;letter-spacing:0.02em;
+          border-radius:999px;
+          box-shadow:0 4px 14px rgba(200,16,46,0.25);
+          transition:transform 0.2s ease;"&gt;
+  Découvrir mon profil gourmet →
+&lt;/a&gt;</pre>
+
+    <h2>2 — Bandeau hero plein largeur</h2>
+    <p>À placer en haut de la page d'accueil pour maximiser la conversion.</p>
+
+<pre>&lt;section style="background:linear-gradient(135deg,#faf7f2 0%,#efe7dc 100%);
+                padding:60px 24px;text-align:center;
+                font-family:-apple-system,sans-serif;"&gt;
+  &lt;p style="font-size:13px;letter-spacing:0.15em;text-transform:uppercase;
+            color:#8b6f47;margin:0 0 12px;"&gt;
+    Notre nouveau quiz
+  &lt;/p&gt;
+  &lt;h2 style="font-size:34px;font-weight:300;margin:0 0 14px;color:#2b1d12;
+             letter-spacing:-0.02em;"&gt;
+    Quel gourmet êtes-vous ?
+  &lt;/h2&gt;
+  &lt;p style="color:#5a4a3a;max-width:540px;margin:0 auto 28px;
+            font-size:16px;line-height:1.6;"&gt;
+    8 questions pour découvrir votre profil culinaire
+    et trouver les sauces qui vous ressemblent.
+  &lt;/p&gt;
+  &lt;a href="https://lfds-quiz.netlify.app/quiz/"
+     style="display:inline-block;padding:16px 36px;
+            background:#c8102e;color:#fff;text-decoration:none;
+            border-radius:999px;font-weight:500;
+            box-shadow:0 4px 14px rgba(200,16,46,0.25);"&gt;
+    Commencer le quiz →
+  &lt;/a&gt;
+&lt;/section&gt;</pre>
+
+    <h2>3 — Embed iframe (quiz directement dans la page)</h2>
+    <p>Pour intégrer le quiz <strong>à l'intérieur</strong> d'une page existante de l-fds.com, sans redirection.</p>
+
+<pre>&lt;iframe src="https://lfds-quiz.netlify.app/quiz/"
+        title="Quiz LFDS — Quel gourmet êtes-vous ?"
+        style="width:100%;height:780px;border:none;
+               border-radius:12px;
+               box-shadow:0 8px 32px rgba(0,0,0,0.08);"
+        loading="lazy"&gt;
+&lt;/iframe&gt;</pre>
+
+    <h2>4 — Tracking UTM (optionnel mais recommandé)</h2>
+    <p>Ajoutez des paramètres UTM au lien pour identifier d'où viennent vos visiteurs dans le dashboard admin.</p>
+
+<pre>https://lfds-quiz.netlify.app/quiz/?utm_source=l-fds.com&utm_medium=hero&utm_campaign=quiz_2026</pre>
+
+    <p>Ces UTM sont automatiquement capturés par le quiz et apparaissent dans <code>/api/admin/submissions</code>.</p>
+
+    <h2>5 — Sous-domaine personnalisé (recommandé)</h2>
+    <p>Pour une URL plus propre comme <code>quiz.l-fds.com</code> au lieu de <code>lfds-quiz.netlify.app</code> :</p>
+
+    <ol>
+      <li>Dans Netlify : <em>Site settings → Domain management → Add custom domain</em> → entrez <code>quiz.l-fds.com</code></li>
+      <li>Dans votre DNS (chez votre registrar du domaine l-fds.com), ajoutez un enregistrement&nbsp;:
+        <pre>Type: CNAME
+Nom:  quiz
+Cible: lfds-quiz.netlify.app</pre>
+      </li>
+      <li>Netlify provisionne automatiquement le certificat HTTPS via Let's Encrypt (≈ 1 minute).</li>
+      <li>Remplacez ensuite tous les liens ci-dessus par <code>https://quiz.l-fds.com/quiz/</code>.</li>
+    </ol>
+  </div>
+</body>
+</html>

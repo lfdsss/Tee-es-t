@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio | Baptiste Thevenot - SNB Consulting</title>
+    <meta name="description" content="Projets realises par Baptiste Thevenot : agents IA, automatisation, CRM, dashboards.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect rx='18' width='100' height='100' fill='%230f172a'/><text x='50' y='66' text-anchor='middle' fill='%2338bdf8' font-size='48' font-family='system-ui' font-weight='800'>S</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/style.css">
+    <style>
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .project-card {
+            background: white;
+            border: 1px solid var(--slate-200);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .project-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+        .project-header {
+            padding: 24px 24px 0;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .project-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 900;
+            flex-shrink: 0;
+        }
+        .project-name {
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--slate-900);
+        }
+        .project-subtitle {
+            font-size: 12px;
+            color: var(--slate-500);
+            margin-top: 1px;
+        }
+        .project-body {
+            padding: 16px 24px 20px;
+        }
+        .project-desc {
+            font-size: 13px;
+            color: var(--slate-600);
+            line-height: 1.7;
+            margin-bottom: 14px;
+        }
+        .project-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+        .stack-tag {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            background: var(--slate-100);
+            color: var(--slate-600);
+        }
+        .project-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .metric {
+            text-align: center;
+            padding: 8px;
+            background: var(--slate-50);
+            border-radius: 6px;
+        }
+        .metric-num {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--slate-900);
+        }
+        .metric-label {
+            font-size: 9px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--slate-400);
+            letter-spacing: 0.3px;
+        }
+        .project-status {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+        .status-live { background: #dcfce7; color: #166534; }
+        .status-dev { background: #fef3c7; color: #92400e; }
+        .status-complete { background: #dbeafe; color: #1d4ed8; }
+        .profile-section {
+            margin-top: 32px;
+        }
+        .profile-section h2 {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--slate-900);
+            margin-bottom: 8px;
+        }
+        .profile-section p {
+            color: var(--slate-600);
+            font-size: 14px;
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-top: -24px;
+            position: relative;
+            z-index: 2;
+        }
+        .kpi-box {
+            background: white;
+            border: 1px solid var(--slate-200);
+            border-radius: var(--radius);
+            padding: 18px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+        }
+        .kpi-num {
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--slate-900);
+        }
+        .kpi-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--slate-500);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        /* Preview frame: pure-CSS mockup on top of each card */
+        .preview-frame {
+            height: 132px;
+            background: var(--slate-900);
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid var(--slate-200);
+        }
+        .preview-frame::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(56, 189, 248, 0.18), transparent 60%),
+                radial-gradient(circle at 80% 70%, rgba(168, 85, 247, 0.14), transparent 55%);
+        }
+        .preview-frame::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 12px;
+            width: 36px;
+            height: 8px;
+            background: linear-gradient(90deg, #fb7185 0 33%, #fbbf24 33% 66%, #4ade80 66% 100%);
+            border-radius: 4px;
+            opacity: 0.6;
+        }
+        .preview-content {
+            position: relative;
+            padding: 28px 16px 0;
+            color: white;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+        .preview-mock {
+            font-family: 'SF Mono', Menlo, monospace;
+            font-size: 10px;
+            color: rgba(255,255,255,0.55);
+            line-height: 1.6;
+        }
+        .preview-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 4px;
+            height: 38px;
+            margin-bottom: 10px;
+        }
+        .preview-bars span {
+            flex: 1;
+            background: linear-gradient(180deg, var(--blue-400), var(--blue-600));
+            border-radius: 2px;
+            opacity: 0.85;
+        }
+        .preview-bars span:nth-child(1) { height: 40%; }
+        .preview-bars span:nth-child(2) { height: 70%; }
+        .preview-bars span:nth-child(3) { height: 55%; }
+        .preview-bars span:nth-child(4) { height: 90%; }
+        .preview-bars span:nth-child(5) { height: 65%; }
+        .preview-bars span:nth-child(6) { height: 80%; }
+        .preview-bars span:nth-child(7) { height: 45%; }
+        .preview-tag {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--slate-400);
+            padding: 2px 8px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        /* Themed preview variants */
+        .preview-frame.theme-lfds { background: linear-gradient(135deg, #7c2d12, #1c0a05); }
+        .preview-frame.theme-lfds .preview-bars span { background: linear-gradient(180deg, #fb923c, #c2410c); }
+        .preview-frame.theme-lfds-quiz { background: linear-gradient(135deg, #be185d, #1e1b4b); }
+        .preview-frame.theme-lfds-quiz .preview-bars span { background: linear-gradient(180deg, #f472b6, #be185d); }
+        .preview-frame.theme-lfds-recettes { background: linear-gradient(135deg, #166534, #052e16); }
+        .preview-frame.theme-lfds-recettes .preview-bars span { background: linear-gradient(180deg, #4ade80, #166534); }
+        .preview-frame.theme-rag { background: linear-gradient(135deg, #4338ca, #0f172a); }
+        .preview-frame.theme-rag .preview-bars span { background: linear-gradient(180deg, #818cf8, #4f46e5); }
+        .preview-frame.theme-mission { background: linear-gradient(135deg, #1e40af, #0f172a); }
+        .preview-frame.theme-studentflow { background: linear-gradient(135deg, #0d9488, #042f2e); }
+        .preview-frame.theme-studentflow .preview-bars span { background: linear-gradient(180deg, #5eead4, #0d9488); }
+        .preview-frame.theme-gmail { background: linear-gradient(135deg, #b91c1c, #1c0202); }
+        .preview-frame.theme-gmail .preview-bars span { background: linear-gradient(180deg, #fca5a5, #b91c1c); }
+        .preview-frame.theme-dashboard { background: linear-gradient(135deg, #0369a1, #0c1a2b); }
+
+        /* CTA banner above project grid */
+        .cta-bar {
+            background: linear-gradient(135deg, var(--slate-900), #1e293b);
+            color: white;
+            border-radius: var(--radius);
+            padding: 24px 28px;
+            margin-top: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .cta-bar h3 {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+        .cta-bar p {
+            font-size: 13px;
+            color: var(--slate-400);
+            margin: 0;
+        }
+        .cta-bar .btn { background: var(--blue-500); }
+        .cta-bar .btn:hover { background: var(--blue-400); }
+
+        @media (max-width: 640px) {
+            .kpi-row { grid-template-columns: repeat(2, 1fr); }
+            .project-grid { grid-template-columns: 1fr; }
+            .preview-frame { height: 100px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a class="nav-brand" href="/">
+        <div class="nav-logo">S</div>
+        <div class="nav-title">SNB Consulting <span>| Agent IA</span></div>
+    </a>
+    <div class="nav-menu">
+        <a href="/" class="nav-link">Dashboard</a>
+        <a href="/pipeline.html" class="nav-link">Pipeline</a>
+        <a href="/livrables.html" class="nav-link">Livrables</a>
+        <a href="/missions.html" class="nav-link">Missions</a>
+        <a href="/documents.html" class="nav-link">Documents</a>
+        <a href="/portfolio.html" class="nav-link active">Portfolio</a>
+        <a href="/routines.html" class="nav-link">Routines</a>
+        <a href="/architecture.html" class="nav-link">Architecture</a>
+        <a href="/contact.html" class="nav-link">Contact</a>
+    </div>
+    <div class="nav-right">
+        <div class="nav-badge"><span class="dot"></span><span>Actif</span></div>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-badge">Baptiste Thevenot | SNB Consulting</div>
+        <h1>Portfolio projets</h1>
+        <p>Projets aboutis en production : agents IA, automatisation commerciale, CRM, dashboards temps reel, outils metier.</p>
+    </div>
+</section>
+
+<div class="container" style="padding-bottom: 48px;">
+
+    <div class="kpi-row">
+        <div class="kpi-box"><div class="kpi-num">9</div><div class="kpi-label">Projets vitrine</div></div>
+        <div class="kpi-box"><div class="kpi-num">5</div><div class="kpi-label">En production</div></div>
+        <div class="kpi-box"><div class="kpi-num">8</div><div class="kpi-label">Ans d'exp.</div></div>
+        <div class="kpi-box"><div class="kpi-num">8+</div><div class="kpi-label">APIs integrees</div></div>
+        <div class="kpi-box"><div class="kpi-num">24/7</div><div class="kpi-label">Automatise</div></div>
+    </div>
+
+    <div class="cta-bar">
+        <div>
+            <h3>Besoin d'un systeme similaire pour votre activite ?</h3>
+            <p>Devis indicatif genere en 30s &middot; reponse personnalisee sous 10 min par le robot.</p>
+        </div>
+        <a class="btn" href="/devis-instant.html">Generer mon devis &rarr;</a>
+    </div>
+
+    <div class="project-grid">
+
+        <div class="project-card">
+            <div class="preview-frame theme-dashboard">
+                <span class="preview-tag">Dashboard live</span>
+                <div class="preview-content">
+                    <div class="preview-bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                    <div class="preview-mock">[robot.yml] cycle */10 · status: Actif</div>
+                </div>
+            </div>
+            <div class="project-header">
+                <div class="project-logo" style="background:linear-gradient(135deg,#0ea5e9,#38bdf8);color:white">S</div>
+                <div>
+                    <div class="project-name">SNB Consulting Platform</div>
+                    <div class="project-subtitle">Agent commercial autonome</div>
+                </div>
+            </div>
+            <div class="project-body">
+                <span class="project-status status-live">En production</span>
+                <p class="project-desc">
+                    Plateforme complete d'agent commercial IA : prospection automatisee, suivi pipeline, generation de devis,
+                    dashboard temps reel. Routines 24h/24 sur GitHub Actions. Integration HubSpot, Gmail, Notion.
+                </p>
+                <div class="project-stack">
+                    <span class="stack-tag">Python</span>
+                    <span class="stack-tag">Claude API</span>
+                    <span class="stack-tag">HubSpot</span>
+                    <span class="stack-tag">Gmail</span>
+                    <span class="stack-tag">Notion</span>
+                    <span class="stack-tag">GitHub Actions</span>
+                    <span class="stack-tag">Netlify</span>
+                </div>
+                <div class="project-metrics">
+                    <div class="metric"><div class="metric-num" id="pf-contacts">777</div><div class="metric-label">Contacts</div></div>
+                    <div class="metric"><div class="metric-num" id="pf-pipeline">80k</div><div class="metric-label">Pipeline</div></div>
+                    <div class="metric"><div class="metric-num" id="pf-emails">201</div><div class="metric-label">Emails traites</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-card">
+            <div class="preview-frame theme-lfds">
+                <span class="preview-tag">Boutique</span>
+                <div class="preview-content">
+                    <div class="preview-bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                    <div class="preview-mock">l-fds.com · WP + WooCommerce · B2C+B2B</div>
+                </div>
+            </div>
+            <div class="project-header">
+                <div class="project-logo" style="background:#fef3c7;color:#92400e">L</div>
+                <div>
+                    <div class="project-name">LFDS &mdash; Site E-commerce</div>
+                    <div class="project-subtitle">Vitrine + boutique B2C/B2B</div>
+                </div>
+            </div>
+            <div class="project-body">
+                <span class="project-status status-dev">Migration en cours</span>
+                <p class="project-desc">
+                    Migration du site La Francaise des Sauces vers WordPress + WooCommerce :
+                    boutique B2C, espace pro B2B (devis HT), pages produit, formulaires lead,
+                    integration HubSpot. Hebergement O2switch geree de A a Z.
+                </p>
+                <div class="project-stack">
+                    <span class="stack-tag">WordPress</span>
+                    <span class="stack-tag">WooCommerce</span>
+                    <span class="stack-tag">Stripe</span>
+                    <span class="stack-tag">Kadence</span>
+                    <span class="stack-tag">B2BKing</span>
+                    <span class="stack-tag">Fluent Forms</span>
+                </div>
+                <div class="project-metrics">
+                    <div class="metric"><div class="metric-num">B2C</div><div class="metric-label">+ B2B</div></div>
+                    <div class="metric"><div class="metric-num">FR</div><div class="metric-label">Hebergement</div></div>
+                    <div class="metric"><div class="metric-num">SEO</div><div class="metric-label">Ready</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-card">
+            <div class="preview-frame theme-lfds-quiz">
+                <span class="preview-tag">Quiz live</span>
+                <div class="preview-content">
+                    <div class="preview-bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                    <div class="preview-mock">8 questions · 3 profils &rarr; redirect produit</div>
+                </div>
+            </div>
+            <div class="project-header">
+                <div class="project-logo" style="background:#fce7f3;color:#be185d">Q</div>
+                <div>
+                    <div class="project-name">LFDS &mdash; Quiz Epicurien</div>
+                    <div class="project-subtitle">Decouverte produit + lead capture</div>
+                </div>
+            </div>
+            <div class="project-body">
+                <span class="project-status status-live">En production</span>
+                <p class="project-desc">
+                    Quiz interactif 8 questions qui revele le profil gourmand (epicurien, artisan, pragmatique)
+                    et redirige vers la sauce LFDS adaptee. Backend Express persiste les leads et les pousse
+                    automatiquement dans HubSpot.
+                </p>
+                <div class="project-stack">
+                    <span class="stack-tag">React</span>
+                    <span class="stack-tag">Vite</span>
+                    <span class="stack-tag">Express</span>
+                    <span class="stack-tag">Fly.io</span>
+                    <span class="stack-tag">HubSpot API</span>
+                </div>
+                <div class="project-metrics">
+                    <div class="metric"><div class="metric-num">8</div><div class="metric-label">Questions</div></div>
+                    <div class="metric"><div class="metric-num">3</div><div class="metric-label">Profils</div></div>
+                    <div class="metric"><div class="metric-num">CRM</div><div class="metric-label">Push auto</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-card">
+            <div class="preview-frame theme-lfds-recettes">
+                <span class="preview-tag">Bibliotheque</span>
+                <div class="preview-content">
+                    <div class="preview-bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                    <div class="preview-mock">recettes.l-fds.com &rarr; CTA acheter la sauce</div>
+                </div>
+            </div>
+            <div class="project-header">
+                <div class="project-logo" style="background:#dcfce7;color:#166534">R</div>
+                <div>
+                    <div class="project-name">LFDS &mdash; Site Recettes</div>
+                    <div class="project-subtitle">Bibliotheque editoriale + generateur IA</div>
+                </div>
+            </div>
+            <div class="project-body">
+                <span class="project-status status-dev">En developpement</span>
+                <p class="project-desc">
+                    Site dedie aux recettes mettant en scene les sauces LFDS : catalogue editorial filtrable
+                    (sauce, occasion, difficulte) plus generateur de recettes personnalisees via Claude API.
+                    Chaque fiche pousse vers la sauce associee sur la boutique WP.
+                </p>
+                <div class="project-stack">
+                    <span class="stack-tag">React</span>
+                    <span class="stack-tag">Vite</span>
+                    <span class="stack-tag">Netlify</span>
+                    <span class="stack-tag">Claude API</span>
+                    <span class="stack-tag">JSON statique</span>
+                </div>
+                <div class="project-metrics">
+                    <div class="metric"><div class="metric-num">10+</div><div class="metric-label">Recettes</div></div>
+                    <div class="metric"><div class="metric-num">IA</div><div class="metric-label">Generateur</div></div>
+                    <div class="metric"><div class="metric-num">CTA</div><div class="metric-label">Boutique</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-card">
+            <div class="preview-frame theme-mission">
+                <span class="preview-tag">Devis auto</span>
+                <div class="preview-content">
+                    <div class="preview-bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                    <div class="preview-mock">mission &rarr; devis + plan + facture HTML</div>
+                </div>
+            </div>
+            <div class="project-header">
+                <div class="project-logo" style="background:#dbeafe;color:#1d4ed8">M</div>
+                <div>
+                    <div class="project-name">Mission Responder</div>
+                    <div class="project-subtitle">Generateur de reponses freelance</div>
+                </div>
+            </div>
+            <div class="project-body">
+                <span class="project-status status-live">En production</span>
+                <p class="project-desc">
+                    Systeme de generation de reponses adaptees a 10+ plateformes freelance. Analyse la mission,
+                    adapte le ton, genere un devis structure, et produit les documents pro (devis, plan projet, facture).
+                </p>
+                <div class="project-stack">
+                    <span class="stack-tag">Python</span>
+                    <span class="stack-tag">Claude API</span>
+                    <span class="stack-tag">GitHub Actions</span>
+                    <span class="stack-tag">HTML/CSS</span>
+                </div>
+                <div class="project-metrics">
+                    <div class="metric"><div class="metric-num">10+</div><div class="metric-label">Plateformes</div></div>
+                    <div class="metric"><div class="metric-num">3</div><div class="metric-label">Doc types</div></div>
+                    <div class="metric"><div class="metric-num">Auto</div><div class="metric-label">Generation</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-card">
+            <div class="preview-frame theme-studentflow">
+                <span class="preview-tag">Marketplace</span>
+                <div class="preview-content">
+                    <div class="preview-bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                    <div class="preview-mock">3 agents · matcher temps reel · FastAPI</div>
+                </div>
+            </div>
+            <div class="project-header">
+                <div class="project-logo" style="background:#ccfbf1;color:#0d9488">SF</div>
+                <div>
+                    <div class="project-name">StudentFlow</div>
+                    <div class="project-subtitle">Marketplace jobs etudiants temps reel</div>
+                </div>
+            </div>
+            <div class="project-body">
+                <span class="project-status status-dev">MVP</span>
+                <p class="project-desc">
+                    Trois agents Python autonomes (scraper, matcher, notifier) couples a une API FastAPI et
+                    une base Supabase. Matching pondere temps-reel entre offres scrapees (France Travail OAuth2)
+                    et profils etudiants. 23 tests verts sur le moteur de matching.
+                </p>
+                <div class="project-stack">
+                    <span class="stack-tag">Python 3.11</span>
+                    <span class="stack-tag">FastAPI</span>
+                    <span class="stack-tag">Supabase</span>
+                    <span class="stack-tag">Pydantic v2</span>
+                    <span class="stack-tag">Vite + TS</span>
+                </div>
+                <div class="project-metrics">
+                    <div class="metric"><div class="metric-num">3</div><div class="metric-label">Agents</div></div>
+                    <div class="metric"><div class="metric-num">23/23</div><div class="metric-label">Tests OK</div></div>
+                    <div class="metric"><div class="metric-num">5</div><div class="metric-label">Scrapers</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-card">
+            <div class="preview-frame theme-gmail">
+                <span class="preview-tag">Email parsing</span>
+                <div class="preview-content">
+                    <div class="preview-bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                    <div class="preview-mock">40 emails/j &rarr; Sheets &rarr; rapport hebdo</div>
+                </div>
+            </div>
+            <div class="project-header">
+                <div class="project-logo" style="background:#fef2f2;color:#dc2626">G</div>
+                <div>
+                    <div class="project-name">Gmail Automation Engine</div>
+                    <div class="project-subtitle">Extraction et routage emails</div>
+                </div>
+            </div>
+            <div class="project-body">
+                <span class="project-status status-complete">Livre</span>
+                <p class="project-desc">
+                    Moteur d'extraction automatique d'emails : parsing de devis recus par email, consolidation Google Sheet,
+                    generation de rapport Excel hebdomadaire. 20 a 40 emails par jour traites automatiquement.
+                </p>
+                <div class="project-stack">
+                    <span class="stack-tag">Python</span>
+                    <span class="stack-tag">Gmail API</span>
+                    <span class="stack-tag">Google Sheets</span>
+                    <span class="stack-tag">Claude API</span>
+                </div>
+                <div class="project-metrics">
+                    <div class="metric"><div class="metric-num">40/j</div><div class="metric-label">Emails</div></div>
+                    <div class="metric"><div class="metric-num">Auto</div><div class="metric-label">Parsing</div></div>
+                    <div class="metric"><div class="metric-num">Hebdo</div><div class="metric-label">Rapport</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-card">
+            <div class="preview-frame theme-dashboard">
+                <span class="preview-tag">Live KPIs</span>
+                <div class="preview-content">
+                    <div class="preview-bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                    <div class="preview-mock">JSON git-versionne &rarr; Netlify &rarr; 0 € infra</div>
+                </div>
+            </div>
+            <div class="project-header">
+                <div class="project-logo" style="background:#f5f3ff;color:#7c3aed">D</div>
+                <div>
+                    <div class="project-name">Dashboard Temps Reel</div>
+                    <div class="project-subtitle">Monitoring business multi-source</div>
+                </div>
+            </div>
+            <div class="project-body">
+                <span class="project-status status-complete">Livre</span>
+                <p class="project-desc">
+                    Dashboard statique deploye sur Netlify alimentee par des routines automatiques : KPIs pipeline, deals actifs,
+                    conversions, performance par commercial, historique versionne sur GitHub.
+                </p>
+                <div class="project-stack">
+                    <span class="stack-tag">HTML/CSS/JS</span>
+                    <span class="stack-tag">Netlify</span>
+                    <span class="stack-tag">JSON API</span>
+                    <span class="stack-tag">GitHub Actions</span>
+                </div>
+                <div class="project-metrics">
+                    <div class="metric"><div class="metric-num">5</div><div class="metric-label">KPIs</div></div>
+                    <div class="metric"><div class="metric-num">Real</div><div class="metric-label">Time</div></div>
+                    <div class="metric"><div class="metric-num">0</div><div class="metric-label">Cout infra</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-card">
+            <div class="preview-frame theme-rag">
+                <span class="preview-tag">Vector search</span>
+                <div class="preview-content">
+                    <div class="preview-bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                    <div class="preview-mock">10k docs &rarr; pgvector &rarr; reponse Claude</div>
+                </div>
+            </div>
+            <div class="project-header">
+                <div class="project-logo" style="background:#ecfdf5;color:#059669">R</div>
+                <div>
+                    <div class="project-name">RAG Metier</div>
+                    <div class="project-subtitle">Base vectorielle + recherche semantique</div>
+                </div>
+            </div>
+            <div class="project-body">
+                <span class="project-status status-complete">Livre</span>
+                <p class="project-desc">
+                    Systeme de Retrieval-Augmented Generation pour un cas metier industriel : indexation de documentation technique,
+                    recherche semantique via pgvector, reponses contextualisees par Claude.
+                </p>
+                <div class="project-stack">
+                    <span class="stack-tag">Python</span>
+                    <span class="stack-tag">pgvector</span>
+                    <span class="stack-tag">FastAPI</span>
+                    <span class="stack-tag">Claude API</span>
+                    <span class="stack-tag">Docker</span>
+                </div>
+                <div class="project-metrics">
+                    <div class="metric"><div class="metric-num">10k+</div><div class="metric-label">Documents</div></div>
+                    <div class="metric"><div class="metric-num">Sub-s</div><div class="metric-label">Latence</div></div>
+                    <div class="metric"><div class="metric-num">95%</div><div class="metric-label">Pertinence</div></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="profile-section">
+        <h2>A propos</h2>
+        <p>
+            Je suis Baptiste Thevenot, consultant freelance chez SNB Consulting. 8 ans d'experience en developpement
+            et automatisation, dont les 3 dernieres annees exclusivement dediees a la conception d'agents IA autonomes
+            et a l'automatisation de processus commerciaux.
+        </p>
+        <p>
+            Ma specialite : transformer des processus manuels en systemes autonomes qui fonctionnent 24h/24,
+            connectent vos outils existants (HubSpot, Gmail, Notion, Slack), et produisent des resultats mesurables
+            des la premiere semaine.
+        </p>
+        <div style="margin-top: 20px">
+            <a class="btn" href="/contact.html">Me contacter</a>
+            <a class="btn btn-secondary" href="/missions.html" style="margin-left:8px">Voir les missions</a>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="foot-line"><strong>SNB Consulting</strong> &mdash; Agent Commercial Autonome propulse par Claude AI</div>
+    <div class="foot-line">Contact : <a href="mailto:bp.thevenot@gmail.com">bp.thevenot@gmail.com</a></div>
+    <div class="foot-nav">
+        <a href="/">Dashboard</a>
+        <a href="/pipeline.html">Pipeline</a>
+        <a href="/livrables.html">Livrables</a>
+        <a href="/missions.html">Missions</a>
+        <a href="/documents.html">Documents</a>
+        <a href="/portfolio.html">Portfolio</a>
+        <a href="/routines.html">Routines</a>
+        <a href="/architecture.html">Architecture</a>
+        <a href="/contact.html">Contact</a>
+    </div>
+</footer>
+
+<script>
+// Live metrics on SNB Consulting Platform card
+(function() {
+    function fmtK(v) {
+        if (!v) return '--';
+        if (v >= 1000000) return (v / 1000000).toFixed(1).replace('.0','') + 'M';
+        if (v >= 1000) return (v / 1000).toFixed(1).replace('.0','') + 'k';
+        return v.toLocaleString('fr-FR');
+    }
+    fetch('/status.json?_=' + Date.now())
+        .then(function(r) { return r.ok ? r.json() : null; })
+        .then(function(d) {
+            if (!d) return;
+            var pf;
+            if ((pf = document.getElementById('pf-contacts')) && d.active_contacts) pf.textContent = d.active_contacts.toLocaleString('fr-FR');
+            var pipelineVal = (d.livrables && d.livrables.total_montant) || d.pipeline_value || 0;
+            if ((pf = document.getElementById('pf-pipeline')) && pipelineVal) pf.textContent = fmtK(pipelineVal) + '€';
+            if ((pf = document.getElementById('pf-emails')) && d.emails_processed) pf.textContent = d.emails_processed.toLocaleString('fr-FR');
+        })
+        .catch(function(){});
+})();
+</script>
+</body>
+</html>

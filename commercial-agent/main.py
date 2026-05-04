@@ -1,13 +1,13 @@
 """Commercial Agent - L-FDS
-Agent autonome pour la gestion CRM HubSpot et les emails de prospection.
+
+Interactive entry point for the commercial agent. The actual agentic
+loop lives in `agent_loop.py` and is shared with `autonomous.py` (the
+cron entry point). This file just wires a REPL around it.
 """
 
-import os
-import json
-
-import anthropic
 from dotenv import load_dotenv
 
+from agent_loop import run_agent_loop
 from config.system_prompt import get_system_prompt
 from tools import ALL_TOOLS, execute_tool
 
@@ -15,74 +15,19 @@ load_dotenv()
 
 
 def run_agent(user_message: str) -> str:
-    """Run the commercial agent with a user message.
-
-    The agent loops automatically: it calls tools, processes results,
-    and continues until it has a final answer.
-    """
-    client = anthropic.Anthropic()
-    system_prompt = get_system_prompt()
-
-    messages = [{"role": "user", "content": user_message}]
-
+    """Run the commercial agent with a user message."""
     print(f"\n{'='*60}")
-    print(f"AGENT COMMERCIAL - Traitement de la demande...")
+    print("AGENT COMMERCIAL - Traitement de la demande...")
     print(f"{'='*60}\n")
 
-    max_iterations = 15
-    iteration = 0
-
-    while iteration < max_iterations:
-        iteration += 1
-
-        response = client.messages.create(
-            model="claude-sonnet-4-6",
-            max_tokens=16000,
-            system=system_prompt,
-            tools=ALL_TOOLS,
-            messages=messages,
-        )
-
-        # If Claude is done (no more tool calls), return the text
-        if response.stop_reason == "end_turn":
-            final_text = ""
-            for block in response.content:
-                if block.type == "text":
-                    final_text += block.text
-            return final_text
-
-        # Process tool calls
-        tool_use_blocks = [b for b in response.content if b.type == "tool_use"]
-        text_blocks = [b for b in response.content if b.type == "text"]
-
-        # Show intermediate text
-        for block in text_blocks:
-            if block.text.strip():
-                print(f"[Agent] {block.text[:200]}")
-
-        # Append assistant response to history
-        messages.append({"role": "assistant", "content": response.content})
-
-        # Execute tools and collect results
-        tool_results = []
-        for tool in tool_use_blocks:
-            print(f"  -> Tool: {tool.name}({json.dumps(tool.input, ensure_ascii=False)[:100]})")
-
-            result = execute_tool(tool.name, tool.input)
-
-            # Truncate very long results
-            if len(result) > 5000:
-                result = result[:5000] + "... (truncated)"
-
-            tool_results.append({
-                "type": "tool_result",
-                "tool_use_id": tool.id,
-                "content": result,
-            })
-
-        messages.append({"role": "user", "content": tool_results})
-
-    return "Agent stopped: maximum iterations reached."
+    return run_agent_loop(
+        user_prompt=user_message,
+        system_prompt=get_system_prompt(),
+        tools=ALL_TOOLS,
+        execute_tool=execute_tool,
+        max_iterations=15,
+        on_text=lambda text: print(f"[Agent] {text[:200]}"),
+    )
 
 
 def interactive_mode():

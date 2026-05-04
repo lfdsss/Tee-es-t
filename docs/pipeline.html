@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pipeline Commercial | SNB Consulting</title>
+    <meta name="description" content="Pipeline commercial detaille : deals en cours, valeur totale, etapes et clients cles suivis par l'agent IA.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect rx='18' width='100' height='100' fill='%230f172a'/><text x='50' y='66' text-anchor='middle' fill='%2338bdf8' font-size='48' font-family='system-ui' font-weight='800'>S</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+
+<nav>
+    <a class="nav-brand" href="/">
+        <div class="nav-logo">S</div>
+        <div class="nav-title">SNB Consulting <span>| Agent IA</span></div>
+    </a>
+    <div class="nav-menu">
+        <a href="/" class="nav-link">Dashboard</a>
+        <a href="/pipeline.html" class="nav-link active">Pipeline</a>
+        <a href="/livrables.html" class="nav-link">Livrables</a>
+        <a href="/missions.html" class="nav-link">Missions</a>
+        <a href="/documents.html" class="nav-link">Documents</a>
+        <a href="/portfolio.html" class="nav-link">Portfolio</a>
+        <a href="/routines.html" class="nav-link">Routines</a>
+        <a href="/architecture.html" class="nav-link">Architecture</a>
+        <a href="/contact.html" class="nav-link">Contact</a>
+    </div>
+    <div class="nav-right">
+        <div class="nav-badge"><span class="dot"></span><span>Actif</span></div>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-badge">&#128200; Pipeline temps reel</div>
+        <h1>Pipeline Commercial</h1>
+        <p>Tous les deals actifs suivis par l'agent IA, avec montant, etape et date de mise a jour.</p>
+    </div>
+</section>
+
+<div class="container" style="margin-top: -32px; position: relative; z-index: 2;">
+
+    <div class="panel">
+        <div class="panel-head">
+            <div class="panel-title">
+                <span class="icon" style="background:rgba(34,197,94,0.1);color:var(--green-600)">&#128176;</span>
+                Valeur du pipeline
+            </div>
+            <div class="panel-meta" id="pipeline-meta">Chargement...</div>
+        </div>
+        <div class="panel-body" style="display:grid; grid-template-columns: repeat(4,1fr); gap: 12px; padding: 20px;">
+            <div style="text-align:center; padding:16px; background:var(--slate-50); border-radius:8px">
+                <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--slate-500); letter-spacing:0.4px">Total</div>
+                <div id="pipe-total" style="font-size:26px; font-weight:800; color:var(--green-600); margin-top:6px">--</div>
+            </div>
+            <div style="text-align:center; padding:16px; background:var(--slate-50); border-radius:8px">
+                <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--slate-500); letter-spacing:0.4px">Deals actifs</div>
+                <div id="pipe-count" style="font-size:26px; font-weight:800; color:var(--slate-900); margin-top:6px">--</div>
+            </div>
+            <div style="text-align:center; padding:16px; background:var(--slate-50); border-radius:8px">
+                <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--slate-500); letter-spacing:0.4px">Deal moyen</div>
+                <div id="pipe-avg" style="font-size:26px; font-weight:800; color:var(--blue-600); margin-top:6px">--</div>
+            </div>
+            <div style="text-align:center; padding:16px; background:var(--slate-50); border-radius:8px">
+                <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--slate-500); letter-spacing:0.4px">Deal max</div>
+                <div id="pipe-max" style="font-size:26px; font-weight:800; color:var(--purple-500); margin-top:6px">--</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-head">
+            <div class="panel-title">
+                <span class="icon" style="background:rgba(14,165,233,0.1);color:var(--blue-600)">&#128200;</span>
+                Top Deals
+            </div>
+            <div class="panel-meta">Tries par montant</div>
+        </div>
+        <table class="deal-table">
+            <thead>
+                <tr>
+                    <th>Client</th>
+                    <th>Objet</th>
+                    <th>Date</th>
+                    <th>Etape</th>
+                    <th style="text-align:right">Montant</th>
+                </tr>
+            </thead>
+            <tbody id="deals-body">
+                <tr><td colspan="5" style="text-align:center; color:var(--slate-400); padding:32px">Chargement...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<footer>
+    <div class="foot-line"><strong>SNB Consulting</strong> &mdash; Agent Commercial Autonome propulse par Claude AI</div>
+    <div class="foot-line">Contact : <a href="mailto:bp.thevenot@gmail.com">bp.thevenot@gmail.com</a></div>
+    <div class="foot-nav">
+        <a href="/">Dashboard</a>
+        <a href="/pipeline.html">Pipeline</a>
+        <a href="/livrables.html">Livrables</a>
+        <a href="/missions.html">Missions</a>
+        <a href="/documents.html">Documents</a>
+        <a href="/portfolio.html">Portfolio</a>
+        <a href="/routines.html">Routines</a>
+        <a href="/architecture.html">Architecture</a>
+        <a href="/contact.html">Contact</a>
+    </div>
+</footer>
+
+<script>
+function formatMoney(n) {
+    if (!n && n !== 0) return '--';
+    if (n >= 1000000) return (n/1000000).toFixed(1).replace('.0','') + ' M\u20ac';
+    if (n >= 1000) return (n/1000).toFixed(1).replace('.0','') + ' k\u20ac';
+    return n.toLocaleString('fr-FR') + ' \u20ac';
+}
+
+function parseMontant(s) {
+    if (!s) return 0;
+    return parseInt(String(s).replace(/[^0-9]/g, ''), 10) || 0;
+}
+
+fetch('/status.json?t=' + Date.now())
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+        var deals = (d.livrables && d.livrables.recent) || [];
+        // Enrich with numeric value
+        deals = deals.map(function(x) {
+            return Object.assign({}, x, { _val: parseMontant(x.montant) });
+        }).sort(function(a, b) { return b._val - a._val; });
+
+        var total = deals.reduce(function(a, b) { return a + b._val; }, 0);
+        var max = deals.length ? deals[0]._val : 0;
+        var avg = deals.length ? Math.round(total / deals.length) : 0;
+
+        document.getElementById('pipe-total').textContent = formatMoney(total);
+        document.getElementById('pipe-count').textContent = deals.length;
+        document.getElementById('pipe-avg').textContent = formatMoney(avg);
+        document.getElementById('pipe-max').textContent = formatMoney(max);
+        document.getElementById('pipeline-meta').textContent = deals.length + ' deal' + (deals.length > 1 ? 's' : '') + ' actif' + (deals.length > 1 ? 's' : '');
+
+        var tbody = document.getElementById('deals-body');
+        if (deals.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--slate-400); padding:32px">Aucun deal actif</td></tr>';
+            return;
+        }
+        tbody.innerHTML = '';
+        deals.forEach(function(deal) {
+            var tr = document.createElement('tr');
+            tr.innerHTML =
+                '<td class="client">' + (deal.client || '--') + '</td>' +
+                '<td>' + (deal.objet || '--') + '</td>' +
+                '<td style="color:var(--slate-500)">' + (deal.date || '--') + '</td>' +
+                '<td><span class="stage-badge">Proposition</span></td>' +
+                '<td class="montant">' + (deal.montant || '--') + '</td>';
+            tbody.appendChild(tr);
+        });
+    })
+    .catch(function() {
+        document.getElementById('deals-body').innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--slate-400); padding:32px">Donnees indisponibles</td></tr>';
+    });
+</script>
+
+</body>
+</html>

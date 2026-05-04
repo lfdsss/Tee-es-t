@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architecture Technique | SNB Consulting</title>
+    <meta name="description" content="Architecture technique de l'agent commercial IA : Claude, HubSpot, Gmail, Notion, GitHub Actions, Netlify.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect rx='18' width='100' height='100' fill='%230f172a'/><text x='50' y='66' text-anchor='middle' fill='%2338bdf8' font-size='48' font-family='system-ui' font-weight='800'>S</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/style.css">
+    <style>
+        .flow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 24px 20px;
+            background: linear-gradient(135deg, rgba(14,165,233,0.04), rgba(168,85,247,0.04));
+            border-radius: var(--radius);
+            border: 1px solid var(--slate-200);
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        .flow-node {
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+            padding: 14px 10px;
+            background: white;
+            border: 1px solid var(--slate-200);
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .flow-node .fn-logo {
+            display: inline-flex;
+            width: 32px;
+            height: 32px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: 900;
+            margin-bottom: 6px;
+        }
+        .flow-arrow {
+            color: var(--slate-400);
+            font-size: 18px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a class="nav-brand" href="/">
+        <div class="nav-logo">S</div>
+        <div class="nav-title">SNB Consulting <span>| Agent IA</span></div>
+    </a>
+    <div class="nav-menu">
+        <a href="/" class="nav-link">Dashboard</a>
+        <a href="/pipeline.html" class="nav-link">Pipeline</a>
+        <a href="/livrables.html" class="nav-link">Livrables</a>
+        <a href="/missions.html" class="nav-link">Missions</a>
+        <a href="/documents.html" class="nav-link">Documents</a>
+        <a href="/portfolio.html" class="nav-link">Portfolio</a>
+        <a href="/routines.html" class="nav-link">Routines</a>
+        <a href="/architecture.html" class="nav-link active">Architecture</a>
+        <a href="/contact.html" class="nav-link">Contact</a>
+    </div>
+    <div class="nav-right">
+        <div class="nav-badge"><span class="dot"></span><span>Actif</span></div>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-badge">&#128296; Stack technique</div>
+        <h1>Architecture</h1>
+        <p>Un agent autonome construit sur Claude AI, orchestre par GitHub Actions, connecte a HubSpot, Gmail et Notion. Zero infrastructure a maintenir.</p>
+    </div>
+</section>
+
+<div class="container narrow" style="margin-top: -32px; position: relative; z-index: 2;">
+
+    <div class="panel">
+        <div class="panel-head">
+            <div class="panel-title">
+                <span class="icon" style="background:rgba(14,165,233,0.1);color:var(--blue-600)">&#128279;</span>
+                Flux de donnees
+            </div>
+            <div class="panel-meta">Temps reel</div>
+        </div>
+        <div class="panel-body">
+            <p>Chaque cycle de l'agent suit le meme flux : declencheur planifie &rarr; raisonnement Claude &rarr; lecture/ecriture dans les systemes metier &rarr; publication du statut.</p>
+            <div class="flow">
+                <div class="flow-node">
+                    <div class="fn-logo" style="background:#f3e8ff; color:#7c3aed">&#9201;</div>
+                    GitHub Actions
+                </div>
+                <div class="flow-arrow">&rarr;</div>
+                <div class="flow-node">
+                    <div class="fn-logo" style="background:#fff4e6; color:#d97706">C</div>
+                    Claude AI
+                </div>
+                <div class="flow-arrow">&rarr;</div>
+                <div class="flow-node">
+                    <div class="fn-logo" style="background:#fff1ef; color:#ff5c35">H</div>
+                    HubSpot &middot; Gmail &middot; Notion
+                </div>
+                <div class="flow-arrow">&rarr;</div>
+                <div class="flow-node">
+                    <div class="fn-logo" style="background:#e6fffb; color:#14b8a6">N</div>
+                    Netlify
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-head">
+            <div class="panel-title">
+                <span class="icon" style="background:rgba(168,85,247,0.1);color:var(--purple-500)">&#128220;</span>
+                Composants
+            </div>
+            <div class="panel-meta">6 services connectes</div>
+        </div>
+        <div class="stack-item">
+            <div class="stack-logo claude">C</div>
+            <div class="stack-info">
+                <div class="role">Cerveau</div>
+                <h4>Claude AI (Anthropic)</h4>
+                <p>Modele de raisonnement qui orchestre chaque routine : analyse du contexte, redaction des emails, qualification des deals, prise de decision.</p>
+            </div>
+        </div>
+        <div class="stack-item">
+            <div class="stack-logo hubspot">H</div>
+            <div class="stack-info">
+                <div class="role">CRM</div>
+                <h4>HubSpot</h4>
+                <p>Source de verite pour les contacts, companies et deals. L'agent y lit les fiches et y pousse les mises a jour de stage, les notes et les taches.</p>
+            </div>
+        </div>
+        <div class="stack-item">
+            <div class="stack-logo gmail">G</div>
+            <div class="stack-info">
+                <div class="role">Email</div>
+                <h4>Gmail API</h4>
+                <p>Lecture des reponses entrantes et creation de brouillons. L'agent ne fait jamais d'envoi silencieux &mdash; tout passe par des drafts valides.</p>
+            </div>
+        </div>
+        <div class="stack-item">
+            <div class="stack-logo notion">N</div>
+            <div class="stack-info">
+                <div class="role">Documentation</div>
+                <h4>Notion</h4>
+                <p>Workspace de travail pour les comptes rendus de reunion, les audits hebdomadaires et la base de connaissance produit.</p>
+            </div>
+        </div>
+        <div class="stack-item">
+            <div class="stack-logo github">&#10095;</div>
+            <div class="stack-info">
+                <div class="role">Orchestration</div>
+                <h4>GitHub Actions</h4>
+                <p>Runner gratuit qui declenche les 3 routines selon un cron. Versionne tout le code agent, les logs et les rapports.</p>
+            </div>
+        </div>
+        <div class="stack-item">
+            <div class="stack-logo netlify">N</div>
+            <div class="stack-info">
+                <div class="role">Hebergement</div>
+                <h4>Netlify</h4>
+                <p>Sert ce dashboard public en statique. CDN global, CSP strict, MAJ automatique a chaque push.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-head">
+            <div class="panel-title">
+                <span class="icon" style="background:rgba(34,197,94,0.1);color:var(--green-600)">&#128274;</span>
+                Securite &amp; donnees
+            </div>
+        </div>
+        <div class="panel-body">
+            <h3>Credentiels</h3>
+            <p>Toutes les cles API (HubSpot, Gmail, Notion, Anthropic) sont stockees en tant que GitHub Secrets chiffres, jamais ecrites dans le repo.</p>
+            <h3>Perimetre d'ecriture</h3>
+            <p>L'agent ne peut ecrire que dans les objets dont il est owner. Les envois emails passent par des drafts valides manuellement.</p>
+            <h3>Tracabilite</h3>
+            <p>Chaque action est loggee dans la timeline HubSpot et versionnee dans Git. L'historique est public.</p>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    <div class="foot-line"><strong>SNB Consulting</strong> &mdash; Agent Commercial Autonome propulse par Claude AI</div>
+    <div class="foot-line">Contact : <a href="mailto:bp.thevenot@gmail.com">bp.thevenot@gmail.com</a></div>
+    <div class="foot-nav">
+        <a href="/">Dashboard</a>
+        <a href="/pipeline.html">Pipeline</a>
+        <a href="/livrables.html">Livrables</a>
+        <a href="/missions.html">Missions</a>
+        <a href="/documents.html">Documents</a>
+        <a href="/portfolio.html">Portfolio</a>
+        <a href="/routines.html">Routines</a>
+        <a href="/architecture.html">Architecture</a>
+        <a href="/contact.html">Contact</a>
+    </div>
+</footer>
+
+</body>
+</html>

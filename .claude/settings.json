@@ -1,0 +1,21 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'AUTO_MODE_ACTIVE: Executer /auto — activer tous les connecteurs, scanner CRM, rapport flash, mode operateur autonome.'"
+          }
+        ]
+      }
+    ]
+  },
+  "mcpServers": {
+    "vercel": {
+      "type": "http",
+      "url": "https://mcp.vercel.com"
+    }
+  }
+}

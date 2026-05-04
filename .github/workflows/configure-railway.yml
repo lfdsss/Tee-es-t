@@ -1,0 +1,45 @@
+name: Configure Railway Environment Variables
+
+# Manual trigger — run from GitHub Actions tab → "Run workflow"
+# Requires RAILWAY_TOKEN secret (already set) + BREVO_SMTP_KEY secret.
+on:
+  workflow_dispatch:
+    inputs:
+      railway_service:
+        description: "Railway service name (default: studentflow-api)"
+        required: false
+        default: "studentflow-api"
+      public_base_url:
+        description: "Public API URL on Railway"
+        required: false
+        default: "https://studentflow-api.up.railway.app"
+      smtp_from:
+        description: "SMTP sender email (verified in Brevo)"
+        required: false
+        default: "notifications@studentflow.fr"
+
+jobs:
+  configure:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Set environment variables
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          railway variables set \
+            SMTP_HOST=smtp-relay.brevo.com \
+            SMTP_PORT=587 \
+            SMTP_USERNAME="${{ inputs.smtp_from }}" \
+            SMTP_PASSWORD="${{ secrets.BREVO_SMTP_KEY }}" \
+            SMTP_FROM="${{ inputs.smtp_from }}" \
+            SMTP_USE_TLS=true \
+            PUBLIC_BASE_URL="${{ inputs.public_base_url }}" \
+            MATCH_SCORE_THRESHOLD=0.6
+
+      - name: Verify
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: railway variables

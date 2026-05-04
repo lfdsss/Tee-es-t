@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reponses de missions | SNB Consulting</title>
+    <meta name="description" content="Generateur de reponses de mission adaptees par plateforme (Codeur, Malt, Upwork, Freelance-info). Propositions argumentees et devis chiffres, signees Baptiste Thevenot.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect rx='18' width='100' height='100' fill='%230f172a'/><text x='50' y='66' text-anchor='middle' fill='%2338bdf8' font-size='48' font-family='system-ui' font-weight='800'>S</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/style.css">
+    <style>
+        .missions-layout {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .mission-list {
+            background: white;
+            border: 1px solid var(--slate-200);
+            border-radius: var(--radius);
+            max-height: 720px;
+            overflow-y: auto;
+            box-shadow: var(--shadow-sm);
+        }
+        .mission-entry {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--slate-100);
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .mission-entry:hover { background: var(--slate-50); }
+        .mission-entry.active { background: rgba(14,165,233,0.06); border-left: 3px solid var(--blue-500); padding-left: 13px; }
+        .mission-entry .title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--slate-900);
+            line-height: 1.3;
+            margin-bottom: 4px;
+        }
+        .mission-entry .meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: var(--slate-500);
+        }
+        .mission-entry .preview {
+            font-size: 12px;
+            color: var(--slate-500);
+            margin-top: 6px;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .platform-tag {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: var(--slate-100);
+            color: var(--slate-700);
+        }
+        .platform-tag.codeur { background: #dbeafe; color: #1d4ed8; }
+        .platform-tag.malt { background: #fce7f3; color: #be185d; }
+        .platform-tag.upwork { background: #dcfce7; color: #16a34a; }
+        .platform-tag.fiverr { background: #fef3c7; color: #d97706; }
+        .platform-tag.freelance-info { background: #e0e7ff; color: #4338ca; }
+        .platform-tag.linkedin { background: #dbeafe; color: #0369a1; }
+
+        .response-pane {
+            background: white;
+            border: 1px solid var(--slate-200);
+            border-radius: var(--radius);
+            padding: 24px 28px;
+            box-shadow: var(--shadow-sm);
+            min-height: 400px;
+        }
+        .response-pane h2 {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--slate-900);
+            margin-bottom: 12px;
+        }
+        .response-pane pre {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--slate-800);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            background: var(--slate-50);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--slate-100);
+            margin-top: 12px;
+        }
+        .response-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 14px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--slate-100);
+        }
+        .response-info { flex: 1; }
+        .response-info .title {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--slate-900);
+            margin-bottom: 4px;
+        }
+        .response-info .meta {
+            font-size: 12px;
+            color: var(--slate-500);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .copy-btn {
+            padding: 6px 14px;
+            background: var(--blue-500);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+            flex-shrink: 0;
+        }
+        .copy-btn:hover { background: var(--blue-600); }
+        .copy-btn.copied { background: var(--green-600); }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--slate-400);
+        }
+        .empty-state h3 { font-size: 15px; font-weight: 700; color: var(--slate-600); margin-bottom: 8px; }
+
+        @media (max-width: 768px) {
+            .missions-layout { grid-template-columns: 1fr; }
+            .mission-list { max-height: 360px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a class="nav-brand" href="/">
+        <div class="nav-logo">S</div>
+        <div class="nav-title">SNB Consulting <span>| Agent IA</span></div>
+    </a>
+    <div class="nav-menu">
+        <a href="/" class="nav-link">Dashboard</a>
+        <a href="/pipeline.html" class="nav-link">Pipeline</a>
+        <a href="/livrables.html" class="nav-link">Livrables</a>
+        <a href="/missions.html" class="nav-link active">Missions</a>
+        <a href="/documents.html" class="nav-link">Documents</a>
+        <a href="/portfolio.html" class="nav-link">Portfolio</a>
+        <a href="/routines.html" class="nav-link">Routines</a>
+        <a href="/architecture.html" class="nav-link">Architecture</a>
+        <a href="/contact.html" class="nav-link">Contact</a>
+    </div>
+    <div class="nav-right">
+        <div class="nav-badge"><span class="dot"></span><span>Actif</span></div>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-badge">Generateur de propositions</div>
+        <h1>Reponses de missions</h1>
+        <p>Propositions commerciales argumentees, adaptees par plateforme, avec devis chiffres. Signees Baptiste Thevenot. Generees par Claude a partir du texte brut de la mission.</p>
+    </div>
+</section>
+
+<div class="container">
+
+    <div class="panel" style="margin-top:-32px; position:relative; z-index:2">
+        <div class="panel-head">
+            <div class="panel-title">
+                <span class="icon" style="background:rgba(14,165,233,0.1);color:var(--blue-600)">&#9881;</span>
+                Comment generer une reponse
+            </div>
+            <div class="panel-meta">Workflow GitHub Actions</div>
+        </div>
+        <div class="panel-body">
+            <p>Pour generer une reponse adaptee a une mission, lancez le workflow GitHub <strong>Generer reponse de mission</strong> :</p>
+            <ol style="padding-left:22px; margin-top:8px; color:var(--slate-700); font-size:14px; line-height:1.8">
+                <li>Copiez le texte complet de la mission depuis Codeur, Malt, Upwork, etc.</li>
+                <li>Ouvrez <a href="https://github.com/them311/Tee-es-t/actions/workflows/mission-response.yml" target="_blank" rel="noopener">le workflow sur GitHub</a> et cliquez sur <em>Run workflow</em>.</li>
+                <li>Selectionnez la plateforme cible (codeur, malt, upwork, fiverr, linkedin, freelance-info, other).</li>
+                <li>Collez le texte de la mission dans le champ <em>mission_text</em>.</li>
+                <li>Optionnel : indiquez un budget et un niveau d'urgence.</li>
+                <li>Lancez. Apres 20-40 secondes, la reponse apparait dans la liste ci-dessous.</li>
+            </ol>
+            <p style="margin-top:12px">La reponse respecte le ton, la longueur et la structure attendus sur la plateforme cible. Elle contient un devis chiffre en phases et se signe Baptiste Thevenot. Aucun caractere special ni emoji.</p>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-head">
+            <div class="panel-title">
+                <span class="icon" style="background:rgba(168,85,247,0.1);color:var(--purple-500)">&#128203;</span>
+                Plateformes supportees
+            </div>
+            <div class="panel-meta">7 plateformes</div>
+        </div>
+        <div class="panel-body">
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px">
+                <div style="padding:12px 14px; background:var(--slate-50); border-radius:8px">
+                    <span class="platform-tag codeur">Codeur</span>
+                    <p style="font-size:12px; color:var(--slate-500); margin-top:6px">Direct, phases courtes, prix clair</p>
+                </div>
+                <div style="padding:12px 14px; background:var(--slate-50); border-radius:8px">
+                    <span class="platform-tag malt">Malt</span>
+                    <p style="font-size:12px; color:var(--slate-500); margin-top:6px">Consultatif, methodique, TJM</p>
+                </div>
+                <div style="padding:12px 14px; background:var(--slate-50); border-radius:8px">
+                    <span class="platform-tag freelance-info">Freelance-info</span>
+                    <p style="font-size:12px; color:var(--slate-500); margin-top:6px">Formel, ESN, TJM standard</p>
+                </div>
+                <div style="padding:12px 14px; background:var(--slate-50); border-radius:8px">
+                    <span class="platform-tag upwork">Upwork</span>
+                    <p style="font-size:12px; color:var(--slate-500); margin-top:6px">English, milestones, outcomes</p>
+                </div>
+                <div style="padding:12px 14px; background:var(--slate-50); border-radius:8px">
+                    <span class="platform-tag fiverr">Fiverr</span>
+                    <p style="font-size:12px; color:var(--slate-500); margin-top:6px">English, tiered packages</p>
+                </div>
+                <div style="padding:12px 14px; background:var(--slate-50); border-radius:8px">
+                    <span class="platform-tag linkedin">LinkedIn</span>
+                    <p style="font-size:12px; color:var(--slate-500); margin-top:6px">Approche reseau, echange prio</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="missions-layout">
+        <div class="mission-list" id="mission-list">
+            <div class="empty-state">
+                <h3>Chargement...</h3>
+            </div>
+        </div>
+        <div class="response-pane" id="response-pane">
+            <div class="empty-state">
+                <h3>Aucune reponse selectionnee</h3>
+                <p>Selectionnez une reponse dans la liste pour la consulter et la copier.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    <div class="foot-line"><strong>SNB Consulting</strong> &mdash; Agent Commercial Autonome propulse par Claude AI</div>
+    <div class="foot-line">Contact : <a href="mailto:bp.thevenot@gmail.com">bp.thevenot@gmail.com</a></div>
+    <div class="foot-nav">
+        <a href="/">Dashboard</a>
+        <a href="/pipeline.html">Pipeline</a>
+        <a href="/livrables.html">Livrables</a>
+        <a href="/missions.html">Missions</a>
+        <a href="/documents.html">Documents</a>
+        <a href="/portfolio.html">Portfolio</a>
+        <a href="/routines.html">Routines</a>
+        <a href="/architecture.html">Architecture</a>
+        <a href="/contact.html">Contact</a>
+    </div>
+</footer>
+
+<script>
+var state = { missions: [], selected: null };
+
+function renderList() {
+    var list = document.getElementById('mission-list');
+    if (state.missions.length === 0) {
+        list.innerHTML =
+            '<div class="empty-state">' +
+            '<h3>Aucune reponse generee</h3>' +
+            '<p>Lancez le workflow GitHub pour generer votre premiere reponse.</p>' +
+            '</div>';
+        return;
+    }
+    list.innerHTML = '';
+    state.missions.forEach(function(m, i) {
+        var el = document.createElement('div');
+        el.className = 'mission-entry' + (state.selected === i ? ' active' : '');
+        el.onclick = function() { selectMission(i); };
+        var date = m.date_utc ? new Date(m.date_utc).toLocaleDateString('fr-FR', { day:'2-digit', month:'short' }) : '';
+        el.innerHTML =
+            '<div class="title">' + escapeHtml(m.title || 'Sans titre') + '</div>' +
+            '<div class="meta">' +
+                '<span class="platform-tag ' + (m.platform || 'other') + '">' + (m.platform_name || m.platform || 'other') + '</span>' +
+                '<span>' + date + '</span>' +
+                (m.budget_hint ? '<span>' + escapeHtml(m.budget_hint) + '</span>' : '') +
+            '</div>' +
+            '<div class="preview">' + escapeHtml(m.preview || '') + '</div>';
+        list.appendChild(el);
+    });
+}
+
+function selectMission(i) {
+    state.selected = i;
+    renderList();
+    var m = state.missions[i];
+    var pane = document.getElementById('response-pane');
+    pane.innerHTML =
+        '<div class="response-header">' +
+            '<div class="response-info">' +
+                '<div class="title">' + escapeHtml(m.title || '') + '</div>' +
+                '<div class="meta">' +
+                    '<span class="platform-tag ' + (m.platform || 'other') + '">' + (m.platform_name || m.platform) + '</span>' +
+                    '<span>' + new Date(m.date_utc).toLocaleString('fr-FR') + '</span>' +
+                    (m.budget_hint ? '<span>Budget : ' + escapeHtml(m.budget_hint) + '</span>' : '') +
+                    (m.urgency ? '<span>Urgence : ' + escapeHtml(m.urgency) + '</span>' : '') +
+                '</div>' +
+            '</div>' +
+            '<button class="copy-btn" id="copy-btn">Copier</button>' +
+        '</div>' +
+        '<pre id="response-text">Chargement...</pre>';
+
+    fetch('/missions/' + m.file + '?t=' + Date.now())
+        .then(function(r) { return r.text(); })
+        .then(function(txt) {
+            // Extract response section
+            var marker = '## Reponse generee';
+            var idx = txt.indexOf(marker);
+            var body = idx >= 0 ? txt.substring(idx + marker.length).trim() : txt;
+            document.getElementById('response-text').textContent = body;
+            document.getElementById('copy-btn').onclick = function() {
+                navigator.clipboard.writeText(body).then(function() {
+                    var btn = document.getElementById('copy-btn');
+                    btn.textContent = 'Copie !';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.textContent = 'Copier';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            };
+        })
+        .catch(function() {
+            document.getElementById('response-text').textContent = 'Erreur de chargement.';
+        });
+}
+
+function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function(c) {
+        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+}
+
+fetch('/missions/index.json?t=' + Date.now())
+    .then(function(r) { return r.ok ? r.json() : []; })
+    .then(function(data) {
+        state.missions = Array.isArray(data) ? data : [];
+        renderList();
+        if (state.missions.length > 0) selectMission(0);
+    })
+    .catch(function() {
+        state.missions = [];
+        renderList();
+    });
+</script>
+
+</body>
+</html>

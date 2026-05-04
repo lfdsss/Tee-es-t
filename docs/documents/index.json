@@ -1,0 +1,98 @@
+[
+  {
+    "type": "facture",
+    "mission_id": "20260418-143000-freelance-info-developpeur-agent-ia-python-esn",
+    "title": "Developpeur Agent IA Python - mission longue duree ESN",
+    "platform": "freelance-info",
+    "file": "documents/20260418-143000-freelance-info-developpeur-agent-ia-python-esn/facture-20260418-143000-freelance-info-developpeur-agent-ia-python-esn.html",
+    "generated_at": "2026-04-21T01:19:58+00:00"
+  },
+  {
+    "type": "plan",
+    "mission_id": "20260418-143000-freelance-info-developpeur-agent-ia-python-esn",
+    "title": "Developpeur Agent IA Python - mission longue duree ESN",
+    "platform": "freelance-info",
+    "file": "documents/20260418-143000-freelance-info-developpeur-agent-ia-python-esn/plan-20260418-143000-freelance-info-developpeur-agent-ia-python-esn.html",
+    "generated_at": "2026-04-21T01:19:58+00:00"
+  },
+  {
+    "type": "devis",
+    "mission_id": "20260418-143000-freelance-info-developpeur-agent-ia-python-esn",
+    "title": "Developpeur Agent IA Python - mission longue duree ESN",
+    "platform": "freelance-info",
+    "file": "documents/20260418-143000-freelance-info-developpeur-agent-ia-python-esn/devis-20260418-143000-freelance-info-developpeur-agent-ia-python-esn.html",
+    "generated_at": "2026-04-21T01:19:58+00:00"
+  },
+  {
+    "type": "facture",
+    "mission_id": "20260418-141500-codeur-automatisation-python-taches-recurrentes",
+    "title": "Automatisation Python de taches commerciales recurrentes",
+    "platform": "codeur",
+    "file": "documents/20260418-141500-codeur-automatisation-python-taches-recurrentes/facture-20260418-141500-codeur-automatisation-python-taches-recurrentes.html",
+    "generated_at": "2026-04-21T01:19:58+00:00"
+  },
+  {
+    "type": "plan",
+    "mission_id": "20260418-141500-codeur-automatisation-python-taches-recurrentes",
+    "title": "Automatisation Python de taches commerciales recurrentes",
+    "platform": "codeur",
+    "file": "documents/20260418-141500-codeur-automatisation-python-taches-recurrentes/plan-20260418-141500-codeur-automatisation-python-taches-recurrentes.html",
+    "generated_at": "2026-04-21T01:19:58+00:00"
+  },
+  {
+    "type": "devis",
+    "mission_id": "20260418-141500-codeur-automatisation-python-taches-recurrentes",
+    "title": "Automatisation Python de taches commerciales recurrentes",
+    "platform": "codeur",
+    "file": "documents/20260418-141500-codeur-automatisation-python-taches-recurrentes/devis-20260418-141500-codeur-automatisation-python-taches-recurrentes.html",
+    "generated_at": "2026-04-21T01:19:58+00:00"
+  },
+  {
+    "type": "facture",
+    "mission_id": "20260418-140000-malt-consultant-hubspot-revops-automation",
+    "title": "Consultant HubSpot RevOps - structuration CRM et automatisations",
+    "platform": "malt",
+    "file": "documents/20260418-140000-malt-consultant-hubspot-revops-automation/facture-20260418-140000-malt-consultant-hubspot-revops-automation.html",
+    "generated_at": "2026-04-21T01:19:58+00:00"
+  },
+  {
+    "type": "plan",
+    "mission_id": "20260418-140000-malt-consultant-hubspot-revops-automation",
+    "title": "Consultant HubSpot RevOps - structuration CRM et automatisations",
+    "platform": "malt",
+    "file": "documents/20260418-140000-malt-consultant-hubspot-revops-automation/plan-20260418-140000-malt-consultant-hubspot-revops-automation.html",
+    "generated_at": "2026-04-21T01:19:58+00:00"
+  },
+  {
+    "type": "devis",
+    "mission_id": "20260418-140000-malt-consultant-hubspot-revops-automation",
+    "title": "Consultant HubSpot RevOps - structuration CRM et automatisations",
+    "platform": "malt",
+    "file": "documents/20260418-140000-malt-consultant-hubspot-revops-automation/devis-20260418-140000-malt-consultant-hubspot-revops-automation.html",
+    "generated_at": "2026-04-21T01:19:58+00:00"
+  },
+  {
+    "type": "facture",
+    "mission_id": "20260418-120000-codeur-exemple-agent-commercial-hubspot",
+    "title": "Exemple - Agent commercial automatise sur HubSpot",
+    "platform": "codeur",
+    "file": "documents/20260418-120000-codeur-exemple-agent-commercial-hubspot/facture-20260418-120000-codeur-exemple-agent-commercial-hubspot.html",
+    "generated_at": "2026-04-21T01:19:52+00:00"
+  },
+  {
+    "type": "plan",
+    "mission_id": "20260418-120000-codeur-exemple-agent-commercial-hubspot",
+    "title": "Exemple - Agent commercial automatise sur HubSpot",
+    "platform": "codeur",
+    "file": "documents/20260418-120000-codeur-exemple-agent-commercial-hubspot/plan-20260418-120000-codeur-exemple-agent-commercial-hubspot.html",
+    "generated_at": "2026-04-21T01:19:52+00:00"
+  },
+  {
+    "type": "devis",
+    "mission_id": "20260418-120000-codeur-exemple-agent-commercial-hubspot",
+    "title": "Exemple - Agent commercial automatise sur HubSpot",
+    "platform": "codeur",
+    "file": "documents/20260418-120000-codeur-exemple-agent-commercial-hubspot/devis-20260418-120000-codeur-exemple-agent-commercial-hubspot.html",
+    "generated_at": "2026-04-21T01:19:52+00:00"
+  }
+]

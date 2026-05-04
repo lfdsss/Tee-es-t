@@ -6,6 +6,7 @@ and updates the website status file with all dashboard sections.
 """
 
 import json
+import logging
 import os
 import re
 import sys
@@ -16,6 +17,10 @@ try:
     import requests
 except ImportError:
     requests = None
+
+
+logger = logging.getLogger("update_status")
+logging.basicConfig(level=logging.INFO, format="%(levelname)s update_status: %(message)s")
 
 
 STATUS_FILE = os.path.join(os.path.dirname(__file__), "..", "docs", "status.json")
@@ -82,8 +87,8 @@ def parse_log() -> dict:
         metrics["contacts"] = len([t for t in tool_calls if "hubspot" in t.lower()])
         metrics["errors"] = content.lower().count("[error]")
         metrics["completed"] = "completed" in content.lower()
-    except Exception:
-        pass
+    except (OSError, UnicodeDecodeError) as exc:
+        logger.warning("Failed to parse %s: %s", LOG_FILE, exc)
 
     return metrics
 

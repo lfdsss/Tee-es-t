@@ -1,0 +1,14 @@
+[build]
+  base = "studentflow-web"
+  command = "npm run build"
+  publish = "studentflow-web/dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# SPA: every route that does not match a static file falls back to index.html
+# so React Router can handle /signup, /matches/:id, etc.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
