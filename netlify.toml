@@ -1,8 +1,11 @@
 [build]
+  command = "npm install && npm run build"
   publish = "docs"
 
 [build.environment]
   NODE_VERSION = "20"
+  VITE_BASE = "/quiz/"
+  VITE_OUT_DIR = "docs/quiz"
 
 [context.deploy-preview]
   publish = "docs"
