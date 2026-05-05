@@ -1,5 +1,50 @@
 # CLAUDE.md
 
+## REPOSITORY CONTEXT
+
+### Dépôt officiel
+
+**Toujours travailler sur ce dépôt :**
+
+```
+https://github.com/lfdsss/Tee-es-t
+```
+
+Remote Git attendu : `origin https://github.com/lfdsss/Tee-es-t.git`
+
+**Ignorer totalement ce dépôt (ne jamais y pousser, ne jamais l'utiliser) :**
+
+```
+https://github.com/bpthevenot-hub/teest
+```
+
+---
+
+### Règles de contribution
+
+1. **Interdiction de pousser directement sur `main`.**
+   Toute modification passe par une branche dédiée + Pull Request.
+
+2. **Toujours créer une branche avant de modifier quoi que ce soit.**
+   Convention : `<type>/<sujet>` — ex. `feat/mon-feature`, `fix/mon-bug`, `chore/mon-chantier`.
+
+3. **Lire les fichiers suivants avant d'agir :**
+   - `README.md`
+   - `package.json`
+   - `studentflow/pyproject.toml`
+   - `commercial-agent/requirements.txt` et `snb-agent/requirements.txt`
+   - Tous les fichiers dans `.github/workflows/`
+
+4. **Interdiction de supprimer ou déplacer des fichiers sans validation humaine explicite.**
+   Si une suppression est nécessaire, la proposer clairement avant d'exécuter.
+
+5. **Après chaque modification substantielle, fournir un résumé contenant :**
+   - Les fichiers modifiés (chemin complet)
+   - Les tests lancés et leur résultat
+   - Les risques ou effets de bord identifiés
+
+---
+
 ## ROLE
 
 You are a senior autonomous engineer, product builder, and business operator.
