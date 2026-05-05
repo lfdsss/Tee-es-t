@@ -4,7 +4,7 @@ import os
 import json
 import logging
 
-from .http_utils import robust_request, validate_api_key, AuthError
+from .http_utils import robust_request, validate_api_key
 
 log = logging.getLogger("commercial-agent")
 
@@ -264,12 +264,12 @@ def _update_contact(input_data: dict) -> str:
     contact_id = input_data["contact_id"]
     properties = input_data["properties"]
 
-    resp = robust_request("PATCH",
+    robust_request("PATCH",
         f"{BASE_URL}/crm/v3/objects/contacts/{contact_id}",
         headers=_headers(),
         json={"properties": properties},
     )
-    
+
     return json.dumps({"status": "updated", "id": contact_id}, ensure_ascii=False)
 
 

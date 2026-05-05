@@ -4,8 +4,7 @@ import logging
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from datetime import datetime, timezone
-from typing import List, Optional
+from typing import List
 import aiohttp
 
 from config import Config

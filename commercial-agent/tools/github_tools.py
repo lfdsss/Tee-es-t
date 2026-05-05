@@ -1,10 +1,9 @@
 """GitHub tools for the commercial agent — repository management, issues, PRs."""
 
-import os
 import json
 import logging
 
-from .http_utils import robust_request, validate_api_key, AuthError
+from .http_utils import robust_request, validate_api_key
 
 log = logging.getLogger("commercial-agent")
 
@@ -262,7 +261,7 @@ def _list_issues(input_data: dict) -> str:
             "number": issue["number"],
             "title": issue["title"],
             "state": issue["state"],
-            "labels": [l["name"] for l in issue.get("labels", [])],
+            "labels": [lbl["name"] for lbl in issue.get("labels", [])],
             "assignees": [a["login"] for a in issue.get("assignees", [])],
             "created": issue.get("created_at", ""),
             "url": issue.get("html_url", ""),
@@ -306,7 +305,6 @@ def _get_issue(input_data: dict) -> str:
         headers=_headers(),
         params={"per_page": 20},
     )
-    comments_
     comments = [
         {"author": c["user"]["login"], "body": c["body"][:500], "created": c["created_at"]}
         for c in comments_resp.json()
@@ -317,7 +315,7 @@ def _get_issue(input_data: dict) -> str:
         "title": issue["title"],
         "state": issue["state"],
         "body": (issue.get("body") or "")[:2000],
-        "labels": [l["name"] for l in issue.get("labels", [])],
+        "labels": [lbl["name"] for lbl in issue.get("labels", [])],
         "assignees": [a["login"] for a in issue.get("assignees", [])],
         "comments": comments,
         "url": issue.get("html_url", ""),

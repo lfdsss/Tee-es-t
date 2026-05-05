@@ -3,7 +3,6 @@
 import os
 import json
 import base64
-import tempfile
 from email.mime.text import MIMEText
 from pathlib import Path
 

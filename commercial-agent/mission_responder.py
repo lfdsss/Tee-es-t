@@ -30,7 +30,6 @@ from pathlib import Path
 from anthropic import Anthropic
 
 from mission_prompts import (
-    BAPTISTE_PROFILE,
     PLATFORM_CONFIG,
     build_system_prompt,
     build_user_message,

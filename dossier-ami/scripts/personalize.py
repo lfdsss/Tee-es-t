@@ -134,7 +134,6 @@ def personalize_text(text: str, profile: dict) -> tuple[str, list[str]]:
     doc_lower = text.lower()
     is_operateur_doc = "opérateur télécom" in doc_lower or "operateur télécom" in doc_lower or "sim swap" in doc_lower
     is_assurance_doc = "— assurance" in doc_lower or "assurance (" in doc_lower or "assureur" in doc_lower
-    is_banque_doc = ("— banque (" in doc_lower or "banque (opposition" in doc_lower or "banque (récl" in doc_lower) and not is_assurance_doc
     is_bdf_doc = "banque de france" in doc_lower
 
     def replace_bare(m: re.Match) -> str:

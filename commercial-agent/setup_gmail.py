@@ -11,7 +11,6 @@ This will:
 """
 
 import os
-import json
 import sys
 from pathlib import Path
 
@@ -46,7 +45,7 @@ def main():
         env_json = os.getenv("GMAIL_CREDENTIALS_JSON")
         if env_json:
             credentials_path.write_text(env_json)
-            print(f"Credentials ecrites depuis GMAIL_CREDENTIALS_JSON")
+            print("Credentials ecrites depuis GMAIL_CREDENTIALS_JSON")
         else:
             print("\nFichier gmail_credentials.json introuvable.")
             print("Options :")
@@ -96,8 +95,8 @@ def main():
     print("  SETUP TERMINE !")
     print("=" * 50)
     print("\nPour Railway, ajoute cette variable d'environnement :")
-    print(f"\nNom : GMAIL_TOKEN_JSON")
-    print(f"Valeur :")
+    print("\nNom : GMAIL_TOKEN_JSON")
+    print("Valeur :")
     print(token_content)
     print("\n" + "=" * 50)
 
