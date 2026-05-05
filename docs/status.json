@@ -1,11 +1,16 @@
 {
   "status": "Actif",
-  "last_run": "2026-05-05T17:56:01.993915",
+  "last_run": "2026-05-05T19:47:07.038824",
   "emails_processed": 0,
   "emails_processed_date": "2026-05-05",
   "active_contacts": 0,
-  "routines_this_week": 10,
+  "routines_this_week": 11,
   "activity": [
+    {
+      "time": "19:47",
+      "type": "crm",
+      "message": "Relances prospects terminee - 0 actions executees"
+    },
     {
       "time": "17:56",
       "type": "crm",
@@ -100,11 +105,6 @@
       "time": "16:30",
       "type": "systeme",
       "message": "Audit hebdomadaire termine - rapport KPI genere"
-    },
-    {
-      "time": "09:15",
-      "type": "email",
-      "message": "Routine du matin terminee - 6 actions executees, 3 brouillons crees"
     }
   ],
   "livrables": {
