@@ -1,8 +1,8 @@
 # Root Ruff configuration — applies to Python code outside of nested packages
 # (commercial-agent/, snb-agent/, scripts, etc.)
 #
-# Stored as ruff.toml (not pyproject.toml) so deploy platforms (Vercel,
-# Netlify) don't misidentify the repo root as a Python project. Ruff
+# Stored as ruff.toml (not pyproject.toml) so Netlify and other deploy
+# platforms don't misidentify the repo root as a Python project. Ruff
 # resolves both file names natively; in ruff.toml sections live at the top
 # level (no [tool.ruff] prefix).
 #
