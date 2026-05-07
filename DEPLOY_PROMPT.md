@@ -125,7 +125,7 @@ CREATE POLICY "Allow service write" ON agent_status FOR ALL USING (true);
 
 ### Dashboard
 1. Ouvre https://snb-consulting-platform.netlify.app
-2. Login avec `baptiste` / `snb2026bt`
+2. Login avec ton compte Supabase Auth (créé via la console Supabase — passwords legacy purgés)
 3. Vérifie que la page Dashboard affiche les stats
 4. Va dans Missions → vérifie que la liste charge
 5. Clique sur une mission → vérifie le détail + pipeline
