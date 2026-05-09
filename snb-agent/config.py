@@ -1,11 +1,17 @@
 """SNB Mission Hunter — Configuration centralisée."""
 
+import json
 import os
 from dataclasses import dataclass
-from typing import List
+from pathlib import Path
+from typing import Dict, List
 from dotenv import load_dotenv
 
 load_dotenv()
+
+_HERE = Path(__file__).parent
+_PROFILES_PATH = _HERE / "profiles.json"
+_PROFILES_EXAMPLE_PATH = _HERE / "profiles.example.json"
 
 
 @dataclass
@@ -66,49 +72,16 @@ CDI_KEYWORDS = [
     "lundi au vendredi", "35h", "39h",
 ]
 
-PROFILES = {
-    "baptiste": {
-        "name": "Baptiste Thevenot",
-        "email": "bp.thevenot@gmail.com",
-        "phone": "06 86 50 43 79",
-        "linkedin": "linkedin.com/in/baptiste-thevenot-64275777",
-        "siret": "849 022 058",
-        "address": "10 chemin de Catala, 31100 Toulouse",
-        "languages": ["fr", "en", "es"],
-        "formation": "Master 2 Strategie & Conseil — TBS | Stanford Online IA/ML",
-        "keywords": [
-            "react", "next.js", "nextjs", "shopify", "liquid", "e-commerce", "ecommerce",
-            "claude", "anthropic", "gpt", "openai", "chatbot", "ia", "ai",
-            "intelligence artificielle", "automatisation", "automation", "workflow",
-            "n8n", "make", "zapier", "scraping", "python", "data", "dashboard",
-            "analytics", "strategie digitale", "transformation digitale",
-            "conduite du changement", "branding", "brand", "identite visuelle",
-            "charte graphique", "ux", "ui", "seo", "audit", "optimisation",
-            "performance", "site web", "website", "landing page", "webdesign",
-            "api", "integration", "mcp", "agent", "multi-agent",
-            "typescript", "html", "css", "javascript", "netlify", "railway",
-        ],
-        "tjm_min": 350,
-        "tjm_standard": 450,
-        "tjm_expert": 600,
-        "portfolio": [
-            "La Francaise des Sauces — marque alimentaire premium, site Shopify complet, branding A-Z",
-            "Chef IA — configurateur recettes interactif 3D avec IA",
-            "Systeme multi-agents IA — 6 agents specialises, Claude API + Shopify MCP",
-            "Audit cybersecurite — audit 936 comptes, migration Bitwarden",
-        ],
-    },
-    "sacha": {
-        "name": "Sacha Zekri",
-        "email": "zekrisacha@gmail.com",
-        "keywords": [
-            "assistant", "administration", "secretariat", "support",
-            "gestion", "planning", "organisation", "accueil",
-            "facturation", "comptabilite", "rh", "paie",
-        ],
-        "tjm_min": 300,
-        "tjm_standard": 400,
-        "tjm_expert": 500,
-        "portfolio": [],
-    },
-}
+def _load_profiles() -> Dict[str, dict]:
+    """Charge les profils depuis profiles.json (gitignoré, contient PII).
+
+    Fallback sur profiles.example.json (anonymisé, committé) pour tests/CI.
+    Retourne {} si aucun des deux n'existe.
+    """
+    path = _PROFILES_PATH if _PROFILES_PATH.exists() else _PROFILES_EXAMPLE_PATH
+    if not path.exists():
+        return {}
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+PROFILES: Dict[str, dict] = _load_profiles()

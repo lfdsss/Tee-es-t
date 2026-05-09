@@ -50,6 +50,12 @@ __pycache__/
 *.pyc
 .venv/
 
+# PII — profils réels (utiliser profiles.example.json comme template)
+snb-agent/profiles.json
+
+# Claude Code config locale
+.claude/
+
 # Dossier perso — ne JAMAIS committer les pièces / archives
 # (on garde les sous-dossiers via .gitkeep et les README, on ignore le reste)
 dossier-ami/pieces/*/*
