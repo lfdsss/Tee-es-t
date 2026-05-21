@@ -1,0 +1,33 @@
+{
+  "baptiste": {
+    "name": "Your Name",
+    "email": "your.email@example.com",
+    "phone": "+33 0 00 00 00 00",
+    "linkedin": "linkedin.com/in/your-handle",
+    "siret": "000 000 000",
+    "address": "Your address, City",
+    "languages": ["fr", "en"],
+    "formation": "Your formation summary",
+    "keywords": [
+      "react", "python", "ia", "automation"
+    ],
+    "tjm_min": 350,
+    "tjm_standard": 450,
+    "tjm_expert": 600,
+    "portfolio": [
+      "Project 1 — short description",
+      "Project 2 — short description"
+    ]
+  },
+  "sacha": {
+    "name": "Partner Name",
+    "email": "partner@example.com",
+    "keywords": [
+      "assistant", "administration", "support"
+    ],
+    "tjm_min": 300,
+    "tjm_standard": 400,
+    "tjm_expert": 500,
+    "portfolio": []
+  }
+}

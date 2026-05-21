@@ -1,6 +1,9 @@
+// Legacy hardcoded credentials — REDACTED 2026-05-07.
+// Auth officielle désormais via Supabase Auth (snb-platform-v3).
+// Ce dashboard Vite n'est plus déployé en prod.
 const USERS = {
-  baptiste: { password: 'snb2026bt', role: 'tech', name: 'Baptiste Thevenot' },
-  sacha: { password: 'snb2026sa', role: 'admin', name: 'Sacha Zekri' },
+  baptiste: { password: 'REDACTED', role: 'tech', name: 'Baptiste Thevenot' },
+  sacha: { password: 'REDACTED', role: 'admin', name: 'Sacha Zekri' },
 };
 
 export function login(username, password) {
