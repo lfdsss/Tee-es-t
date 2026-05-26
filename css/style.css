@@ -1,0 +1,103 @@
+/*
+ * style.css — Project styles (loaded after normalize.css)
+ *
+ * All values use cross-browser-safe properties so the rendering
+ * is identical on Chrome and Safari.
+ */
+
+:root {
+  --color-bg: #f9f9f9;
+  --color-text: #222;
+  --color-primary: #0057ff;
+  --color-border: #ddd;
+  --radius: 6px;
+  --space: 1.5rem;
+}
+
+body {
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+
+/* ---- Layout ---- */
+.header {
+  text-align: center;
+  padding: calc(var(--space) * 2) var(--space);
+}
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 var(--space) var(--space);
+}
+
+.section {
+  margin-bottom: calc(var(--space) * 2);
+}
+
+.footer {
+  text-align: center;
+  padding: var(--space);
+  font-size: 0.875rem;
+  color: #666;
+}
+
+/* ---- Links ---- */
+a {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+a:hover {
+  text-decoration: none;
+}
+
+/* ---- Forms ---- */
+.form-group {
+  margin-bottom: var(--space);
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.35em;
+  font-weight: 500;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group textarea,
+.form-group select {
+  width: 100%;
+}
+
+button[type="submit"] {
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.65em 1.5em;
+  transition: opacity 0.15s ease;
+}
+button[type="submit"]:hover {
+  opacity: 0.85;
+}
+
+/* ---- Table ---- */
+table {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+thead {
+  background: #eee;
+}
+
+th, td {
+  border-bottom: 1px solid var(--color-border);
+  padding: 0.65em 1em;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
