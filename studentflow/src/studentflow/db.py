@@ -36,6 +36,9 @@ class Repository(Protocol):
     def count_unnotified_matches(self) -> int: ...
     def count_matches_by_state(self) -> dict[str, int]: ...
     def count_offers_by_source(self) -> dict[str, int]: ...
+    # SEO extensions (optional — implementations may no-op)
+    def increment_offer_view(self, offer_id: UUID) -> None: ...
+    def list_city_offer_counts(self) -> list[dict[str, Any]]: ...
 
 
 class SupabaseRepository:
@@ -189,6 +192,24 @@ class SupabaseRepository:
             state = r.get("state") or "pending"
             out[state] = out.get(state, 0) + 1
         return out
+
+    # ---- SEO methods ----
+
+    def increment_offer_view(self, offer_id: UUID) -> None:
+        self.client.rpc(
+            "increment_view_count",
+            {"offer_id": str(offer_id)},
+        ).execute()
+
+    def list_city_offer_counts(self) -> list[dict[str, Any]]:
+        resp = (
+            self.client.table("city_offer_counts")
+            .select("city,offer_count")
+            .order("offer_count", desc=True)
+            .limit(100)
+            .execute()
+        )
+        return resp.data or []
 
 
 # ---- row adapters ----
@@ -369,3 +390,18 @@ class InMemoryRepository:
             key = m.state.value
             out[key] = out.get(key, 0) + 1
         return out
+
+    # ---- SEO methods (no-op stubs for in-memory repo) ----
+
+    def increment_offer_view(self, offer_id: UUID) -> None:
+        pass
+
+    def list_city_offer_counts(self) -> list[dict[str, Any]]:
+        counts: dict[str, int] = {}
+        for o in self.offers.values():
+            if o.city:
+                counts[o.city] = counts.get(o.city, 0) + 1
+        return [
+            {"city": city, "offer_count": count}
+            for city, count in sorted(counts.items(), key=lambda x: -x[1])
+        ]

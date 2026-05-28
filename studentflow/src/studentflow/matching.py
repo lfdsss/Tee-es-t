@@ -5,21 +5,32 @@ string. `score()` is a weighted sum and returns a `MatchResult`.
 
 If you add a new component, wire it in `WEIGHTS` and in `score()`, then add
 tests in `tests/test_matching.py`.
+
+Weight breakdown (must always sum to 1.0):
+  skills       0.38 — Jaccard overlap between offer requirements and student skills
+  location     0.23 — distance-based score or remote flag
+  contract     0.14 — contract type acceptability
+  hours        0.10 — weekly hours fit
+  availability 0.10 — date window overlap
+  freshness    0.03 — recency of offer (new offers boosted)
+  quality      0.02 — offer completeness (rich offers rank higher)
 """
 
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, datetime, timezone
 
 from .models import ContractType, MatchResult, Offer, Student
 from .utils.geo import distance_score, haversine_km
 
 WEIGHTS: dict[str, float] = {
-    "skills": 0.40,
-    "location": 0.25,
-    "contract": 0.15,
+    "skills": 0.38,
+    "location": 0.23,
+    "contract": 0.14,
     "hours": 0.10,
     "availability": 0.10,
+    "freshness": 0.03,
+    "quality": 0.02,
 }
 assert abs(sum(WEIGHTS.values()) - 1.0) < 1e-9, "WEIGHTS must sum to 1.0"
 
@@ -119,6 +130,60 @@ def _score_availability(offer: Offer, student: Student) -> tuple[float, str]:
     return 1.0, "Disponibilités compatibles"
 
 
+def _score_freshness(offer: Offer) -> tuple[float, str]:
+    """Boost recent offers — students prefer fresh listings.
+
+    Decay curve:
+      0–2 days   → 1.0  (brand new)
+      3–7 days   → 0.8
+      8–14 days  → 0.6
+      15–30 days → 0.3
+      >30 days   → 0.0  (stale)
+    """
+    if offer.scraped_at is None:
+        return 0.5, "Date de publication inconnue"
+
+    now = datetime.now(tz=timezone.utc)
+    scraped = offer.scraped_at
+    if scraped.tzinfo is None:
+        scraped = scraped.replace(tzinfo=timezone.utc)
+
+    age_days = (now - scraped).days
+    if age_days <= 2:
+        return 1.0, f"Offre récente ({age_days}j)"
+    if age_days <= 7:
+        return 0.8, f"Offre de la semaine ({age_days}j)"
+    if age_days <= 14:
+        return 0.6, f"Offre de 2 semaines ({age_days}j)"
+    if age_days <= 30:
+        return 0.3, f"Offre d'un mois ({age_days}j)"
+    return 0.0, f"Offre ancienne ({age_days}j)"
+
+
+def _score_quality(offer: Offer) -> tuple[float, str]:
+    """Score offer completeness — rich offers are more actionable.
+
+    5 signals × 0.2 each:
+      1. Has description (not empty)
+      2. Has ≥1 skill listed
+      3. Has hours_per_week
+      4. Has company name
+      5. Has city or is remote
+    """
+    signals = [
+        bool(offer.description),
+        len(offer.skills) >= 1,
+        offer.hours_per_week is not None,
+        bool(offer.company),
+        bool(offer.city) or offer.remote,
+    ]
+    score = sum(1 for s in signals if s) / len(signals)
+    missing = sum(1 for s in signals if not s)
+    if missing == 0:
+        return 1.0, "Offre complète"
+    return score, f"Offre incomplète ({missing} champ(s) manquant(s))"
+
+
 def score(offer: Offer, student: Student) -> MatchResult:
     """Compute the overall match score between an offer and a student.
 
@@ -149,6 +214,14 @@ def score(offer: Offer, student: Student) -> MatchResult:
     s_avail, r_avail = _score_availability(offer, student)
     components["availability"] = s_avail
     reasons.append(f"[availability {s_avail:.2f}] {r_avail}")
+
+    s_fresh, r_fresh = _score_freshness(offer)
+    components["freshness"] = s_fresh
+    reasons.append(f"[freshness {s_fresh:.2f}] {r_fresh}")
+
+    s_qual, r_qual = _score_quality(offer)
+    components["quality"] = s_qual
+    reasons.append(f"[quality {s_qual:.2f}] {r_qual}")
 
     total = sum(components[name] * WEIGHTS[name] for name in WEIGHTS)
     return MatchResult(

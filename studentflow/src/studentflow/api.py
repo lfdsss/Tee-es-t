@@ -32,6 +32,7 @@ from .db import InMemoryRepository, Repository, SupabaseRepository
 from .matching import rank_offers_for_student, rank_students_for_offer
 from .models import ContractType, Match, MatchState, Offer, Source, Student
 from .realtime import broadcaster
+from .seo.routes import router as seo_router
 from .utils.skills import VOCABULARY, extract_skills, merge_skills
 
 log = logging.getLogger(__name__)
@@ -50,6 +51,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# SEO routes: /sitemap.xml, /robots.txt, /offres/{slug}, /emplois/{city}
+app.include_router(seo_router)
 
 
 # ---- repository dependency ----
