@@ -40,7 +40,7 @@ def test_tool_name_prefixes_are_known() -> None:
     """Every registered tool must use a prefix execute_tool() can route."""
     import tools
 
-    known_prefixes = ("hubspot_", "gmail_", "notion_", "github_", "livrables_")
+    known_prefixes = ("hubspot_", "gmail_", "notion_", "github_", "livrables_", "laposte_")
     for entry in tools.ALL_TOOLS:
         name = entry["name"]
         assert name.startswith(known_prefixes), f"Unrouted tool prefix: {name}"

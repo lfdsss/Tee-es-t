@@ -3,12 +3,13 @@ import logging
 # Always available
 from .github_tools import GITHUB_TOOLS, execute_github_tool
 from .hubspot import HUBSPOT_TOOLS, execute_hubspot_tool
+from .laposte import LAPOSTE_TOOLS, execute_laposte_tool
 from .livrables import LIVRABLES_TOOLS, execute_livrables_tool
 from .notion import NOTION_TOOLS, execute_notion_tool
 
 log = logging.getLogger("commercial-agent")
 
-ALL_TOOLS = HUBSPOT_TOOLS + NOTION_TOOLS + GITHUB_TOOLS + LIVRABLES_TOOLS
+ALL_TOOLS = HUBSPOT_TOOLS + NOTION_TOOLS + GITHUB_TOOLS + LIVRABLES_TOOLS + LAPOSTE_TOOLS
 
 # Gmail is optional (requires OAuth flow with browser on first use).
 # Broad except is intentional: any import-time failure (missing deps, bad
@@ -41,5 +42,7 @@ def execute_tool(name: str, input_data: dict) -> str:
         return execute_github_tool(name, input_data)
     elif name.startswith("livrables_"):
         return execute_livrables_tool(name, input_data)
+    elif name.startswith("laposte_"):
+        return execute_laposte_tool(name, input_data)
     else:
         return f"Error: Unknown tool '{name}'"
