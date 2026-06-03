@@ -216,11 +216,14 @@ export default async (req) => {
       },
     });
   } catch (err) {
+    // Log côté serveur uniquement (visible dans les logs Netlify) ; ne jamais
+    // renvoyer le détail de l'erreur au client pour éviter l'exposition
+    // d'informations via une stack trace (CodeQL js/stack-trace-exposure).
+    console.error("recipe-generate failed:", err);
     return new Response(
       JSON.stringify({
         ok: false,
         error: "generation failed",
-        detail: String(err).slice(0, 300),
       }),
       { status: 502, headers: { "Content-Type": "application/json" } }
     );
