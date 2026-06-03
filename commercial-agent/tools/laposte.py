@@ -17,6 +17,7 @@ exposée via la variable d'environnement LAPOSTE_API_KEY (en-tête X-Okapi-Key).
 
 import json
 import logging
+import os
 
 from .http_utils import AuthError, robust_request, validate_api_key
 
@@ -156,6 +157,74 @@ def format_for_notification(data: dict) -> str:
     return "\n".join(lines)
 
 
+# --- Point 3 : moteur de notification / automatisation -------------------
+#
+# Unité d'automatisation composable (cf. CLAUDE.md — automation rules) :
+# détecte les changements de statut par rapport à un état persistant et
+# n'émet que les nouveautés. Déclenchable par cron, webhook ou agent.
+# Aucune dépendance externe : état stocké en JSON sur le système de fichiers.
+
+def _default_state_path() -> str:
+    return os.getenv(
+        "LAPOSTE_STATE_PATH", os.path.expanduser("~/.laposte_tracking.json")
+    )
+
+
+def _load_state(path: str) -> dict:
+    """Charge l'état persistant {code: dernier_statut}. Tolérant : {} si absent/corrompu."""
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+            return data if isinstance(data, dict) else {}
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
+        return {}
+
+
+def _save_state(path: str, state: dict) -> None:
+    """Écrit l'état (best-effort, atomique via fichier temporaire)."""
+    try:
+        tmp = f"{path}.tmp"
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump(state, f, ensure_ascii=False, indent=2)
+        os.replace(tmp, path)
+    except OSError as e:
+        log.warning(f"Impossible d'écrire l'état La Poste ({path}): {e}")
+
+
+def track_and_notify(codes, state_path=None, sink=None, lang="fr_FR") -> dict:
+    """Suit une liste d'envois et n'émet que les statuts qui ont changé.
+
+    - `state_path` : fichier JSON d'état (défaut : env LAPOSTE_STATE_PATH ou
+      ~/.laposte_tracking.json).
+    - `sink` : callable(str) appelé pour chaque changement (email, note CRM,
+      page Notion, log…). Si None, aucun effet de bord — la liste est renvoyée.
+
+    Returns {"changes": [...], "results": [...], "changed_count": int}.
+    """
+    state_path = state_path or _default_state_path()
+    previous = _load_state(state_path)
+    results = [track_shipment(c, lang=lang) for c in codes]
+
+    changes = []
+    new_state = dict(previous)
+    for r in results:
+        code = r.get("tracking_number", "")
+        # Clé de comparaison : statut courant, ou message d'erreur si introuvable.
+        signature = r.get("current_status") or r.get("error") or ""
+        if previous.get(code) != signature:
+            changes.append(r)
+            if sink is not None:
+                sink(format_for_notification(r))
+        new_state[code] = signature
+
+    _save_state(state_path, new_state)
+    return {
+        "changes": changes,
+        "results": results,
+        "changed_count": len(changes),
+    }
+
+
 # --- Tool Definitions (sent to Claude) ---
 
 LAPOSTE_TOOLS = [
@@ -214,17 +283,35 @@ def execute_laposte_tool(name: str, input_data: dict) -> str:
         return f"Error executing {name}: {e}"
 
 
-# --- CLI : `python -m tools.laposte <numero> [<numero> ...]` ---
+# --- CLI ---------------------------------------------------------------
+#   Suivi ponctuel :  python -m tools.laposte <numero> [<numero> ...]
+#   Veille (cron)  :  python -m tools.laposte --watch <numero> [<numero> ...]
+#                     → n'affiche que les statuts qui ont changé depuis le
+#                       dernier passage (état persistant).
 
 def main() -> None:
     import sys
 
-    if len(sys.argv) < 2:
-        print("Usage: python -m tools.laposte <numero_suivi> [<numero_suivi> ...]")
+    args = sys.argv[1:]
+    watch = False
+    if args and args[0] in ("--watch", "-w"):
+        watch = True
+        args = args[1:]
+
+    if not args:
+        print(
+            "Usage: python -m tools.laposte [--watch] <numero_suivi> [<numero_suivi> ...]"
+        )
         raise SystemExit(2)
+
     try:
-        for code in sys.argv[1:]:
-            print(format_for_notification(track_shipment(code)))
+        if watch:
+            res = track_and_notify(args, sink=print)
+            if res["changed_count"] == 0:
+                print("Aucun changement depuis le dernier passage.")
+        else:
+            for code in args:
+                print(format_for_notification(track_shipment(code)))
     except AuthError as e:
         print(
             f"⚠️  {e}\n   Configure LAPOSTE_API_KEY (clé gratuite sur "

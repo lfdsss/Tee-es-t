@@ -90,4 +90,14 @@ IMPORTANT : Tu dois TOUJOURS creer des brouillons (gmail_create_draft), JAMAIS e
    - Nombre de deals en cours et valeur totale
    - Taux de reponse estime
    - Actions prioritaires pour la semaine""",
+    "colis_tracking": """Effectue la routine de suivi des envois La Poste :
+
+1. Recupere la liste des numeros de suivi a surveiller (envois clients, recommandes,
+   colis fournisseurs). Si une liste t'est fournie dans le contexte, utilise-la.
+2. Utilise l'outil laposte_track avec ces numeros pour obtenir leur statut courant.
+3. Pour chaque envoi LIVRE ou dont le statut a change de maniere notable :
+   - Si l'envoi est lie a un contact HubSpot, ajoute une note CRM avec le statut et la date.
+   - Si une action client est attendue (livraison effectuee, avis de passage), prepare
+     un brouillon Gmail d'information (gmail_create_draft) — NE JAMAIS envoyer directement.
+4. Resume : nombre d'envois suivis, livres, en cours, en anomalie, et actions creees.""",
 }
