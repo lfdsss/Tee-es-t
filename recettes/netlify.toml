@@ -1,0 +1,32 @@
+# ─────────────────────────────────────────────────────────
+# Netlify configuration — LFDS Recettes (recettes.l-fds.com)
+#
+# Site déployé séparément du site SNB Consulting (docs/) et du
+# quiz LFDS (src/). Trois Netlify sites distincts dans le repo
+# Tee-es-t pour respecter la directive "ne pas mélanger SNB et LFDS".
+#
+# Pour créer le site Netlify : pointer le base directory sur
+# `recettes/` lors du `netlify init` ou via le dashboard Netlify.
+# ─────────────────────────────────────────────────────────
+
+[build]
+  base = "recettes/"
+  publish = "recettes/dist"
+  command = "npm install && npm run build"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[functions]
+  directory = "recettes/netlify/functions"
+  node_bundler = "esbuild"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
