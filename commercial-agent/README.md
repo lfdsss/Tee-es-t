@@ -40,7 +40,28 @@ commercial-agent/
 ├── tools/
 │   ├── __init__.py
 │   ├── hubspot.py       # Outils CRM HubSpot
-│   └── gmail.py         # Outils Gmail
+│   ├── gmail.py         # Outils Gmail
+│   ├── notion.py        # Outils Notion
+│   ├── github_tools.py  # Outils GitHub
+│   ├── livrables.py     # Generation de livrables
+│   └── laposte.py       # Suivi d'envois La Poste (Colissimo/LRAR/Chronopost)
 ├── requirements.txt
 └── .env.example
 ```
+
+## Suivi La Poste
+
+Le connecteur `tools/laposte.py` interroge l'API officielle "Suivi v2" de La Poste
+(Colissimo, Lettre Recommandee / LRAR, Lettre Suivie, Chronopost).
+
+1. Cle API gratuite : https://developer.laposte.fr → produit **Suivi v2**.
+2. Renseigner `LAPOSTE_API_KEY` dans `.env` (en-tete `X-Okapi-Key`).
+3. Usage ponctuel en CLI :
+
+   ```bash
+   python -m tools.laposte 07461145240
+   ```
+
+   Ou via l'agent : outil `laposte_track` (accepte une liste de numeros).
+   La sortie est normalisee (statut, transporteur, dates, evenements) et prete
+   a etre injectee dans un email Gmail, une note HubSpot ou une page Notion.

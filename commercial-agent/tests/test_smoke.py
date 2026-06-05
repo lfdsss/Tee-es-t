@@ -40,7 +40,7 @@ def test_tool_name_prefixes_are_known() -> None:
     """Every registered tool must use a prefix execute_tool() can route."""
     import tools
 
-    known_prefixes = ("hubspot_", "gmail_", "notion_", "github_", "livrables_")
+    known_prefixes = ("hubspot_", "gmail_", "notion_", "github_", "livrables_", "laposte_")
     for entry in tools.ALL_TOOLS:
         name = entry["name"]
         assert name.startswith(known_prefixes), f"Unrouted tool prefix: {name}"
@@ -93,3 +93,58 @@ def test_routines_contains_expected_keys() -> None:
     for key in ("morning", "followup", "weekly_audit"):
         assert key in ROUTINES, f"Missing routine: {key}"
         assert ROUTINES[key].strip(), f"Empty routine body: {key}"
+
+
+def test_laposte_track_and_notify_detects_only_changes(tmp_path) -> None:
+    """The notification engine must emit a shipment only when its status changed
+    vs the persisted state — and persist the new state for the next run."""
+    from unittest.mock import patch
+
+    from tools import laposte
+
+    state = tmp_path / "state.json"
+    fake = {
+        "tracking_number": "07461145240",
+        "found": True,
+        "is_final": False,
+        "current_status": "Pris en charge.",
+        "current_status_date": "2026-05-28T09:00:00+02:00",
+        "carrier": "La Poste",
+        "tracking_url": "https://example/track",
+    }
+
+    notified: list[str] = []
+    with patch.object(laposte, "track_shipment", return_value=fake):
+        # First run → new code, must be reported once.
+        res1 = laposte.track_and_notify(
+            ["07461145240"], state_path=str(state), sink=notified.append
+        )
+        assert res1["changed_count"] == 1
+        assert len(notified) == 1
+
+        # Second run, same status → no change, nothing emitted.
+        res2 = laposte.track_and_notify(
+            ["07461145240"], state_path=str(state), sink=notified.append
+        )
+        assert res2["changed_count"] == 0
+        assert len(notified) == 1
+
+    # Status changes (delivered) → reported again.
+    delivered = dict(fake, is_final=True, current_status="Votre courrier a ete distribue.")
+    with patch.object(laposte, "track_shipment", return_value=delivered):
+        res3 = laposte.track_and_notify(
+            ["07461145240"], state_path=str(state), sink=notified.append
+        )
+        assert res3["changed_count"] == 1
+        assert len(notified) == 2
+
+
+def test_laposte_load_state_tolerates_missing_and_corrupt(tmp_path) -> None:
+    from tools import laposte
+
+    missing = tmp_path / "nope.json"
+    assert laposte._load_state(str(missing)) == {}
+
+    corrupt = tmp_path / "bad.json"
+    corrupt.write_text("{not valid json", encoding="utf-8")
+    assert laposte._load_state(str(corrupt)) == {}
